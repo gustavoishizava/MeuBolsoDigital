@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Building blocks\Core\MBD.Core\MBD.Core.csproj" />
     <ProjectReference Include="..\..\src\Services\Identity\MBD.Identity.Domain\MBD.Identity.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Services\Identity\MBD.Identity.Infrastructure\MBD.Identity.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

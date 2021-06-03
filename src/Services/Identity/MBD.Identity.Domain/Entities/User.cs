@@ -1,24 +1,33 @@
+using MBD.Core;
 using MBD.Core.Entities;
+using MBD.Identity.Domain.Interfaces.Services;
 using MBD.Identity.Domain.ValueObjects;
 
 namespace MBD.Identity.Domain.Entities
 {
-    public class User: BaseEntity
+    public class User : BaseEntity
     {
         public string Name { get; private set; }
         public Email Email { get; private set; }
-        public string Password { get; private set; }
+        public StrongPassword Password { get; private set; }
 
-        public User(string name, string email, string password)
+        public User(string name, string email, string password, IHashService hashService)
         {
+            Assertions.IsNotNullOrEmpty(name, "Name cannot be null or empty.");
+            
             Name = name;
             SetEmail(email);
-            Password = password;
+            SetPassword(password, hashService);
         }
 
         public void SetEmail(string email)
         {
             Email = new Email(email);
+        }
+
+        public void SetPassword(string password, IHashService hashService)
+        {
+            Password = new StrongPassword(password, hashService);
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using MBD.Core.DomainObjects;
 using MBD.Identity.Domain.Entities;
 using MBD.Identity.Domain.Interfaces.Services;
@@ -11,11 +12,15 @@ namespace MBD.Identity.Tests.unit_tests
     {
         private readonly IHashService _hashService;
 
+        private readonly User _validUser;
+
         private const string TRAIT_VALUE = "Entities - Users";
 
         public UserTests()
         {
             _hashService = new HashService();
+
+            _validUser = new User("Valid user", "user@user.com", "P@ssw0rd!", _hashService);
         }
 
         [Fact(DisplayName = "Criar usuário com e-mail inválido.")]
@@ -59,15 +64,50 @@ namespace MBD.Identity.Tests.unit_tests
         {
             // Arrange
             int expiresIn = 3600;
-            var user = new User("Valid user", "user@user.com", "P@ssw0rd!", _hashService);
 
             // Act
-            var refreshToken = user.CreateRefreshToken(expiresIn);
+            var refreshToken = _validUser.CreateRefreshToken(expiresIn);
 
             // Assert
-            Assert.Equal(refreshToken.UserId, user.Id);
+            Assert.Equal(refreshToken.UserId, _validUser.Id);
             Assert.Equal(refreshToken.CreatedAt.AddSeconds(expiresIn), refreshToken.ExpiresAt);
             Assert.False(refreshToken.IsExpired);
+        }
+
+        [Fact(DisplayName = "Revogar token válido.")]
+        [Trait("Refresh token", TRAIT_VALUE)]
+        public void ValidRefreshToken_Revoke_ReturnSucess()
+        {
+            // Assert
+            var refreshToken = _validUser.CreateRefreshToken(3600);
+            var isRevoked = refreshToken.IsRevoked;
+            var revokedOn = refreshToken.RevokedOn;
+
+            // Act
+            refreshToken.Revoke();
+
+            // Assert
+            Assert.NotNull(refreshToken.RevokedOn);
+            Assert.NotEqual(revokedOn, refreshToken.RevokedOn);
+            Assert.True(refreshToken.IsRevoked);
+            Assert.NotEqual(isRevoked, refreshToken.IsRevoked);
+        }
+
+        [Fact(DisplayName = "Revogar um token já revogado não deve alterar a data de revogação novamente.")]
+        [Trait("Refresh token", TRAIT_VALUE)]
+        public void RevokedRefreshToken_Revoke_NothingChanges()
+        {
+            // Assert
+            var refreshToken = _validUser.CreateRefreshToken(3600);
+            refreshToken.Revoke();
+            var revokedOn = refreshToken.RevokedOn;
+
+            // Act
+            Thread.Sleep(1000);
+            refreshToken.Revoke();
+
+            // Assert
+            Assert.Equal(revokedOn, refreshToken.RevokedOn);
         }
     }
 }

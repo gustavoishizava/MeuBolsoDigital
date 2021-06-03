@@ -4,7 +4,7 @@ using MBD.Identity.Domain.ValueObjects;
 using MBD.Identity.Infrastructure.Services;
 using Xunit;
 
-namespace MBD.Identity.Tests.unit_tests
+namespace MBD.Identity.Tests.unit_tests.ValueObjects
 {
     public class StrongPasswordTests
     {

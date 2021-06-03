@@ -23,14 +23,14 @@ namespace MBD.Identity.Tests.unit_tests
         public void InvalidUser_NewUser_ReturnArgumentExceptionDomainException()
         {
             // Arrange && Act && Assert
-            Assert.Throws<ArgumentException>(() => 
+            Assert.Throws<ArgumentException>(() =>
                 new User("User", "invalid_email", "Abc@122357#", _hashService));
 
-            Assert.Throws<DomainException>(() => 
+            Assert.Throws<DomainException>(() =>
                 new User("User", "email@email.com", "password", _hashService));
 
-            Assert.Throws<DomainException>(() => 
-                new User("", "email@email.com", "password", _hashService));                    
+            Assert.Throws<DomainException>(() =>
+                new User("", "email@email.com", "password", _hashService));
         }
 
         [Theory(DisplayName = "Criar usuário com e-mail válido.")]
@@ -51,6 +51,23 @@ namespace MBD.Identity.Tests.unit_tests
             Assert.Equal(email, user.Email.Address);
             Assert.Equal(normalizedEmail, user.Email.NormalizedAddress);
             Assert.True(_hashService.IsMatch(password, user.Password.PasswordHash));
+        }
+
+        [Fact(DisplayName = "Gerar um refresh token para um usuário válido.")]
+        [Trait("Refresh token", TRAIT_VALUE)]
+        public void ValidUser_CreateRefreshToken_ReturnSuccess()
+        {
+            // Arrange
+            int expiresIn = 3600;
+            var user = new User("Valid user", "user@user.com", "P@ssw0rd!", _hashService);
+
+            // Act
+            var refreshToken = user.CreateRefreshToken(expiresIn);
+
+            // Assert
+            Assert.Equal(refreshToken.UserId, user.Id);
+            Assert.Equal(refreshToken.CreatedAt.AddSeconds(expiresIn), refreshToken.ExpiresAt);
+            Assert.False(refreshToken.IsExpired);
         }
     }
 }

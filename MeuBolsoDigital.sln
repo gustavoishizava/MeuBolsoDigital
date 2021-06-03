@@ -1,0 +1,66 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{96490B01-0D78-47A8-8FEA-9A6FBC69EED7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{E4BE325B-B35E-429D-AC12-7FA48D08AE66}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{F6D69D00-D04B-4329-BD32-E93BC04F860A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MBD.Identity.Domain", "src\Services\Identity\MBD.Identity.Domain\MBD.Identity.Domain.csproj", "{E9AA5D23-2A70-4CB3-AD88-074C50ECF63B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Building blocks", "Building blocks", "{DC3EFFB0-2EDC-4883-B2BC-38F8BB784DF6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{A57DE706-01CE-42D6-BEBE-803ABE35E1F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MBD.Core", "src\Building blocks\Core\MBD.Core\MBD.Core.csproj", "{D1C60BD4-3995-4A13-9C5F-B4ADB71956AB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E9AA5D23-2A70-4CB3-AD88-074C50ECF63B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9AA5D23-2A70-4CB3-AD88-074C50ECF63B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9AA5D23-2A70-4CB3-AD88-074C50ECF63B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E9AA5D23-2A70-4CB3-AD88-074C50ECF63B}.Debug|x64.Build.0 = Debug|Any CPU
+		{E9AA5D23-2A70-4CB3-AD88-074C50ECF63B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E9AA5D23-2A70-4CB3-AD88-074C50ECF63B}.Debug|x86.Build.0 = Debug|Any CPU
+		{E9AA5D23-2A70-4CB3-AD88-074C50ECF63B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9AA5D23-2A70-4CB3-AD88-074C50ECF63B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9AA5D23-2A70-4CB3-AD88-074C50ECF63B}.Release|x64.ActiveCfg = Release|Any CPU
+		{E9AA5D23-2A70-4CB3-AD88-074C50ECF63B}.Release|x64.Build.0 = Release|Any CPU
+		{E9AA5D23-2A70-4CB3-AD88-074C50ECF63B}.Release|x86.ActiveCfg = Release|Any CPU
+		{E9AA5D23-2A70-4CB3-AD88-074C50ECF63B}.Release|x86.Build.0 = Release|Any CPU
+		{D1C60BD4-3995-4A13-9C5F-B4ADB71956AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1C60BD4-3995-4A13-9C5F-B4ADB71956AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1C60BD4-3995-4A13-9C5F-B4ADB71956AB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D1C60BD4-3995-4A13-9C5F-B4ADB71956AB}.Debug|x64.Build.0 = Debug|Any CPU
+		{D1C60BD4-3995-4A13-9C5F-B4ADB71956AB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D1C60BD4-3995-4A13-9C5F-B4ADB71956AB}.Debug|x86.Build.0 = Debug|Any CPU
+		{D1C60BD4-3995-4A13-9C5F-B4ADB71956AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1C60BD4-3995-4A13-9C5F-B4ADB71956AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1C60BD4-3995-4A13-9C5F-B4ADB71956AB}.Release|x64.ActiveCfg = Release|Any CPU
+		{D1C60BD4-3995-4A13-9C5F-B4ADB71956AB}.Release|x64.Build.0 = Release|Any CPU
+		{D1C60BD4-3995-4A13-9C5F-B4ADB71956AB}.Release|x86.ActiveCfg = Release|Any CPU
+		{D1C60BD4-3995-4A13-9C5F-B4ADB71956AB}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E4BE325B-B35E-429D-AC12-7FA48D08AE66} = {96490B01-0D78-47A8-8FEA-9A6FBC69EED7}
+		{F6D69D00-D04B-4329-BD32-E93BC04F860A} = {E4BE325B-B35E-429D-AC12-7FA48D08AE66}
+		{E9AA5D23-2A70-4CB3-AD88-074C50ECF63B} = {F6D69D00-D04B-4329-BD32-E93BC04F860A}
+		{DC3EFFB0-2EDC-4883-B2BC-38F8BB784DF6} = {96490B01-0D78-47A8-8FEA-9A6FBC69EED7}
+		{A57DE706-01CE-42D6-BEBE-803ABE35E1F2} = {DC3EFFB0-2EDC-4883-B2BC-38F8BB784DF6}
+		{D1C60BD4-3995-4A13-9C5F-B4ADB71956AB} = {A57DE706-01CE-42D6-BEBE-803ABE35E1F2}
+	EndGlobalSection
+EndGlobal

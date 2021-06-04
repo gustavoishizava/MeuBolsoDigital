@@ -1,4 +1,4 @@
-using MBD.Core;
+using System;
 using MBD.Identity.Domain.Interfaces.Services;
 
 namespace MBD.Identity.Infrastructure.Services
@@ -7,14 +7,18 @@ namespace MBD.Identity.Infrastructure.Services
     {
         public string Create(string input)
         {
-            Assertions.IsNotNullOrEmpty(input, "Input cannot be null or empty.");
+            if(string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                throw new ArgumentException("Input cannot be null or empty.");
+
             return BCrypt.Net.BCrypt.HashPassword(input);
         }
 
         public bool IsMatch(string input, string hash)
         {
-            Assertions.IsNotNullOrEmpty(input, "Input cannot be null or empty.");
-            Assertions.IsNotNullOrEmpty(hash, "Hash cannot be null or empty.");
+            if(string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                throw new ArgumentException("Input cannot be null or empty.");
+            if(string.IsNullOrEmpty(hash) || string.IsNullOrWhiteSpace(hash))
+                throw new ArgumentException("Hash cannot be null or empty.");
 
             return BCrypt.Net.BCrypt.Verify(input, hash);
         }

@@ -23,7 +23,7 @@ namespace MBD.Identity.Tests.unit_tests.Entities
             _validUser = new User("Valid user", "user@user.com", "P@ssw0rd!", _hashService);
         }
 
-        [Fact(DisplayName = "Criar usuário com e-mail inválido.")]
+        [Fact(DisplayName = "Criar usuário inválido.")]
         [Trait("User", TRAIT_VALUE)]
         public void InvalidUser_NewUser_ReturnArgumentExceptionDomainException()
         {
@@ -38,7 +38,7 @@ namespace MBD.Identity.Tests.unit_tests.Entities
                 new User("", "email@email.com", "password", _hashService));
         }
 
-        [Theory(DisplayName = "Criar usuário com e-mail válido.")]
+        [Theory(DisplayName = "Criar usuário válido.")]
         [Trait("User", TRAIT_VALUE)]
         [InlineData("Gustavo", "gustavo@gmail.com", "P@ssw0rd!")]
         [InlineData("Eduarda", "eduarda@hotmail.com", "S3nh@4#5a")]
@@ -78,7 +78,7 @@ namespace MBD.Identity.Tests.unit_tests.Entities
         [Trait("Refresh token", TRAIT_VALUE)]
         public void ValidRefreshToken_Revoke_ReturnSucess()
         {
-            // Assert
+            // Arrange
             var refreshToken = _validUser.CreateRefreshToken(3600);
             var isRevoked = refreshToken.IsRevoked;
             var revokedOn = refreshToken.RevokedOn;
@@ -97,7 +97,7 @@ namespace MBD.Identity.Tests.unit_tests.Entities
         [Trait("Refresh token", TRAIT_VALUE)]
         public void RevokedRefreshToken_Revoke_NothingChanges()
         {
-            // Assert
+            // Arrange
             var refreshToken = _validUser.CreateRefreshToken(3600);
             refreshToken.Revoke();
             var revokedOn = refreshToken.RevokedOn;

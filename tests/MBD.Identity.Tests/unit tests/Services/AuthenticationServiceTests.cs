@@ -46,6 +46,8 @@ namespace MBD.Identity.Tests.unit_tests.Services
 
             // Assert
             _mocker.GetMock<IUserRepository>().Verify(repository => repository.GetByEmailAsync(email), Times.Once);
+            _mocker.GetMock<IUserRepository>().Verify(repository => repository.AddRefreshToken(It.IsAny<RefreshToken>()), Times.Once);
+
             Assert.False(authenticationResponse.HasErrors);
             Assert.NotEmpty(authenticationResponse.AccessToken);
             Assert.NotEmpty(authenticationResponse.RefreshToken);
@@ -67,6 +69,8 @@ namespace MBD.Identity.Tests.unit_tests.Services
 
             // Assert
             _mocker.GetMock<IUserRepository>().Verify(repository => repository.GetByEmailAsync(email), Times.Once);
+            _mocker.GetMock<IUserRepository>().Verify(repository => repository.AddRefreshToken(It.IsAny<RefreshToken>()), Times.Never);
+
             Assert.True(authenticationResponse.HasErrors);
         }
     }

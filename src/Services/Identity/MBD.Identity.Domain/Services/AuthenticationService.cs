@@ -38,12 +38,17 @@ namespace MBD.Identity.Domain.Services
             if (!_hashService.IsMatch(password, user.Password.PasswordHash))
                 return new AuthenticationResponse("E-mail e/ou senha incorreto(s)");
 
-            return GenerateJwt(user);
+            var authReponse = GenerateJwt(user);
+            await _userRepository.SaveChangesAsync();
+
+            return authReponse;
         }
 
         private AuthenticationResponse GenerateJwt(User user)
         {
             var refreshToken = user.CreateRefreshToken(_jwtConfiguration.RefreshExpiresInSeconds);
+            _userRepository.AddRefreshToken(refreshToken);
+
             var issuedAt = DateTime.Now;
             var expiresIn = issuedAt.AddSeconds(_jwtConfiguration.ExpiresInSeconds);
             var claims = GenerateClaims(user.Id, user.Email.NormalizedAddress, issuedAt);

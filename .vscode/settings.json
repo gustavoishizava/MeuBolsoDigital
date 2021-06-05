@@ -1,3 +1,11 @@
 {
-    "dotnet-test-explorer.testProjectPath": "**/*Tests.csproj"
+    "dotnet-test-explorer.testProjectPath": "**/*.Tests.csproj",
+    "coverage-gutters.coverageBaseDir": "**/TestResults/**",
+    "coverage-gutters.coverageFileNames": [
+        "lcov.info",
+        "cov.xml",
+        "coverage.xml",
+        "coverage.cobertura.xml",
+        "jacoco.xml"
+    ]
 }

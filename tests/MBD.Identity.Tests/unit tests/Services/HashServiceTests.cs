@@ -40,5 +40,14 @@ namespace MBD.Identity.Tests.unit_tests.Services
             // Arrange & Act && Assert
             Assert.Throws<ArgumentException>(() => _hashService.Create(invalidInput));
         }
+
+        [Fact(DisplayName = "Verificar input e hash inválido.")]
+        public void InvalidInputAndHash_VerifyMatch_ReturnException()
+        {
+            // Arrange & Act && Assert
+            Assert.Throws<ArgumentException>(() => _hashService.IsMatch(string.Empty, "hash"));
+            Assert.Throws<ArgumentException>(() => _hashService.IsMatch("input", string.Empty));
+            Assert.Throws<ArgumentException>(() => _hashService.IsMatch(string.Empty, string.Empty));
+        }
     }
 }

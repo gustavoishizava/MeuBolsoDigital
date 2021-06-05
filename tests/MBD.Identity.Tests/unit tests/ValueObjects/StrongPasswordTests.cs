@@ -1,3 +1,4 @@
+using System;
 using MBD.Core.DomainObjects;
 using MBD.Identity.Domain.Interfaces.Services;
 using MBD.Identity.Domain.ValueObjects;
@@ -29,7 +30,7 @@ namespace MBD.Identity.Tests.unit_tests.ValueObjects
             Assert.Throws<DomainException>(() => new StrongPassword(weakPassword, _hashService));
         }
 
-        [Theory(DisplayName = "Senha forte correspondente ao padrão exigido pelo domínio")]
+        [Theory(DisplayName = "Senha forte correspondente ao padrão exigido pelo domínio.")]
         [InlineData("Abcd@12345")]
         [InlineData("12345#@aAf")]
         [InlineData("1234t56@A")]
@@ -41,6 +42,14 @@ namespace MBD.Identity.Tests.unit_tests.ValueObjects
 
             // Assert
             Assert.True(_hashService.IsMatch(strongPassword, password.PasswordHash));
+        }
+
+        [Fact(DisplayName = "Parâmetros inválidos devem retornar exceção.")]
+        public void InvalidArguments_NewPassword_ReturnArgumentNullException()
+        {
+            // Arrange && Act && Assert
+            Assert.Throws<ArgumentNullException>(() => new StrongPassword(string.Empty, _hashService));
+            Assert.Throws<ArgumentNullException>(() => new StrongPassword("password", null));
         }
     }
 }

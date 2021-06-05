@@ -15,11 +15,11 @@ namespace MBD.Identity.Tests.unit_tests.Services
         }
 
         [Theory(DisplayName = "Criar hash de input válido.")]
-        [Trait("Service", "Hash")]
         [InlineData("aspnet")]
         [InlineData("aspnetcore")]
         [InlineData("aspnetmvc")]
         [InlineData("dotnet")]
+        [InlineData("P@ssw0rd!")]
         public void VallidInput_GenerateHash_ReturnValidHash(string validInput)
         {
             // Arrange & Act
@@ -32,7 +32,6 @@ namespace MBD.Identity.Tests.unit_tests.Services
         }
 
         [Theory(DisplayName = "Criar hash de input inválido.")]
-        [Trait("Service", "Hash")]
         [InlineData("")]
         [InlineData(" ")]
         [InlineData(null)]

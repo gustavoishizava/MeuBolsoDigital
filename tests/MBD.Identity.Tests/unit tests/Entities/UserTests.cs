@@ -14,8 +14,6 @@ namespace MBD.Identity.Tests.unit_tests.Entities
 
         private readonly User _validUser;
 
-        private const string TRAIT_VALUE = "Entities - Users";
-
         public UserTests()
         {
             _hashService = new HashService();
@@ -24,7 +22,6 @@ namespace MBD.Identity.Tests.unit_tests.Entities
         }
 
         [Fact(DisplayName = "Criar usuário inválido.")]
-        [Trait("User", TRAIT_VALUE)]
         public void InvalidUser_NewUser_ReturnArgumentExceptionDomainException()
         {
             // Arrange && Act && Assert
@@ -39,7 +36,6 @@ namespace MBD.Identity.Tests.unit_tests.Entities
         }
 
         [Theory(DisplayName = "Criar usuário válido.")]
-        [Trait("User", TRAIT_VALUE)]
         [InlineData("Gustavo", "gustavo@gmail.com", "P@ssw0rd!")]
         [InlineData("Eduarda", "eduarda@hotmail.com", "S3nh@4#5a")]
         [InlineData("Vitória", "vitoria_email@hotmail.com.br", "Senh@4#5a")]
@@ -59,7 +55,6 @@ namespace MBD.Identity.Tests.unit_tests.Entities
         }
 
         [Fact(DisplayName = "Gerar um refresh token para um usuário válido.")]
-        [Trait("Refresh token", TRAIT_VALUE)]
         public void ValidUser_CreateRefreshToken_ReturnSuccess()
         {
             // Arrange
@@ -75,7 +70,6 @@ namespace MBD.Identity.Tests.unit_tests.Entities
         }
 
         [Fact(DisplayName = "Revogar token válido.")]
-        [Trait("Refresh token", TRAIT_VALUE)]
         public void ValidRefreshToken_Revoke_ReturnSucess()
         {
             // Arrange
@@ -94,7 +88,6 @@ namespace MBD.Identity.Tests.unit_tests.Entities
         }
 
         [Fact(DisplayName = "Revogar um token já revogado não deve alterar a data de revogação novamente.")]
-        [Trait("Refresh token", TRAIT_VALUE)]
         public void RevokedRefreshToken_Revoke_NothingChanges()
         {
             // Arrange

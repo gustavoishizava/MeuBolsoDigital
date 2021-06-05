@@ -6,10 +6,7 @@ namespace MBD.Identity.Tests.unit_tests.ValueObjects
 {
     public class EmailTests
     {
-        private const string TRAIT_VALUE = "Value Object - Email";
-        
         [Fact(DisplayName = "Criar e-mail inválido.")]
-        [Trait("Email", TRAIT_VALUE)]
         public void InvalidEmail_NewEmail_ReturnArgumentExceptionOrArgumentNullException()
         {
             // Arrange
@@ -23,7 +20,6 @@ namespace MBD.Identity.Tests.unit_tests.ValueObjects
             Assert.Throws<ArgumentNullException>(() => new Email(whiteSpaceEmail));            
         }
 
-        [Trait("Email", TRAIT_VALUE)]
         [Theory(DisplayName = "Criar e-mail válido")]
         [InlineData("gustavo@gmail.com")]
         [InlineData("GUSTAVO_ishizava@gmail.com")]

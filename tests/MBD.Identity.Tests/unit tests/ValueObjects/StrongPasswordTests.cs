@@ -10,15 +10,12 @@ namespace MBD.Identity.Tests.unit_tests.ValueObjects
     {
         private readonly IHashService _hashService;
 
-        private const string TRAIT_VALUE = "Value Object - Strong password";
-
         public StrongPasswordTests()
         {
             _hashService = new HashService();
         }
 
         [Theory(DisplayName = "Senha fraca que não corresponde ao padrão exigido pelo domínio.")]
-        [Trait("Weak password", TRAIT_VALUE)]
         [InlineData("1234")]
         [InlineData("12345678")]
         [InlineData("abc123")]
@@ -33,7 +30,6 @@ namespace MBD.Identity.Tests.unit_tests.ValueObjects
         }
 
         [Theory(DisplayName = "Senha forte correspondente ao padrão exigido pelo domínio")]
-        [Trait("Strong password", TRAIT_VALUE)]
         [InlineData("Abcd@12345")]
         [InlineData("12345#@aAf")]
         [InlineData("1234t56@A")]

@@ -19,7 +19,6 @@ namespace MBD.Identity.Tests.unit_tests.Services
         }
 
         [Fact(DisplayName = "Gerar novo JWT.")]
-        [Trait("Services", "JWT")]
         public void ValidData_NewToken_ReturnSuccess()
         {
             // Arrange

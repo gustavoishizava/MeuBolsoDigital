@@ -9,7 +9,7 @@ namespace MBD.Identity.Domain.ValueObjects
     /// Deve conter ao menos 1 dígito;
     /// Deve conter ao menos 1 letra minúscula;
     /// Deve conter ao menos 1 letra maiúscula;
-    /// Deve conter ao menos 1 caracter especial($*&@#);
+    /// Deve conter ao menos 1 caracter especial;
     /// Deve conter ao menos 8 caracteres.
     /// </summary>
     public class StrongPassword

@@ -7,6 +7,7 @@ using MBD.Identity.Domain.Interfaces.Repositories;
 using MBD.Identity.Domain.Interfaces.Services;
 using MBD.Identity.Domain.Services;
 using MBD.Identity.Infrastructure.Services;
+using Microsoft.Extensions.Options;
 using Moq;
 using Moq.AutoMock;
 using Xunit;
@@ -24,7 +25,9 @@ namespace MBD.Identity.Tests.unit_tests.Services
             _mocker = new AutoMocker();
             _mocker.Use<IHashService>(new HashService());
             _mocker.Use<IJwtService>(new JwtService(new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret.ToString()))));
-            _mocker.Use<JwtConfiguration>(new JwtConfiguration { Secret = secret.ToString(), Audience = "TEST", Issuer = "TEST", ExpiresInSeconds = 10, RefreshExpiresInSeconds = 15 });
+            _mocker.Use<IOptions<JwtConfiguration>>(
+                Options.Create(
+                    new JwtConfiguration { Secret = secret.ToString(), Audience = "TEST", Issuer = "TEST", ExpiresInSeconds = 10, RefreshExpiresInSeconds = 15 }));
             _authenticationService = _mocker.CreateInstance<AuthenticationService>();
         }
 

@@ -7,6 +7,7 @@ using MBD.Identity.Domain.DTO;
 using MBD.Identity.Domain.Entities;
 using MBD.Identity.Domain.Interfaces.Repositories;
 using MBD.Identity.Domain.Interfaces.Services;
+using Microsoft.Extensions.Options;
 
 namespace MBD.Identity.Domain.Services
 {
@@ -17,12 +18,12 @@ namespace MBD.Identity.Domain.Services
         private readonly IHashService _hashService;
         private readonly JwtConfiguration _jwtConfiguration;
 
-        public AuthenticationService(IUserRepository userRepository, IJwtService jwtService, IHashService hashService, JwtConfiguration jwtConfiguration)
+        public AuthenticationService(IUserRepository userRepository, IJwtService jwtService, IHashService hashService, IOptions<JwtConfiguration> jwtConfiguration)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _jwtService = jwtService ?? throw new ArgumentNullException(nameof(jwtService));
             _hashService = hashService ?? throw new ArgumentNullException(nameof(hashService));
-            _jwtConfiguration = jwtConfiguration ?? throw new ArgumentNullException(nameof(jwtConfiguration));
+            _jwtConfiguration = jwtConfiguration?.Value ?? throw new ArgumentNullException(nameof(jwtConfiguration));
         }
 
         public async Task<AuthenticationResponse> AuthenticateAsync(string email, string password)

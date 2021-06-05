@@ -13,6 +13,7 @@ namespace MBD.Identity.Domain.Entities
         public DateTime ExpiresAt => CreatedAt.AddSeconds(ExpiresIn);
         public bool IsExpired => DateTime.Now > ExpiresAt;
         public bool IsRevoked => RevokedOn != null;
+        public bool IsValid => !IsExpired && !IsRevoked;
 
         internal RefreshToken(Guid userId, int expiresIn)
         {

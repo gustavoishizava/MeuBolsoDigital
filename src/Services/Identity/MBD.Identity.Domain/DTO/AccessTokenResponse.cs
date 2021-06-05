@@ -2,14 +2,14 @@ using System;
 
 namespace MBD.Identity.Domain.DTO
 {
-    public sealed class AuthenticationResponse
+    public sealed class AccessTokenResponse
     {
-        public AuthenticationResponse(string error)
+        public AccessTokenResponse(string error)
         {
             Error = error;
         }
         
-        public AuthenticationResponse(string accessToken, string refreshToken, int expiresIn, DateTime createdAt)
+        public AccessTokenResponse(string accessToken, string refreshToken, int expiresIn, DateTime createdAt)
         {
             AccessToken = accessToken;
             RefreshToken = refreshToken;

@@ -85,6 +85,7 @@ namespace MBD.Identity.Tests.unit_tests.Entities
             Assert.NotEqual(revokedOn, refreshToken.RevokedOn);
             Assert.True(refreshToken.IsRevoked);
             Assert.NotEqual(isRevoked, refreshToken.IsRevoked);
+            Assert.False(refreshToken.IsValid);
         }
 
         [Fact(DisplayName = "Revogar um token já revogado não deve alterar a data de revogação novamente.")]

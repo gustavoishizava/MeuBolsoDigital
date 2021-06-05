@@ -1,6 +1,6 @@
 {
     "dotnet-test-explorer.testProjectPath": "**/*.Tests.csproj",
-    "coverage-gutters.coverageBaseDir": "**/TestResults/**",
+    "coverage-gutters.coverageBaseDir": "**/TestResults/Coverage/**",
     "coverage-gutters.coverageFileNames": [
         "lcov.info",
         "cov.xml",

@@ -45,7 +45,17 @@
             "args": [
                 "test",
                 "--collect:\"XPlat Code Coverage\"",
-                "--results-directory:.\\tests\\TestResults"
+                "--results-directory:.\\tests\\TestResults\\Coverage"
+            ]
+        },
+        {
+            "label": "code coverage report",
+            "command": "reportgenerator",
+            "type": "process",
+            "args": [
+                "\"-reports:.\\tests\\TestResults\\Coverage\\**\\coverage.cobertura.xml\"",
+                "\"-targetdir:.\\tests\\TestResults\\Reports\"",
+                "-reporttypes:Html"
             ]
         }
     ]

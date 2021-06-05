@@ -5,11 +5,11 @@ using Xunit;
 
 namespace MBD.Identity.Tests.unit_tests.Services
 {
-    public class HashServiceTest
+    public class HashServiceTests
     {
         private readonly IHashService _hashService;
 
-        public HashServiceTest()
+        public HashServiceTests()
         {
             _hashService = new HashService();
         }

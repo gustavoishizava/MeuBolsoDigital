@@ -19,4 +19,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Building blocks\Core\MBD.Core\MBD.Core.csproj" />
+    <ProjectReference Include="..\..\src\Services\BankAccounts\MBD.BankAccounts.Domain\MBD.BankAccounts.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

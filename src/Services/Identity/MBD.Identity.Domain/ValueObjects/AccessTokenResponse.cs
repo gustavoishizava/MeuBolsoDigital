@@ -1,6 +1,6 @@
 using System;
 
-namespace MBD.Identity.Domain.DTO
+namespace MBD.Identity.Domain.ValueObjects
 {
     public sealed class AccessTokenResponse
     {

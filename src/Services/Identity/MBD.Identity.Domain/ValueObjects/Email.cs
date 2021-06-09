@@ -10,7 +10,7 @@ namespace MBD.Identity.Domain.ValueObjects
         public Email(string address)
         {
             if(string.IsNullOrEmpty(address) || string.IsNullOrWhiteSpace(address))
-                throw new ArgumentNullException("Email cannot be null or empty.");
+                throw new ArgumentNullException(nameof(address), "Email cannot be null or empty.");
 
             var emailRegex = new Regex(@"^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$");
             if(!emailRegex.IsMatch(address.ToLower()))

@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using MBD.Identity.Domain.DTO;
+using MBD.Identity.Domain.ValueObjects;
 
 namespace MBD.Identity.Domain.Interfaces.Services
 {

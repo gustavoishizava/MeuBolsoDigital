@@ -8,6 +8,7 @@ using MBD.Identity.Domain.DTO;
 using MBD.Identity.Domain.Entities;
 using MBD.Identity.Domain.Interfaces.Repositories;
 using MBD.Identity.Domain.Interfaces.Services;
+using MBD.Identity.Domain.ValueObjects;
 using Microsoft.Extensions.Options;
 
 namespace MBD.Identity.Domain.Services
@@ -81,7 +82,7 @@ namespace MBD.Identity.Domain.Services
             return new AccessTokenResponse(token, refreshToken.Token.ToString(), _jwtConfiguration.RefreshExpiresInSeconds, issuedAt);
         }
 
-        private IEnumerable<Claim> GenerateClaims(Guid userId, string email, DateTime issuedAt)
+        private static IEnumerable<Claim> GenerateClaims(Guid userId, string email, DateTime issuedAt)
         {
             var claims = new List<Claim>
             {
@@ -90,7 +91,7 @@ namespace MBD.Identity.Domain.Services
                 new Claim(JwtRegisteredClaimNames.Nbf, ToUnixEpochDate(issuedAt).ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(issuedAt).ToString())
             };
-            return new List<Claim>();
+            return claims;
         }
 
         private static long ToUnixEpochDate(DateTime date)

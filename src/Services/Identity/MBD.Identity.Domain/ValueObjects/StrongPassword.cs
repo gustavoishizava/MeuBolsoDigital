@@ -19,10 +19,10 @@ namespace MBD.Identity.Domain.ValueObjects
         public StrongPassword(string password, IHashService hashService)
         {
             if (hashService == null)
-                throw new ArgumentNullException("Hash service cannot be null.");
+                throw new ArgumentNullException(nameof(hashService), "Hash service cannot be null.");
 
             if (string.IsNullOrEmpty(password) || string.IsNullOrWhiteSpace(password))
-                throw new ArgumentNullException("Password cannot be null or empty.");            
+                throw new ArgumentNullException(nameof(password), "Password cannot be null or empty.");            
             
             var passwordRegex = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$");
             if (!passwordRegex.IsMatch(password))

@@ -1,7 +1,6 @@
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using MBD.Identity.Domain.DTO;
 using MBD.Identity.Domain.Entities;
 using MBD.Identity.Domain.Interfaces.Repositories;
 using MBD.Identity.Domain.Interfaces.Services;
@@ -11,6 +10,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Moq.AutoMock;
 using Xunit;
+using MBD.Identity.Domain.DTO;
 
 namespace MBD.Identity.Tests.unit_tests.Services
 {

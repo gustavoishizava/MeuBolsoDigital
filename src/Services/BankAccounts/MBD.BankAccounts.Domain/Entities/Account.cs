@@ -6,7 +6,7 @@ using MBD.Core.Enumerations;
 
 namespace MBD.BankAccounts.Domain.Entities
 {
-    public class Account : BaseEntity
+    public class Account : BaseEntity, IAggregateRoot
     {        
         public Guid UserId { get; private set; }
         public string Description { get; private set; }

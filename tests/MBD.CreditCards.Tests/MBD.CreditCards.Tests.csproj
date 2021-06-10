@@ -19,4 +19,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Services\CreditCards\MBD.CreditCards.Domain\MBD.CreditCards.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Building blocks\Core\MBD.Core\MBD.Core.csproj" />
+  </ItemGroup>
+
 </Project>

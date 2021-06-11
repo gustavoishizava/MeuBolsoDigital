@@ -7,7 +7,7 @@ using MBD.CreditCards.Domain.Enumerations;
 namespace MBD.CreditCards.Domain.Entities
 {
     public class CreditCard : BaseEntity, IAggregateRoot
-    {        
+    {
         public Guid UserId { get; private set; }
         public Guid BankAccountId { get; private set; }
         public string Name { get; private set; }
@@ -35,5 +35,14 @@ namespace MBD.CreditCards.Domain.Entities
 
             Status = Status.Active;
         }
+
+        #region Credit card bills
+
+        public CreditCardBill CreateCreditCardBill(int month, int year)
+        {
+            return new CreditCardBill(Id, DayOfPayment, ClosingDay, month, year);
+        }
+
+        #endregion
     }
 }

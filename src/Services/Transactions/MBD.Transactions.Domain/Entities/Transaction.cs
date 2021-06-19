@@ -1,4 +1,5 @@
 using System;
+using MBD.Core;
 using MBD.Core.Entities;
 using MBD.Transactions.Domain.Enumerations;
 
@@ -16,6 +17,38 @@ namespace MBD.Transactions.Domain.Entities
         public decimal Value { get; private set; }
         public string Description { get; private set; }
 
-        public Category Category { get; private set; }
+        public bool ItsPaid => PaymentDate != null && Status == TransactionStatus.Paid;
+
+        public Transaction(Guid userId, Guid bankAccountId, Guid categoryId, DateTime referenceDate, DateTime dueDate, decimal value, string description)
+        {
+            UserId = userId;
+            BankAccountId = bankAccountId;
+            CategoryId = categoryId;
+            ReferenceDate = referenceDate;
+            DueDate = dueDate;
+            PaymentDate = null;
+            Status = TransactionStatus.AwaitingPayment;
+            SetValue(value);
+            Description = description;
+        }
+
+        public void Pay(DateTime paymentDate)
+        {
+            PaymentDate = paymentDate;
+            Status = TransactionStatus.Paid;
+        }
+
+        public void UndoPayment()
+        {            
+            PaymentDate = null;
+            Status = TransactionStatus.AwaitingPayment;
+        }
+
+        public void SetValue(decimal value)
+        {
+            Assertions.IsGreaterOrEqualsThan(value, 0, "O valor não pode ser menor que 0.");
+
+            Value = value;
+        }
     }
 }

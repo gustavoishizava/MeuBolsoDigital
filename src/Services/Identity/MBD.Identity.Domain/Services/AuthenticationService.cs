@@ -10,6 +10,7 @@ using MBD.Identity.Domain.Interfaces.Repositories;
 using MBD.Identity.Domain.Interfaces.Services;
 using MBD.Identity.Domain.ValueObjects;
 using Microsoft.Extensions.Options;
+using static MBD.Identity.Domain.ValueObjects.AccessTokenResponse;
 
 namespace MBD.Identity.Domain.Services
 {
@@ -31,14 +32,14 @@ namespace MBD.Identity.Domain.Services
         public async Task<AccessTokenResponse> AuthenticateAsync(string email, string password)
         {
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
-                return new AccessTokenResponse("Informe o e-email e/ou senha");
+                return AccessTokenResponseFactory.Fail("Informe o e-email e/ou senha.");
 
             var user = await _userRepository.GetByEmailAsync(email.ToLower());
             if (user == null)
-                return new AccessTokenResponse("E-mail e/ou senha incorreto(s)");
+                return AccessTokenResponseFactory.Fail("E-mail e/ou senha incorreto(s).");
 
             if (!_hashService.IsMatch(password, user.Password.PasswordHash))
-                return new AccessTokenResponse("E-mail e/ou senha incorreto(s)");
+                return AccessTokenResponseFactory.Fail("E-mail e/ou senha incorreto(s).");
 
             var authenticationResponse = GenerateJwt(user);
             await _userRepository.SaveChangesAsync();
@@ -49,14 +50,14 @@ namespace MBD.Identity.Domain.Services
         public async Task<AccessTokenResponse> AuthenticateByRefreshTokenAsync(Guid token)
         {
             if (Guid.Empty.Equals(token))
-                return new AccessTokenResponse("Refresh token inválido.");
+                return AccessTokenResponseFactory.Fail("Refresh token inválido.");
 
             var refreshToken = await _userRepository.GetRefreshTokenByToken(token);
             if (refreshToken == null)
-                return new AccessTokenResponse("Refresh token inválido.");
+                return AccessTokenResponseFactory.Fail("Refresh token inválido.");
 
             if (!refreshToken.IsValid)
-                return new AccessTokenResponse("Este token não está mais válido.");
+                return AccessTokenResponseFactory.Fail("Este token não está mais válido.");
 
             var user = await _userRepository.GetByIdAsync(refreshToken.UserId);
             if (user == null)
@@ -79,7 +80,7 @@ namespace MBD.Identity.Domain.Services
             var claims = GenerateClaims(user.Id, user.Email.NormalizedAddress, issuedAt);
             var token = _jwtService.Generate(_jwtConfiguration.Issuer, _jwtConfiguration.Audience, issuedAt, expiresIn, claims);
 
-            return new AccessTokenResponse(token, refreshToken.Token.ToString(), _jwtConfiguration.RefreshExpiresInSeconds, issuedAt);
+            return AccessTokenResponseFactory.Success(token, refreshToken.Token.ToString(), _jwtConfiguration.ExpiresInSeconds, issuedAt);
         }
 
         private static IEnumerable<Claim> GenerateClaims(Guid userId, string email, DateTime issuedAt)

@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MBD.BankAccounts.Domain.Enumerations;
+using MBD.BankAccounts.Domain.Resources;
 using MBD.Core;
 using MBD.Core.Entities;
 using MBD.Core.Enumerations;
+using MBD.Core.Extensions;
 
 namespace MBD.BankAccounts.Domain.Entities
 {
@@ -26,7 +28,7 @@ namespace MBD.BankAccounts.Domain.Entities
 
         public Account(Guid userId, string description, decimal initialBalance, AccountType type)
         {
-            Assertions.IsNotNullOrEmpty(description, "A descrição deve ser informada.");
+            Assertions.IsNotNullOrEmpty(description, ResourceCodes.Account.DescriptionEmpty.GetResource());
             Assertions.HasMaxLength(description, 150, "A descrição deve conter no máximo 150 caracteres.");
             Assertions.IsGreaterOrEqualsThan(initialBalance, 0, "O saldo inicial não pode ser inferiror a R$0,00.");
 

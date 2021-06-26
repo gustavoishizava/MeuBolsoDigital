@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Bogus;
 using MBD.Identity.Domain.Entities;
 using MBD.Identity.Domain.Interfaces.Repositories;
 using MBD.Identity.Domain.Services;
@@ -12,11 +13,13 @@ namespace MBD.Identity.Tests.unit_tests.Services
     public class CreateUserServiceTests
     {
         private readonly AutoMocker _mocker;
+        private readonly Faker _faker;
         private readonly CreateUserService _createUserService;
 
         public CreateUserServiceTests()
         {
             _mocker = new AutoMocker();
+            _faker = new Faker("pt_BR");
             _createUserService = _mocker.CreateInstance<CreateUserService>();
         }
 
@@ -28,9 +31,9 @@ namespace MBD.Identity.Tests.unit_tests.Services
                 .Setup(method => method.GetByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync((User)null);
 
-            var email = "teste@gmail.com";
+            var email = _faker.Person.Email;
             var password = "Aaa123@458";
-            var name = "New User";
+            var name = _faker.Person.FullName;
 
             // Act
             var createResult = await _createUserService.CreateAsync(name, email, password);

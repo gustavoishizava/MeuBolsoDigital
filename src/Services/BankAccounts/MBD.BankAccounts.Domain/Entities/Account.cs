@@ -29,8 +29,8 @@ namespace MBD.BankAccounts.Domain.Entities
         public Account(Guid userId, string description, decimal initialBalance, AccountType type)
         {
             Assertions.IsNotNullOrEmpty(description, ResourceCodes.Account.DescriptionEmpty.GetResource());
-            Assertions.HasMaxLength(description, 150, "A descrição deve conter no máximo 150 caracteres.");
-            Assertions.IsGreaterOrEqualsThan(initialBalance, 0, "O saldo inicial não pode ser inferiror a R$0,00.");
+            Assertions.HasMaxLength(description, 150, ResourceCodes.Account.DescriptionMaxLength.GetResource());
+            Assertions.IsGreaterOrEqualsThan(initialBalance, 0, ResourceCodes.Account.InitialValueMinValue.GetResource());
 
             UserId = userId;
             Description = description;
@@ -43,7 +43,7 @@ namespace MBD.BankAccounts.Domain.Entities
 
         public void AddTransaction(Guid transactionId, DateTime createdAt, decimal value, TransactionType type)
         {
-            Assertions.IsFalse(ExistingTransaction(transactionId), $"Transação já existente. Id='{transactionId}'.");
+            Assertions.IsFalse(ExistingTransaction(transactionId), String.Format(ResourceCodes.Account.DuplicateTransaction.GetResource(), transactionId));
 
             _transactions.Add(new Transaction(transactionId, Id, createdAt, value, type));
         }

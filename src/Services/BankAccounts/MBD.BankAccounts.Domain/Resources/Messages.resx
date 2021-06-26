@@ -121,4 +121,16 @@
     <value>A descrição deve ser informada.</value>
     <comment/>
   </data>
+  <data name="Account_Description_MaxLength" xml:space="preserve">
+    <value>A descrição deve conter no máximo 150 caracteres.</value>
+    <comment/>
+  </data>
+  <data name="Account_InitialBalance_MinValue" xml:space="preserve">
+    <value>O saldo inicial não pode ser inferiror a R$0,00.</value>
+    <comment/>
+  </data>
+  <data name="Account_Duplicate_Transaction" xml:space="preserve">
+    <value>Transação já existente. Id='{0}'.</value>
+    <comment/>
+  </data>
 </root>

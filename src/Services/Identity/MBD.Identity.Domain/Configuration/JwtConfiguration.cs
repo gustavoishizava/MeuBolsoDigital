@@ -1,4 +1,4 @@
-namespace MBD.Identity.Domain.DTO
+namespace MBD.Identity.Domain.Configuration
 {
     public class JwtConfiguration
     {

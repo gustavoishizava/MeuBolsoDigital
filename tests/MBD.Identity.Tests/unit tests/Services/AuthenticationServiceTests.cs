@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using MBD.Core.DomainObjects;
-using MBD.Identity.Domain.DTO;
+using MBD.Identity.Domain.Configuration;
 using MBD.Identity.Domain.Entities;
 using MBD.Identity.Domain.Interfaces.Repositories;
 using MBD.Identity.Domain.Interfaces.Services;

@@ -13,7 +13,8 @@ namespace MBD.Identity.Domain.Entities
 
         public User(string name, string email, string password, IHashService hashService)
         {
-            Assertions.IsNotNullOrEmpty(name, "Name cannot be null or empty.");
+            Assertions.IsNotNullOrEmpty(name, "O nome não pode estar vazio ou nulo.");
+            Assertions.HasMaxLength(name, 100, "O nome não pode conter mais que 100 caracteres.");
 
             Name = name;
             SetEmail(email);

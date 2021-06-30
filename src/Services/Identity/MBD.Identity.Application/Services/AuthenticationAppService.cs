@@ -9,7 +9,7 @@ namespace MBD.Identity.Application.Services
 {
     public class AuthenticationAppService : IAuthenticationAppService
     {
-        private IAuthenticationService _authenticationService;
+        private readonly IAuthenticationService _authenticationService;
 
         public AuthenticationAppService(IAuthenticationService authenticationService)
         {

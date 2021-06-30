@@ -1,6 +1,6 @@
 using System;
-using System.Text.RegularExpressions;
-using MBD.Core.DomainObjects;
+using MBD.Core;
+using MBD.Core.Constants;
 using MBD.Identity.Domain.Interfaces.Services;
 
 namespace MBD.Identity.Domain.ValueObjects
@@ -24,9 +24,7 @@ namespace MBD.Identity.Domain.ValueObjects
             if (string.IsNullOrEmpty(password) || string.IsNullOrWhiteSpace(password))
                 throw new ArgumentNullException(nameof(password), "Password cannot be null or empty.");            
             
-            var passwordRegex = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$");
-            if (!passwordRegex.IsMatch(password))
-                throw new DomainException("Weak password.");
+            Assertions.ArgumentMatches(RegularExpressions.StrongPassword, password, "Weak password.");
 
             PasswordHash = hashService.Create(password);
         }

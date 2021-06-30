@@ -8,5 +8,6 @@ namespace MBD.Identity.Application.Interfaces
     public interface IAuthenticationAppService
     {
         Task<IResult<AccessTokenResponse>> AuthenticateAsync(AuthenticateRequest request);
+        Task<IResult<AccessTokenResponse>> RefreshTokenAsync(RefreshTokenRequest request);
     }
 }

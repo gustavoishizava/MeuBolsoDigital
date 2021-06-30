@@ -14,7 +14,7 @@ namespace MBD.Identity.Application.Requests
             return new AuthenticateValidation().Validate(this);
         }
 
-        public class AuthenticateValidation : AbstractValidator<AuthenticateRequest>
+        protected class AuthenticateValidation : AbstractValidator<AuthenticateRequest>
         {
             public AuthenticateValidation()
             {

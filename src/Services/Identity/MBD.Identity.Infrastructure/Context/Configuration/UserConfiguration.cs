@@ -10,11 +10,14 @@ namespace MBD.Identity.Infrastructure.Context.Configuration
         {
             builder.HasKey(x => x.Id);
 
+            builder.Property(x => x.Id)
+                .ValueGeneratedNever();
+
             builder.Property(x => x.Name)
                 .IsRequired()
                 .HasColumnType("VARCHAR(100)")
                 .HasMaxLength(100);
-            
+
             builder.Property(x => x.Email)
                 .IsRequired()
                 .HasColumnType("VARCHAR(150)")
@@ -25,7 +28,7 @@ namespace MBD.Identity.Infrastructure.Context.Configuration
                 .HasColumnName("VARCHAR(250)")
                 .HasMaxLength(250);
 
-            builder.HasIndex(x => x.Email).IsUnique();                
+            builder.HasIndex(x => x.Email).IsUnique();
         }
     }
 }

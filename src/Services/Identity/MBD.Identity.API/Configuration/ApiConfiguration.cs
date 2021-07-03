@@ -10,6 +10,8 @@ namespace MBD.Identity.API.Configuration
         public static IServiceCollection AddApiConfiguration(this IServiceCollection services)
         {
             services.AddControllers();
+            services.AddDependencyInjection();
+
             return services;
         }
 

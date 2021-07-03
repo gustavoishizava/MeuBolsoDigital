@@ -1,15 +1,16 @@
 using MBD.Identity.Domain.Entities;
+using MBD.Infrastructure.Core.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MBD.Identity.Infrastructure.Context.Configuration
 {
-    public class UserConfiguration : IEntityTypeConfiguration<User>
+    public class UserConfiguration : BaseEntityConfiguration<User>
     {
-        public void Configure(EntityTypeBuilder<User> builder)
+        public override void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.HasKey(x => x.Id);
-
+            base.Configure(builder);
+            
             builder.Property(x => x.Id)
                 .ValueGeneratedNever();
 

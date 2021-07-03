@@ -1,18 +1,16 @@
 using MBD.Identity.Domain.Entities;
+using MBD.Infrastructure.Core.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MBD.Identity.Infrastructure.Context.Configuration
 {
-    public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
-    {
-        public void Configure(EntityTypeBuilder<RefreshToken> builder)
+    public class RefreshTokenConfiguration : BaseEntityConfiguration<RefreshToken>
+    {        
+        public override void Configure(EntityTypeBuilder<RefreshToken> builder)
         {
-            builder.HasKey(x => x.Id);
-
-            builder.Property(x => x.Id)
-                .ValueGeneratedNever();
-
+            base.Configure(builder);
+            
             builder.Property(x => x.UserId)
                 .IsRequired();
 
@@ -29,7 +27,8 @@ namespace MBD.Identity.Infrastructure.Context.Configuration
 
             builder.HasOne<User>()
                 .WithMany()
-                .HasForeignKey(x => x.UserId);
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -23,13 +23,13 @@ namespace MBD.Identity.Infrastructure.Context.Configuration
             {
                 email.Property(e => e.Address)
                     .IsRequired(true)
-                    .HasColumnName("Email")
+                    .HasColumnName("email")
                     .HasColumnType("VARCHAR(150)")
                     .HasMaxLength(150);
 
                 email.Property(e => e.NormalizedAddress)
                     .IsRequired(true)
-                    .HasColumnName("NormalizedEmail")
+                    .HasColumnName("normalized_email")
                     .HasColumnType("VARCHAR(150)")
                     .HasMaxLength(150);
 
@@ -40,7 +40,8 @@ namespace MBD.Identity.Infrastructure.Context.Configuration
             {
                 password.Property(p => p.PasswordHash)
                                 .IsRequired()
-                                .HasColumnName("VARCHAR(250)")
+                                .HasColumnName("password_hash")
+                                .HasColumnType("VARCHAR(250)")
                                 .HasMaxLength(250);
             });
         }

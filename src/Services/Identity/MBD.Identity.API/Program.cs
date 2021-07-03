@@ -1,4 +1,6 @@
+using MBD.Identity.Infrastructure.Context;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace MBD.Identity.API
@@ -7,7 +9,15 @@ namespace MBD.Identity.API
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            using var serviceScope = host.Services.CreateScope();
+            var service = serviceScope.ServiceProvider;
+            var context = service.GetRequiredService<IdentityContext>();
+
+            context.Database.EnsureCreated();
+
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

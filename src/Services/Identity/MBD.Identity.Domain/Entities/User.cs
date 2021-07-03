@@ -21,6 +21,10 @@ namespace MBD.Identity.Domain.Entities
             SetPassword(password, hashService);
         }
 
+        #region EF
+        protected User() { }
+        #endregion
+
         #region User        
 
         public void SetEmail(string email)

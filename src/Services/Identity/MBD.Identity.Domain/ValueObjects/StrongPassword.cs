@@ -22,11 +22,15 @@ namespace MBD.Identity.Domain.ValueObjects
                 throw new ArgumentNullException(nameof(hashService), "Hash service cannot be null.");
 
             if (string.IsNullOrEmpty(password) || string.IsNullOrWhiteSpace(password))
-                throw new ArgumentNullException(nameof(password), "Password cannot be null or empty.");            
-            
+                throw new ArgumentNullException(nameof(password), "Password cannot be null or empty.");
+
             Assertions.ArgumentMatches(RegularExpressions.StrongPassword, password, "Weak password.");
 
             PasswordHash = hashService.Create(password);
         }
+
+        #region EF
+        protected StrongPassword() { }
+        #endregion
     }
 }

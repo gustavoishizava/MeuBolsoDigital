@@ -1,3 +1,4 @@
+using System.Reflection;
 using MBD.Identity.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +12,10 @@ namespace MBD.Identity.API.Configuration
         {
             services.AddDbContext<IdentityContext>(options =>
             {
-                options.UseNpgsql(configuration.GetConnectionString("Default"));
+                options.UseNpgsql(configuration.GetConnectionString("Default"), builder =>
+                {
+                    builder.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
+                });
                 options.UseSnakeCaseNamingConvention();
             });
 

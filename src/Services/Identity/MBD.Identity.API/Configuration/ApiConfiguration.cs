@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace MBD.Identity.API.Configuration
 {
@@ -9,6 +10,12 @@ namespace MBD.Identity.API.Configuration
     {
         public static IServiceCollection AddApiConfiguration(this IServiceCollection services)
         {
+            services.Configure<RouteOptions>(routeOptions =>
+           {
+               routeOptions.LowercaseUrls = true;
+               routeOptions.LowercaseQueryStrings = true;
+           });
+
             services.AddControllers();
             services.AddDependencyInjection();
 

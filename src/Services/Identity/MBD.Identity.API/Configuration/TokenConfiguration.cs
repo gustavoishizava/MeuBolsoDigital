@@ -14,7 +14,9 @@ namespace MBD.Identity.API.Configuration
         public static IServiceCollection AddJwtConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<JwtConfiguration>(configuration.GetSection("JwtConfiguration"));
-            var jwtConfig = configuration.Get<JwtConfiguration>();
+
+            var securtyKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtConfiguration:Secret"]));
+            services.AddTransient(_ => securtyKey);
 
             services.AddAuthentication(options =>
             {
@@ -27,10 +29,10 @@ namespace MBD.Identity.API.Configuration
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateAudience = true,
-                    ValidAudience = jwtConfig.Audience,
+                    ValidAudience = configuration["JwtConfiguration:Audience"],
                     ValidateIssuer = true,
-                    ValidIssuer = jwtConfig.Issuer,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Secret)),
+                    ValidIssuer = configuration["JwtConfiguration:Issuer"],
+                    IssuerSigningKey = securtyKey,
                     ValidateIssuerSigningKey = true
                 };
 

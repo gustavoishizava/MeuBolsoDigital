@@ -8,7 +8,7 @@ using MBD.Identity.Application.Responses;
 using MBD.Identity.Tests.integration.Settings;
 using Xunit;
 
-namespace MBD.Identity.Tests.integration.Authentication
+namespace MBD.Identity.Tests.integration
 {
     [Collection(nameof(IntegrationTestsFixtureCollection))]
     public class AuthenticationTests
@@ -34,7 +34,7 @@ namespace MBD.Identity.Tests.integration.Authentication
 
             // Act
             var response = await _testsFixture._client.PostAsJsonAsync("api/authentication/auth", loginRequest);
-            tokenResponse = await _testsFixture.DeserializeObjectReponse<AccessTokenResponse>(response);
+            tokenResponse = await _testsFixture.DeserializeObjectReponseAsync<AccessTokenResponse>(response);
 
             // Assert     
             response.EnsureSuccessStatusCode();
@@ -76,7 +76,7 @@ namespace MBD.Identity.Tests.integration.Authentication
             AccessTokenResponse refreshtokenResponse = null;
 
             var authResponse = await _testsFixture._client.PostAsJsonAsync("api/authentication/auth", loginRequest);
-            tokenResponse = await _testsFixture.DeserializeObjectReponse<AccessTokenResponse>(authResponse);
+            tokenResponse = await _testsFixture.DeserializeObjectReponseAsync<AccessTokenResponse>(authResponse);
 
             var refreshTokenRequest = new RefreshTokenRequest
             {
@@ -85,7 +85,7 @@ namespace MBD.Identity.Tests.integration.Authentication
 
             // Act
             var refreshResponse = await _testsFixture._client.PostAsJsonAsync("api/authentication/refresh", refreshTokenRequest);
-            refreshtokenResponse = await _testsFixture.DeserializeObjectReponse<AccessTokenResponse>(refreshResponse);
+            refreshtokenResponse = await _testsFixture.DeserializeObjectReponseAsync<AccessTokenResponse>(refreshResponse);
 
             // Assert     
             refreshResponse.EnsureSuccessStatusCode();

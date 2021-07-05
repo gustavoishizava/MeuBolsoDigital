@@ -33,7 +33,7 @@ namespace MBD.Identity.Tests.integration.Settings
             });
         }
 
-        public async Task<T> DeserializeObjectReponse<T>(HttpResponseMessage responseMessage)
+        public async Task<T> DeserializeObjectReponseAsync<T>(HttpResponseMessage responseMessage)
         {
             var options = new JsonSerializerOptions
             {

@@ -1,0 +1,38 @@
+using System;
+using System.Threading.Tasks;
+using MBD.BankAccounts.Domain.Entities;
+using MBD.BankAccounts.Domain.Interfaces.Repositories;
+using MBD.BankAccounts.Infrastructure.Context;
+
+namespace MBD.BankAccounts.Infrastructure.Repositories
+{
+    public class AccountRepository : IAccountRepository
+    {
+        private readonly BankAccountContext _context;
+        
+        public AccountRepository(BankAccountContext context)
+        {
+            _context = context;
+        }
+
+        public void Add(Account account)
+        {
+            _context.Add(account);
+        }
+
+        public async Task<Account> GetByIdAsync(Guid id)
+        {
+            return await _context.Accounts.FindAsync(id);
+        }
+
+        public void Remove(Account account)
+        {
+            _context.Remove(account);
+        }
+
+        public void Update(Account account)
+        {
+            _context.Update(account);
+        }
+    }
+}

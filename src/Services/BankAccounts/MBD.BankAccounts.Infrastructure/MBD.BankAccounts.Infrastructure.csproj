@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.7" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Building blocks\Core\MBD.Infrastructure.Core\MBD.Infrastructure.Core.csproj" />
+    <ProjectReference Include="..\..\..\Building blocks\Core\MBD.Core\MBD.Core.csproj" />
+    <ProjectReference Include="..\MBD.BankAccounts.Domain\MBD.BankAccounts.Domain.csproj" />
+  </ItemGroup>
+</Project>

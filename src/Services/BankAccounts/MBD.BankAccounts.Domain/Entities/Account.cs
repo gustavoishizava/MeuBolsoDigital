@@ -21,23 +21,48 @@ namespace MBD.BankAccounts.Domain.Entities
         public Status Status { get; private set; }
 
         #region Navigation
-        
+
         public decimal Balance => InitialBalance + _transactions.Sum(x => x.Type == TransactionType.Income ? x.Value : x.Value * -1);
 
         #endregion
 
         public Account(Guid userId, string description, decimal initialBalance, AccountType type)
         {
-            Assertions.IsNotNullOrEmpty(description, ResourceCodes.Account.DescriptionEmpty.GetResource());
-            Assertions.HasMaxLength(description, 150, ResourceCodes.Account.DescriptionMaxLength.GetResource());
             Assertions.IsGreaterOrEqualsThan(initialBalance, 0, ResourceCodes.Account.InitialValueMinValue.GetResource());
 
             UserId = userId;
-            Description = description;
+            SetDescription(description);
             InitialBalance = initialBalance;
+            SetType(type);
+            Activate();
+        }
+
+        #region Account
+
+        public void SetDescription(string description)
+        {
+            Assertions.IsNotNullOrEmpty(description, ResourceCodes.Account.DescriptionEmpty.GetResource());
+            Assertions.HasMaxLength(description, 150, ResourceCodes.Account.DescriptionMaxLength.GetResource());
+
+            Description = description;
+        }
+
+        public void SetType(AccountType type)
+        {
             Type = type;
+        }
+
+        public void Activate()
+        {
             Status = Status.Active;
         }
+
+        public void Deactivate()
+        {
+            Status = Status.Inactive;
+        }
+
+        #endregion
 
         #region Transactions
 

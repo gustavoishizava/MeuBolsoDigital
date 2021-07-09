@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MBD.BankAccounts.Domain.Entities;
 using MBD.BankAccounts.Domain.Interfaces.Repositories;
 using MBD.BankAccounts.Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace MBD.BankAccounts.Infrastructure.Repositories
 {
@@ -18,6 +21,13 @@ namespace MBD.BankAccounts.Infrastructure.Repositories
         public void Add(Account account)
         {
             _context.Add(account);
+        }
+
+        public async Task<IEnumerable<Account>> GetAllAsync()
+        {
+            return await _context.Accounts.AsNoTracking()
+                .OrderBy(x => x.Description)
+                .ToListAsync();
         }
 
         public async Task<Account> GetByIdAsync(Guid id)

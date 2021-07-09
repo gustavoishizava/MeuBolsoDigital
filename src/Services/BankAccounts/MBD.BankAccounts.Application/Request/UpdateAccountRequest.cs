@@ -1,3 +1,4 @@
+using System;
 using FluentValidation;
 using FluentValidation.Results;
 using MBD.Application.Core.Requests;
@@ -8,6 +9,7 @@ namespace MBD.BankAccounts.Application.Request
 {
     public class UpdateAccountRequest : BaseRequest
     {
+        public Guid Id { get; set; }
         public string Description { get; set; }
         public AccountType Type { get; set; }
         public Status Status { get; set; }
@@ -21,6 +23,9 @@ namespace MBD.BankAccounts.Application.Request
         {
             public UpdateAccountValidation()
             {
+                RuleFor(x => x.Id)
+                    .NotEmpty();
+                    
                 RuleFor(x => x.Description)
                     .NotEmpty()
                     .MaximumLength(150);

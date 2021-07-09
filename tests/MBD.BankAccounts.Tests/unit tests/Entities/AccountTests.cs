@@ -52,5 +52,25 @@ namespace MBD.BankAccounts.Tests.unit_tests.Entities
             Assert.Equal(AccountType.CheckingAccount, account.Type);
             Assert.Equal(Status.Active, account.Status);
         }
+
+        [Fact(DisplayName = "Alterar uma conta bancária exitente com sucesso.")]
+        public void ValidAccount_UpdateAccount_ReturnSuccess()
+        {
+            // Arrange            
+            var account = new Account(Guid.NewGuid(), "Conta existente", 100, AccountType.CheckingAccount);
+            var newDescription = "Novo nome";
+            var newType = AccountType.Money;
+            var newStatus = Status.Inactive;
+
+            // Act
+            account.SetDescription(newDescription);
+            account.SetType(newType);
+            account.Deactivate();
+
+            // Assert
+            Assert.Equal(newDescription, account.Description);
+            Assert.Equal(newType, account.Type);
+            Assert.Equal(newStatus, account.Status);
+        }
     }
 }

@@ -30,6 +30,11 @@ namespace MBD.BankAccounts.Infrastructure.Repositories
             _context.Remove(account);
         }
 
+        public async Task<int> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
         public void Update(Account account)
         {
             _context.Update(account);

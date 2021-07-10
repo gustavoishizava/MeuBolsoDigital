@@ -1,6 +1,5 @@
 using System;
 using Microsoft.AspNetCore.Http;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace MBD.Core.Identity
@@ -16,7 +15,7 @@ namespace MBD.Core.Identity
 
         public Guid UserId => 
             IsAuthenticated 
-            ? Guid.Parse(_httpContextAccessor.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Sub).Value) 
+            ? Guid.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value) 
             : Guid.Empty;
 
         public string Email => 

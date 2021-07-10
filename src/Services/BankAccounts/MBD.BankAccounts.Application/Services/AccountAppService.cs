@@ -84,6 +84,8 @@ namespace MBD.BankAccounts.Application.Services
                 return Result.Fail("Conta bancária inválida.");
             
             _repository.Remove(account);
+            await _repository.SaveChangesAsync();
+
             return Result.Success("Conta bancária removida com sucesso.");
         }
     }

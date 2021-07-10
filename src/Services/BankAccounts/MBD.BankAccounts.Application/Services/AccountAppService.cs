@@ -25,18 +25,18 @@ namespace MBD.BankAccounts.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<IResult> CreateAsync(CreateAccountRequest request)
+        public async Task<IResult<Guid>> CreateAsync(CreateAccountRequest request)
         {
             var validation = request.Validate();
             if (!validation.IsValid)
-                return Result.Fail(validation.ToString());
+                return Result<Guid>.Fail(validation.ToString());
 
             var account = new Account(_aspNetUser.UserId, request.Description, request.InitialBalance, request.Type);
 
             _repository.Add(account);
             await _repository.SaveChangesAsync();
 
-            return Result.Success("Conta bancária cadastrada com sucesso.");
+            return Result<Guid>.Success(account.Id, "Conta bancária cadastrada com sucesso.");
         }
 
         public async Task<IResult> UpdateAsync(UpdateAccountRequest request)

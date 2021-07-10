@@ -1,5 +1,6 @@
 using MBD.BankAccounts.Domain.Entities;
 using MBD.BankAccounts.Domain.Enumerations;
+using MBD.Core.Enumerations;
 using MBD.Infrastructure.Core.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -36,7 +37,7 @@ namespace MBD.BankAccounts.Infrastructure.Context.Configuration
                 .IsRequired()
                 .HasColumnType("VARCHAR(10)")
                 .HasMaxLength(10)
-                .HasConversion(new EnumToStringConverter<AccountType>());
+                .HasConversion(new EnumToStringConverter<Status>());
         }
     }
 }

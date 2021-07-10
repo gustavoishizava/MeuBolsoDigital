@@ -24,7 +24,7 @@ namespace MBD.Identity.Tests.integration.Settings
 
         public IntegrationTestsFixture()
         {
-            baseUrl = "https://localhost:5001";
+            baseUrl = "https://localhost:5101";
             
             _appFactory = new AppFactory<TStartup>();
             _client = _appFactory.CreateClient(new WebApplicationFactoryClientOptions

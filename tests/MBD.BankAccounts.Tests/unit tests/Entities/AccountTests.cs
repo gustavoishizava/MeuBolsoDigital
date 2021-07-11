@@ -38,15 +38,15 @@ namespace MBD.BankAccounts.Tests.unit_tests.Entities
         public void ValidDescriptionAndBalance_NewAccount_ReturnSuccess(string description, decimal initialBalance)
         {
             // Arrange
-            var userId = Guid.NewGuid();
+            var tenantId = Guid.NewGuid();
             var accountType = AccountType.CheckingAccount;
 
             // Act
-            var account = new Account(userId, description, initialBalance, accountType);
+            var account = new Account(tenantId, description, initialBalance, accountType);
 
             // Assert
             Assert.NotNull(account);
-            Assert.Equal(userId, account.UserId);
+            Assert.Equal(tenantId, account.TenantId);
             Assert.Equal(description, account.Description);
             Assert.Equal(initialBalance, account.InitialBalance);
             Assert.Equal(AccountType.CheckingAccount, account.Type);

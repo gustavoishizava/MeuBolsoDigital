@@ -10,11 +10,11 @@ using MBD.Core.Extensions;
 
 namespace MBD.BankAccounts.Domain.Entities
 {
-    public class Account : BaseEntity, IAggregateRoot
+    public class Account : BaseEntity, IAggregateRoot, ITenant
     {
         private readonly List<Transaction> _transactions = new List<Transaction>();
 
-        public Guid UserId { get; private set; }
+        public Guid TenantId { get; private set; }
         public string Description { get; private set; }
         public decimal InitialBalance { get; private set; }
         public AccountType Type { get; private set; }
@@ -26,11 +26,11 @@ namespace MBD.BankAccounts.Domain.Entities
 
         #endregion
 
-        public Account(Guid userId, string description, decimal initialBalance, AccountType type)
+        public Account(Guid tenantId, string description, decimal initialBalance, AccountType type)
         {
             Assertions.IsGreaterOrEqualsThan(initialBalance, 0, ResourceCodes.Account.InitialValueMinValue.GetResource());
 
-            UserId = userId;
+            TenantId = tenantId;
             SetDescription(description);
             InitialBalance = initialBalance;
             SetType(type);

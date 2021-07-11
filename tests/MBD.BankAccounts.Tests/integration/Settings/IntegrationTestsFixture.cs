@@ -28,7 +28,7 @@ namespace MBD.BankAccounts.Tests.integration.Settings
 
         public IntegrationTestsFixture()
         {
-            baseUrl = "https://localhost:5102";
+            baseUrl = "https://localhost:5001";
 
             _appFactory = new AppFactory<TStartup>();
             _client = _appFactory.CreateClient(new WebApplicationFactoryClientOptions

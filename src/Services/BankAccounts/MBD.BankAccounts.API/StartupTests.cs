@@ -1,4 +1,5 @@
 using MBD.BankAccounts.API.Configuration;
+using MBD.BankAccounts.Infrastructure.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -26,13 +27,22 @@ namespace MBD.BankAccounts.API
         {
             services.AddEFContextConfiguration(Configuration);
             services.AddApiConfiguration();
-            services.AddSwaggerConfiguration();
+
+            Seed(services);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseSwaggerConfiguration();
             app.UseApiConfiguration(env);
+        }
+
+        public static void Seed(IServiceCollection services)
+        {
+            ServiceProvider serviceProvider = services.BuildServiceProvider();
+            var context = serviceProvider.GetRequiredService<BankAccountContext>();
+
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
         }
     }
 }

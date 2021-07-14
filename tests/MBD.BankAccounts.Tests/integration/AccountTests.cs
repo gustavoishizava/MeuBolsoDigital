@@ -72,8 +72,10 @@ namespace MBD.BankAccounts.Tests.integration
             Assert.Equal(numberOfErros, result.Errors.Count);
         }
 
-        [Fact(DisplayName = "Alterar uma conta bancária existente com sucesso.")]
-        public async Task ValidData_UpdateAccount_ReturnSuccess()
+        [Theory(DisplayName = "Alterar uma conta bancária existente com sucesso.")]
+        [InlineData("NuBank", AccountType.Investment, Status.Active)]
+        [InlineData("Banco do Brasil", AccountType.CheckingAccount, Status.Inactive)]
+        public async Task ValidData_UpdateAccount_ReturnSuccess(string description, AccountType type, Status status)
         {
             // Arrange
             await _testsFixture.AuthenticateAsync();
@@ -83,9 +85,9 @@ namespace MBD.BankAccounts.Tests.integration
             var request = new UpdateAccountRequest
             {
                 Id = id,
-                Description = "Conta teste update",
-                Type = AccountType.SavingsAccount,
-                Status = Status.Active
+                Description = description,
+                Type = type,
+                Status = status
             };
 
             // Act
@@ -96,9 +98,9 @@ namespace MBD.BankAccounts.Tests.integration
         }
 
         [Theory(DisplayName = "Alterar uma conta bancária existente com dados inválidos deve retornar erro.")]
-        [InlineData(true)]
-        [InlineData(false)]
-        public async Task InvalidData_UpdateAccount_ReturnError(bool invalidId)
+        [InlineData("NuBank", true)]
+        [InlineData("", false)]
+        public async Task InvalidData_UpdateAccount_ReturnError(string description, bool invalidId)
         {
             // Arrange
             await _testsFixture.AuthenticateAsync();
@@ -110,7 +112,7 @@ namespace MBD.BankAccounts.Tests.integration
             var request = new UpdateAccountRequest
             {
                 Id = id,
-                Description = "",
+                Description = description,
                 Type = Domain.Enumerations.AccountType.SavingsAccount,
                 Status = Status.Active
             };

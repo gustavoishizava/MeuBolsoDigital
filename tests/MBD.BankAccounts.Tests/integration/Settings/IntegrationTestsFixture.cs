@@ -3,8 +3,12 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using MBD.BankAccounts.API;
+using MBD.BankAccounts.API.Models;
+using MBD.BankAccounts.Application.Request;
+using MBD.BankAccounts.Domain.Enumerations;
 using MBD.BankAccounts.Tests.integration.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
@@ -23,8 +27,7 @@ namespace MBD.BankAccounts.Tests.integration.Settings
         public readonly AppFactory<TStartup> _appFactory;
         private readonly string baseUrl;
 
-        public string emailDefault = "test@test.com";
-        public string passwordDefault = "Test3@123";
+        public readonly string _accountsApi = "/api/accounts";
 
         public IntegrationTestsFixture()
         {
@@ -44,6 +47,8 @@ namespace MBD.BankAccounts.Tests.integration.Settings
                 PropertyNameCaseInsensitive = true
             };
 
+            options.Converters.Add(new JsonStringEnumConverter());
+
             return JsonSerializer.Deserialize<T>(await responseMessage.Content.ReadAsStringAsync(), options);
         }
 
@@ -54,9 +59,21 @@ namespace MBD.BankAccounts.Tests.integration.Settings
 
             var httpClient = new HttpClient();
             var response = await httpClient.PostAsJsonAsync("https://localhost:5101/api/authentication/auth", new { Email = email, Password = password });
+            response.EnsureSuccessStatusCode();
+
             var accessToken = await DeserializeObjectReponseAsync<AccessTokenResponse>(response);
 
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.AccessToken);
+        }
+
+        public async Task<Guid> CreateAccountAsync()
+        {
+            var createResponse = await _client.PostAsJsonAsync(_accountsApi,
+                            new CreateAccountRequest { Description = "Test", InitialBalance = 100, Type = AccountType.CheckingAccount });
+            createResponse.EnsureSuccessStatusCode();
+
+            var createResult = await DeserializeObjectReponseAsync<SuccessModel<Guid>>(createResponse);
+            return createResult.Data;
         }
 
         public void Dispose()

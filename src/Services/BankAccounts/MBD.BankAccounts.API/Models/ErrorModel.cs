@@ -11,5 +11,7 @@ namespace MBD.BankAccounts.API.Models
         {
             Errors.AddRange(result.Message.Split("\r\n"));
         }
+
+        public ErrorModel() { }
     }
 }

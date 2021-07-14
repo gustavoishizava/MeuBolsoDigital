@@ -36,7 +36,7 @@ namespace MBD.BankAccounts.API.Controllers
         [HttpGet("{id:GUID}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(AccountResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             var result = await _service.GetByIdAsync(id);

@@ -14,6 +14,8 @@ namespace MBD.CreditCards.Infrastructure.Context
         }
 
         public DbSet<CreditCard> CreditCards { get; set; }
+        public DbSet<CreditCardBill> CreditCardBills { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

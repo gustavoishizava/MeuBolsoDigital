@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using MBD.Core.Identity;
 using MBD.CreditCards.Domain.Entities;
 using MBD.Infrastructure.Core.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -9,8 +10,11 @@ namespace MBD.CreditCards.Infrastructure.Context
 {
     public class CreditCardContext : DbContext
     {
-        public CreditCardContext(DbContextOptions<CreditCardContext> options) : base(options)
+        private readonly IAspNetUser _aspNetUser;
+
+        public CreditCardContext(DbContextOptions<CreditCardContext> options, IAspNetUser aspNetUser) : base(options)
         {
+            _aspNetUser = aspNetUser;
         }
 
         public DbSet<CreditCard> CreditCards { get; set; }
@@ -21,6 +25,8 @@ namespace MBD.CreditCards.Infrastructure.Context
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+            modelBuilder.Entity<CreditCard>().HasQueryFilter(x => x.UserId == _aspNetUser.UserId);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

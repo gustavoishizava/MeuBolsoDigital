@@ -2,7 +2,6 @@ using System;
 using FluentValidation;
 using FluentValidation.Results;
 using MBD.Application.Core.Requests;
-using MBD.Core.Enumerations;
 using MBD.CreditCards.Domain.Enumerations;
 
 namespace MBD.CreditCards.Application.Requests
@@ -15,7 +14,6 @@ namespace MBD.CreditCards.Application.Requests
         public int DayOfPayment { get; set; }
         public decimal Limit { get; set; }
         public Brand Brand { get; set; }
-        public Status Status { get; set; }
 
         public override ValidationResult Validate()
         {
@@ -48,10 +46,7 @@ namespace MBD.CreditCards.Application.Requests
                     .GreaterThan(0);
 
                 RuleFor(x => x.Brand)
-                    .IsInEnum();
-
-                RuleFor(x => x.Status)
-                    .IsInEnum();
+                    .IsInEnum();                
             }
         }
     }

@@ -18,6 +18,12 @@ namespace MBD.CreditCards.Domain.Entities
 
         public decimal Balance => _transactions.Sum(x => x.Value);
 
+        #region EF
+
+        protected CreditCardBill() { }
+
+        #endregion
+
         internal CreditCardBill(Guid creditCardId, int paymentDay, int closingDay, int month, int year)
         {
             CreditCardId = creditCardId;

@@ -30,10 +30,7 @@ namespace MBD.CreditCards.Infrastructure.Context.Configuration
 
             builder.HasOne<CreditCard>()
                 .WithMany()
-                .HasForeignKey(x => x.CreditCardId);
-
-            builder.HasIndex(x => new { x.CreditCardId, x.Reference.Month, x.Reference.Year })
-                .IsUnique();
+                .HasForeignKey(x => x.CreditCardId);           
         }
     }
 }

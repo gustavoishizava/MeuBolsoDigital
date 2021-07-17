@@ -25,22 +25,68 @@ namespace MBD.CreditCards.Domain.Entities
 
         public CreditCard(Guid userId, Guid bankAccountId, string name, int closingDay, int dayOfPayment, decimal limit, Brand brand)
         {
+            UserId = userId;
+            SetBankAccountId(bankAccountId);
+            SetName(name);
+            SetClosingDay(closingDay);
+            SetDayOfPayment(dayOfPayment);
+            SetLimit(limit);
+            SetBrand(brand);
+            Activate();
+        }
+
+        #region Credit card
+
+        public void SetBankAccountId(Guid bankAccountId)
+        {
+            BankAccountId = bankAccountId;
+        }
+
+        public void SetName(string name)
+        {
             Assertions.IsNotNullOrEmpty(name, "Informe um nome.");
             Assertions.HasMaxLength(name, 100, "O nome não deve conter mais que 100 caractes.");
+
+            Name = name;
+        }
+
+        public void SetClosingDay(int closingDay)
+        {
             Assertions.IsBetween(closingDay, 1, 31, "A data de fechamento da fatura deve estar entre os dias 1 - 31.");
+
+            ClosingDay = closingDay;
+        }
+
+        public void SetDayOfPayment(int dayOfPayment)
+        {
             Assertions.IsBetween(dayOfPayment, 1, 31, "A data de pagamento da fatura deve estar entre os dias 1 - 31.");
+
+            DayOfPayment = dayOfPayment;
+        }
+
+        public void SetLimit(decimal limit)
+        {
             Assertions.IsGreaterThan(limit, 0, "O limite deve ser maior que R$0,00.");
 
-            UserId = userId;
-            BankAccountId = bankAccountId;
-            Name = name;
-            ClosingDay = closingDay;
-            DayOfPayment = dayOfPayment;
             Limit = limit;
-            Brand = brand;
+        }
 
+        public void SetBrand(Brand brand)
+        {
+            Brand = brand;
+        }
+
+        public void Activate()
+        {
             Status = Status.Active;
         }
+
+        public void Deactivate()
+        {
+            Status = Status.Inactive;
+        }
+
+        #endregion
 
         #region Credit card bills
 

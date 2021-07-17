@@ -60,5 +60,24 @@ namespace MBD.CreditCards.Tests.unit_tests.Entities
             Assert.Equal(Status.Active, creditCard.Status);
             Assert.Empty(creditCard.Bills);
         }
+
+        [Theory(DisplayName = "Alterar o status de um cartão válido deve retornar sucesso.")]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void ValidCreditCard_SetStatus_ReturnSuccess(bool activate)
+        {
+            // Arrange
+            var creditCard = new CreditCard(Guid.NewGuid(), Guid.NewGuid(), "Credit card", 5, 10, 1000, Brand.VISA);
+            var expectedStatus = activate ? Status.Active : Status.Inactive;
+
+            // Act
+            if(activate)
+                creditCard.Activate();
+            else
+                creditCard.Deactivate();
+
+            // Assert
+            Assert.Equal(expectedStatus, creditCard.Status);
+        }
     }
 }

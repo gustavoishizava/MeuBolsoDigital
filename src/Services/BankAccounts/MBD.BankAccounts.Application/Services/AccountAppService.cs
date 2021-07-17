@@ -60,14 +60,14 @@ namespace MBD.BankAccounts.Application.Services
             _repository.Update(account);
             await _repository.SaveChangesAsync();
 
-            return Result.Success("Conta bancária atualizada com sucesso.");
+            return Result.Success();
         }
 
         public async Task<IResult<AccountResponse>> GetByIdAsync(Guid id)
         {
             var account = await _repository.GetByIdAsync(id);
             if (account == null)
-                return Result<AccountResponse>.Fail("Conta bancária não encontrada.");
+                return Result<AccountResponse>.Fail();
 
             return Result<AccountResponse>.Success(_mapper.Map<AccountResponse>(account));
         }
@@ -86,7 +86,7 @@ namespace MBD.BankAccounts.Application.Services
             _repository.Remove(account);
             await _repository.SaveChangesAsync();
 
-            return Result.Success("Conta bancária removida com sucesso.");
+            return Result.Success();
         }
     }
 }

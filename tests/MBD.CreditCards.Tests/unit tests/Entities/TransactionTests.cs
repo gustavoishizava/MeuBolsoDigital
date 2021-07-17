@@ -13,7 +13,10 @@ namespace MBD.CreditCards.Tests.unit_tests.Entities
         public TransactionTests()
         {
             var creditCard = new CreditCard(Guid.NewGuid(), Guid.NewGuid(), "Cartão", 1, 5, 100, Brand.VISA);
-            _validBill = creditCard.CreateCreditCardBill(DateTime.Now.Month, DateTime.Now.Year);
+            var month = DateTime.Now.Month;
+            var year = DateTime.Now.Year;
+            creditCard.AddBill(month, year);
+            _validBill = creditCard.GetBillByReference(month, year);
         }
 
         [Theory(DisplayName = "Adicionar nova transação com sucesso.")]

@@ -47,6 +47,9 @@ namespace MBD.CreditCards.Infrastructure.Context.Configuration
                 .HasColumnType("VARCHAR(10)")
                 .HasMaxLength(10)
                 .HasConversion(new EnumToStringConverter<Status>());
+
+            builder.Navigation(x => x.Bills)
+                .HasField("_bills");
         }
     }
 }

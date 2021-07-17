@@ -7,7 +7,7 @@ using MBD.CreditCards.Domain.ValueObjects;
 
 namespace MBD.CreditCards.Domain.Entities
 {
-    public class CreditCardBill : BaseEntity, IAggregateRoot
+    public class CreditCardBill : BaseEntity
     {
         private readonly List<Transaction> _transactions = new List<Transaction>();
 

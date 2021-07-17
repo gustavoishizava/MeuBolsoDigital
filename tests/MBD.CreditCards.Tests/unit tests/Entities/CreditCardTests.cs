@@ -58,6 +58,7 @@ namespace MBD.CreditCards.Tests.unit_tests.Entities
             Assert.Equal(limit, creditCard.Limit);
             Assert.Equal(brand, creditCard.Brand);
             Assert.Equal(Status.Active, creditCard.Status);
+            Assert.Empty(creditCard.Bills);
         }
     }
 }

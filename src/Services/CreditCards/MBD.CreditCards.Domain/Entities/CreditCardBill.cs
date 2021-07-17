@@ -7,7 +7,7 @@ using MBD.CreditCards.Domain.ValueObjects;
 
 namespace MBD.CreditCards.Domain.Entities
 {
-    public class CreditCardBill : BaseEntity
+    public class CreditCardBill : BaseEntity, IAggregateRoot
     {
         private readonly List<Transaction> _transactions = new List<Transaction>();
 
@@ -17,7 +17,6 @@ namespace MBD.CreditCards.Domain.Entities
         public BillReference Reference { get; private set; }
 
         public decimal Balance => _transactions.Sum(x => x.Value);
-        public IReadOnlyList<Transaction> Transactions => _transactions.AsReadOnly();
 
         #region EF
 

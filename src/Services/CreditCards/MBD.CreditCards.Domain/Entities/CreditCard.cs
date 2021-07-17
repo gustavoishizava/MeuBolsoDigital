@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using MBD.Core;
 using MBD.Core.Entities;
 using MBD.Core.Enumerations;
@@ -10,8 +8,6 @@ namespace MBD.CreditCards.Domain.Entities
 {
     public class CreditCard : BaseEntity, IAggregateRoot
     {
-        private readonly List<CreditCardBill> _bills = new List<CreditCardBill>();
-
         public Guid UserId { get; private set; }
         public Guid BankAccountId { get; private set; }
         public string Name { get; private set; }
@@ -20,8 +16,6 @@ namespace MBD.CreditCards.Domain.Entities
         public decimal Limit { get; private set; }
         public Brand Brand { get; private set; }
         public Status Status { get; private set; }
-
-        public IReadOnlyList<CreditCardBill> Bills => _bills.AsReadOnly();
 
         public CreditCard(Guid userId, Guid bankAccountId, string name, int closingDay, int dayOfPayment, decimal limit, Brand brand)
         {
@@ -44,20 +38,9 @@ namespace MBD.CreditCards.Domain.Entities
 
         #region Credit card bills
 
-        public void AddBill(int month, int year)
+        public CreditCardBill CreateCreditCardBill(int month, int year)
         {
-            Assertions.IsTrue(ReferenceIsAvailable(month, year), $"Não é possível criar uma fatura com as referências mês ({month}) e ano ({year}), pois já existe uma fatura cadastrada para esta referência.");
-            _bills.Add(new CreditCardBill(Id, DayOfPayment, ClosingDay, month, year));
-        }
-
-        public bool ReferenceIsAvailable(int month, int year)
-        {
-            return !_bills.Any(x => x.Reference.Month == month && x.Reference.Year == year);
-        }
-
-        public CreditCardBill GetBillByReference(int month, int year)
-        {
-            return _bills.FirstOrDefault(x => x.Reference.Month == month && x.Reference.Year == year);
+            return new CreditCardBill(Id, DayOfPayment, ClosingDay, month, year);
         }
 
         #endregion

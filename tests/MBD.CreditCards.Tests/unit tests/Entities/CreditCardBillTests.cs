@@ -1,5 +1,4 @@
 using System;
-using MBD.Core.DomainObjects;
 using MBD.CreditCards.Domain.Entities;
 using MBD.CreditCards.Domain.Enumerations;
 using Xunit;
@@ -8,12 +7,6 @@ namespace MBD.CreditCards.Tests.unit_tests.Entities
 {
     public class CreditCardBillTests
     {
-        private readonly CreditCard _validCreditCard;
-        public CreditCardBillTests()
-        {
-            _validCreditCard = new CreditCard(Guid.NewGuid(), Guid.NewGuid(), "NuBank", 5, 10, 1000, Brand.VISA);
-        }
-
         [Theory(DisplayName = "Gerar nova fatura com referência válida.")]
         [InlineData(31, 31, 4, 2021)]
         [InlineData(5, 15, 6, 2021)]
@@ -50,8 +43,7 @@ namespace MBD.CreditCards.Tests.unit_tests.Entities
                 dueDate = dueDate.AddMonths(1);
 
             // Act
-            creditCard.AddBill(month, year);
-            var creditCardBill = creditCard.GetBillByReference(month, year);
+            var creditCardBill = creditCard.CreateCreditCardBill(month, year);
 
             // Assert
             Assert.Equal(creditCard.Id, creditCardBill.CreditCardId);
@@ -59,40 +51,6 @@ namespace MBD.CreditCards.Tests.unit_tests.Entities
             Assert.Equal(closesIn, creditCardBill.ClosesIn);
             Assert.Equal(month, creditCardBill.Reference.Month);
             Assert.Equal(year, creditCardBill.Reference.Year);
-        }
-
-        [Fact(DisplayName = "Adicionar nova fatura com referência válida deve retornar sucesso.")]
-        public void ValidReference_AddBill_ReturnSuccess()
-        {
-            // Arrage
-            var random = new Random();
-            var month = random.Next(1, 13);
-            var year = DateTime.Now.Year;
-            CreditCardBill creditCardBill = null;
-
-            // Act
-            _validCreditCard.AddBill(month, year);
-            creditCardBill = _validCreditCard.GetBillByReference(month, year);
-
-            // Assert
-            Assert.NotNull(creditCardBill);
-            Assert.Single(_validCreditCard.Bills);
-            Assert.Equal(month, creditCardBill.Reference.Month);
-            Assert.Equal(year, creditCardBill.Reference.Year);
-            Assert.False(_validCreditCard.ReferenceIsAvailable(month, year));
-        }
-
-        [Fact(DisplayName = "Adicionar nova fatura com referência repetida válida deve retornar Domain Exception.")]
-        public void RepeatedReference_AddBill_ReturnDomainException()
-        {
-            // Arrage
-            var random = new Random();
-            var month = random.Next(1, 13);
-            var year = DateTime.Now.Year;
-            _validCreditCard.AddBill(month, year);
-
-            // Act && Assert
-            Assert.Throws<DomainException>(() => _validCreditCard.AddBill(month, year));
         }
     }
 }

@@ -17,6 +17,7 @@ namespace MBD.CreditCards.Domain.Entities
         public BillReference Reference { get; private set; }
 
         public decimal Balance => _transactions.Sum(x => x.Value);
+        public IReadOnlyList<Transaction> Transactions => _transactions.AsReadOnly();
 
         #region EF
 

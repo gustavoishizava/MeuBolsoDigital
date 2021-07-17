@@ -39,6 +39,7 @@ namespace MBD.CreditCards.Tests.unit_tests.Entities
             Assert.True(DateTime.Now >= transaction.CreatedAt);
             Assert.Equal(value, transaction.Value);
             Assert.Equal(correctBalance, _validBill.Balance);
+            Assert.Single(_validBill.Transactions);
         }
 
         [Fact(DisplayName = "Adicionar transações repetidas deve retornar Domain Exception.")]

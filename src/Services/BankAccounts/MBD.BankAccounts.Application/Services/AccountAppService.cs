@@ -25,18 +25,18 @@ namespace MBD.BankAccounts.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<IResult<Guid>> CreateAsync(CreateAccountRequest request)
+        public async Task<IResult<AccountResponse>> CreateAsync(CreateAccountRequest request)
         {
             var validation = request.Validate();
             if (!validation.IsValid)
-                return Result<Guid>.Fail(validation.ToString());
+                return Result<AccountResponse>.Fail(validation.ToString());
 
             var account = new Account(_aspNetUser.UserId, request.Description, request.InitialBalance, request.Type);
 
             _repository.Add(account);
             await _repository.SaveChangesAsync();
 
-            return Result<Guid>.Success(account.Id, "Conta bancária cadastrada com sucesso.");
+            return Result<AccountResponse>.Success(_mapper.Map<AccountResponse>(account));
         }
 
         public async Task<IResult> UpdateAsync(UpdateAccountRequest request)
@@ -66,9 +66,9 @@ namespace MBD.BankAccounts.Application.Services
         public async Task<IResult<AccountResponse>> GetByIdAsync(Guid id)
         {
             var account = await _repository.GetByIdAsync(id);
-            if(account == null)
+            if (account == null)
                 return Result<AccountResponse>.Fail("Conta bancária não encontrada.");
-            
+
             return Result<AccountResponse>.Success(_mapper.Map<AccountResponse>(account));
         }
 
@@ -80,9 +80,9 @@ namespace MBD.BankAccounts.Application.Services
         public async Task<IResult> RemoveAsync(Guid id)
         {
             var account = await _repository.GetByIdAsync(id);
-            if(account == null)
+            if (account == null)
                 return Result.Fail("Conta bancária inválida.");
-            
+
             _repository.Remove(account);
             await _repository.SaveChangesAsync();
 

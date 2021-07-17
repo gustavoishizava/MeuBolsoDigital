@@ -6,6 +6,7 @@ using MBD.BankAccounts.API.Models;
 using MBD.BankAccounts.Application.Interfaces;
 using MBD.BankAccounts.Application.Request;
 using MBD.BankAccounts.Application.Response;
+using MBD.Core.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,10 +28,15 @@ namespace MBD.BankAccounts.API.Controllers
 
         [HttpGet]
         [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(IEnumerable<AccountResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _service.GetAllAsync());
+            var results = await _service.GetAllAsync();
+            if(results.IsNullOrEmpty())
+                return NoContent();
+
+            return Ok(results);
         }
 
         [HttpGet("{id:GUID}")]
@@ -48,7 +54,7 @@ namespace MBD.BankAccounts.API.Controllers
 
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(typeof(SuccessModel<Guid>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(AccountResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateAccountRequest request)
         {
@@ -56,12 +62,12 @@ namespace MBD.BankAccounts.API.Controllers
             if (!result.Succeeded)
                 return BadRequest(new ErrorModel(result));
 
-            return Created($"/api/accounts/{result.Data}", new SuccessModel<Guid>(result));
+            return Created($"/api/accounts/{result.Data}", result.Data);
         }
 
         [HttpPut]
         [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateAccountRequest request)
         {
@@ -69,12 +75,12 @@ namespace MBD.BankAccounts.API.Controllers
             if (!result.Succeeded)
                 return BadRequest(new ErrorModel(result));
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpDelete("{id:GUID}")]
         [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
@@ -82,7 +88,7 @@ namespace MBD.BankAccounts.API.Controllers
             if (!result.Succeeded)
                 return BadRequest(new ErrorModel(result));
 
-            return Ok();
+            return NoContent();
         }
     }
 }

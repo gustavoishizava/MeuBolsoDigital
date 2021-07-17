@@ -36,15 +36,19 @@ namespace MBD.BankAccounts.Tests.integration
                 Type = AccountType.SavingsAccount
             };
 
-            SuccessModel<Guid> result = null;
+            AccountResponse result = null;
 
             // Act
             var response = await _testsFixture._client.PostAsJsonAsync(_testsFixture._accountsApi, request);
-            result = await _testsFixture.DeserializeObjectReponseAsync<SuccessModel<Guid>>(response);
+            result = await _testsFixture.DeserializeObjectReponseAsync<AccountResponse>(response);
 
             // Assert
             response.EnsureSuccessStatusCode();
             Assert.NotNull(result);
+            Assert.Equal(request.Description, result.Description);
+            Assert.Equal(request.Type, result.Type);
+            Assert.Equal(request.InitialBalance, result.Balance);
+            Assert.Equal(Status.Active, result.Status);
         }
 
         [Theory(DisplayName = "Criar uma conta bancária com dados inválidos deve retornar erros.")]
@@ -153,7 +157,7 @@ namespace MBD.BankAccounts.Tests.integration
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
-        [Theory(DisplayName = "Obter conta bancária com Id válido deve retornar sucesso")]
+        [Theory(DisplayName = "Obter conta bancária com Id válido deve retornar sucesso.")]
         [InlineData("NuBank", 150.55, AccountType.CheckingAccount)]
         [InlineData("Banco do Brasil", 555.55, AccountType.Investment)]
         [InlineData("Santander", 249.90, AccountType.Others)]
@@ -166,16 +170,16 @@ namespace MBD.BankAccounts.Tests.integration
                                new CreateAccountRequest { Description = description, InitialBalance = balance, Type = type });
             createResponse.EnsureSuccessStatusCode();
 
-            var createResult = await _testsFixture.DeserializeObjectReponseAsync<SuccessModel<Guid>>(createResponse);
+            var createResult = await _testsFixture.DeserializeObjectReponseAsync<AccountResponse>(createResponse);
             AccountResponse account = null;
 
             // Act
-            var response = await _testsFixture._client.GetAsync($"{_testsFixture._accountsApi}/{createResult.Data}");
+            var response = await _testsFixture._client.GetAsync($"{_testsFixture._accountsApi}/{createResult.Id}");
             account = await _testsFixture.DeserializeObjectReponseAsync<AccountResponse>(response);
 
             // Assert
             response.EnsureSuccessStatusCode();
-            Assert.Equal(createResult.Data, account.Id);
+            Assert.Equal(createResult.Id, account.Id);
             Assert.Equal(description, account.Description);
             Assert.Equal(balance, account.Balance);
             Assert.Equal(type, account.Type);

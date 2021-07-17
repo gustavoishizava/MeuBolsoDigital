@@ -6,8 +6,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using MBD.BankAccounts.API;
-using MBD.BankAccounts.API.Models;
 using MBD.BankAccounts.Application.Request;
+using MBD.BankAccounts.Application.Response;
 using MBD.BankAccounts.Domain.Enumerations;
 using MBD.BankAccounts.Tests.integration.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -72,8 +72,8 @@ namespace MBD.BankAccounts.Tests.integration.Settings
                             new CreateAccountRequest { Description = "Test", InitialBalance = 100, Type = AccountType.CheckingAccount });
             createResponse.EnsureSuccessStatusCode();
 
-            var createResult = await DeserializeObjectReponseAsync<SuccessModel<Guid>>(createResponse);
-            return createResult.Data;
+            var createResult = await DeserializeObjectReponseAsync<AccountResponse>(createResponse);
+            return createResult.Id;
         }
 
         public void Dispose()

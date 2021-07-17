@@ -9,7 +9,7 @@ namespace MBD.BankAccounts.Application.Interfaces
 {
     public interface IAccountAppService
     {
-        Task<IResult<Guid>> CreateAsync(CreateAccountRequest request);
+        Task<IResult<AccountResponse>> CreateAsync(CreateAccountRequest request);
         Task<IResult> UpdateAsync(UpdateAccountRequest request);
         Task<IResult<AccountResponse>> GetByIdAsync(Guid id);
         Task<IEnumerable<AccountResponse>> GetAllAsync();

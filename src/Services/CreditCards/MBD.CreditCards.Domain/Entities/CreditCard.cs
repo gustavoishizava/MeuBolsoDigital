@@ -60,6 +60,6 @@ namespace MBD.CreditCards.Domain.Entities
             return _bills.FirstOrDefault(x => x.Reference.Month == month && x.Reference.Year == year);
         }
 
-        #endregion
+        #endregion        
     }
 }

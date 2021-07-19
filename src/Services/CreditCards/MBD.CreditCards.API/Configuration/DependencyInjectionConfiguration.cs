@@ -10,6 +10,7 @@ using MBD.CreditCards.Infrastructure.Repositories;
 using MBD.CreditCards.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Polly;
 
 namespace MBD.CreditCards.API.Configuration
 {
@@ -46,11 +47,13 @@ namespace MBD.CreditCards.API.Configuration
         {
             services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
 
-            var teste = configuration["UrlServices:BankAccountService"];
             services.AddHttpClient<IBankAccountService, BankAccountService>(config =>
             {
-                config.BaseAddress = new Uri(teste);
-            }).AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
+                config.BaseAddress = new Uri(configuration["UrlServices:BankAccountService"]);
+            })
+            .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
+            .AddPolicyHandler(PollyRetryConfiguration.WaitToRetry())
+            .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
 
             return services;
         }

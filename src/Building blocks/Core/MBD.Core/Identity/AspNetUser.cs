@@ -1,6 +1,6 @@
 using System;
-using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace MBD.Core.Identity
 {
@@ -13,16 +13,21 @@ namespace MBD.Core.Identity
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public Guid UserId => 
-            IsAuthenticated 
-            ? Guid.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value) 
+        public Guid UserId =>
+            IsAuthenticated
+            ? Guid.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value)
             : Guid.Empty;
 
-        public string Email => 
+        public string Email =>
             IsAuthenticated
             ? _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).Value
             : string.Empty;
 
         public bool IsAuthenticated => _httpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
+
+        public HttpContext GetHttpContext()
+        {
+            return _httpContextAccessor.HttpContext;
+        }
     }
 }

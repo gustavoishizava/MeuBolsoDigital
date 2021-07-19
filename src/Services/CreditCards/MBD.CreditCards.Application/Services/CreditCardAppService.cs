@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using MBD.Application.Core.Response;
+using MBD.Core.Enumerations;
 using MBD.Core.Identity;
 using MBD.CreditCards.Application.Interfaces;
 using MBD.CreditCards.Application.Requests;
 using MBD.CreditCards.Application.Responses;
 using MBD.CreditCards.Domain.Entities;
 using MBD.CreditCards.Domain.Interfaces.Repositories;
-using MBD.Core.Enumerations;
+using MBD.CreditCards.Domain.Interfaces.Services;
 
 namespace MBD.CreditCards.Application.Services
 {
@@ -18,12 +19,14 @@ namespace MBD.CreditCards.Application.Services
         private readonly IAspNetUser _aspNetUser;
         private readonly IMapper _mapper;
         private readonly ICreditCardRepository _repository;
+        private readonly IBankAccountService _bankAccountService;
 
-        public CreditCardAppService(IAspNetUser aspNetUser, IMapper mapper, ICreditCardRepository repository)
+        public CreditCardAppService(IAspNetUser aspNetUser, IMapper mapper, ICreditCardRepository repository, IBankAccountService bankAccountService)
         {
             _aspNetUser = aspNetUser;
             _mapper = mapper;
             _repository = repository;
+            _bankAccountService = bankAccountService;
         }
 
         public async Task<IResult<CreditCardResponse>> CreateAsync(CreateCreditCardRequest request)
@@ -31,6 +34,10 @@ namespace MBD.CreditCards.Application.Services
             var validation = request.Validate();
             if (!validation.IsValid)
                 return Result<CreditCardResponse>.Fail(validation.ToString());
+
+            var bankAccount = await _bankAccountService.GetByIdAsync(request.BankAccountId);
+            if (bankAccount == null)
+                return Result<CreditCardResponse>.Fail("Conta bancária inválida.");
 
             var creditCard = new CreditCard(_aspNetUser.UserId,
                                             request.BankAccountId,
@@ -54,16 +61,16 @@ namespace MBD.CreditCards.Application.Services
         public async Task<IResult<CreditCardResponse>> GetByIdAsync(Guid id)
         {
             var creditCard = await _repository.GetByIdAsync(id);
-            if(creditCard == null)
+            if (creditCard == null)
                 return Result<CreditCardResponse>.Fail();
-            
+
             return Result<CreditCardResponse>.Success(_mapper.Map<CreditCardResponse>(creditCard));
         }
 
         public async Task<IResult> RemoveAsync(Guid id)
         {
             var creditCard = await _repository.GetByIdAsync(id);
-            if(creditCard == null)
+            if (creditCard == null)
                 return Result.Fail("Cartão de crédito inválido.");
 
             _repository.Remove(creditCard);
@@ -79,22 +86,26 @@ namespace MBD.CreditCards.Application.Services
                 return Result<CreditCardResponse>.Fail(validation.ToString());
 
             var creditCard = await _repository.GetByIdAsync(request.Id);
-            if(creditCard == null)
+            if (creditCard == null)
                 return Result.Fail("Cartão de crédito inválido.");
-            
+
+            var bankAccount = await _bankAccountService.GetByIdAsync(request.BankAccountId);
+            if (bankAccount == null)
+                return Result<CreditCardResponse>.Fail("Conta bancária inválida.");
+
             creditCard.SetName(request.Name);
             creditCard.SetBankAccountId(request.BankAccountId);
             creditCard.SetBrand(request.Brand);
             creditCard.SetClosingDay(request.ClosingDay);
             creditCard.SetDayOfPayment(request.DayOfPayment);
             creditCard.SetLimit(request.Limit);
-            if(request.Status == Status.Active)
+            if (request.Status == Status.Active)
                 creditCard.Activate();
             else
                 creditCard.Deactivate();
-            
+
             await _repository.SaveChangesAsync();
-            
+
             return Result.Success();
         }
     }

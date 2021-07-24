@@ -9,6 +9,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using MBD.CreditCards.API;
+using MBD.CreditCards.Application.Requests;
+using MBD.CreditCards.Application.Responses;
+using MBD.CreditCards.Domain.Enumerations;
 using MBD.CreditCards.Tests.integration.Settings.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
@@ -76,9 +79,13 @@ namespace MBD.CreditCards.Tests.integration.Settings
             _bankAccountClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.AccessToken);
         }
 
-        public async Task<Guid> CreateBankAccountAsync()
+        public async Task<Guid> GetOrCreateBankAccountAsync()
         {
-            var createResponse = await _bankAccountClient.PostAsJsonAsync($"{bankAccountUrl}/api/accounts",
+            var id = await GetFirstBankAccountIdAsync();
+            if (!id.Equals(Guid.Empty))
+                return id;
+
+            var createResponse = await _bankAccountClient.PostAsJsonAsync("/api/accounts",
                             new { Description = "Credit Card Test", InitialBalance = 1000, Type = "CheckingAccount" });
             createResponse.EnsureSuccessStatusCode();
 
@@ -86,16 +93,42 @@ namespace MBD.CreditCards.Tests.integration.Settings
             return createResult.Id;
         }
 
-        public async Task<Guid> GetFirstBankAccountIdAsync()
+        private async Task<Guid> GetFirstBankAccountIdAsync()
         {
-            var getResponse = await _bankAccountClient.GetAsync($"{bankAccountUrl}/api/accounts");
+            var getResponse = await _bankAccountClient.GetAsync("/api/accounts");
             getResponse.EnsureSuccessStatusCode();
 
             if (getResponse.StatusCode == HttpStatusCode.NoContent)
-                throw new Exception("Nenhuma conta bancária encontrada.");
+                return Guid.Empty;
 
             var result = await DeserializeObjectReponseAsync<List<AccountResponse>>(getResponse);
             return result.First().Id;
+        }
+
+        public async Task<CreditCardResponse> CreateCreditCardAsync()
+        {
+            var request = new CreateCreditCardRequest
+            {
+                BankAccountId = await GetOrCreateBankAccountAsync(),
+                Brand = Brand.VISA,
+                Name = "Test",
+                ClosingDay = 1,
+                DayOfPayment = 5,
+                Limit = 1000
+            };
+
+            var response = await _client.PostAsJsonAsync("/api/credit-cards", request);
+            var result = await DeserializeObjectReponseAsync<CreditCardResponse>(response);
+
+            return result;
+        }
+
+        public async Task<CreditCardResponse> GetCreditCardByIdAsync(Guid id)
+        {
+            var getResponse = await _client.GetAsync($"/api/credit-cards/{id}");
+            getResponse.EnsureSuccessStatusCode();
+            
+            return await DeserializeObjectReponseAsync<CreditCardResponse>(getResponse);
         }
 
         public void Dispose()

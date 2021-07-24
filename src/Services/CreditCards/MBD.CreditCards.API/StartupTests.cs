@@ -1,4 +1,5 @@
 using MBD.CreditCards.API.Configuration;
+using MBD.CreditCards.Infrastructure.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -26,11 +27,22 @@ namespace MBD.CreditCards.API
         {
             services.AddEFContextConfiguration(Configuration);
             services.AddApiConfiguration(Configuration);
+
+            Seed(services);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseApiConfiguration(env);
+        }
+
+        public static void Seed(IServiceCollection services)
+        {
+            ServiceProvider serviceProvider = services.BuildServiceProvider();
+            var context = serviceProvider.GetRequiredService<CreditCardContext>();
+
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
         }
     }
 }

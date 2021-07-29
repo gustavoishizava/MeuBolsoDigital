@@ -7,7 +7,7 @@ namespace MBD.Transactions.Domain.Entities
 {
     public class Transaction : BaseEntity, IAggregateRoot
     {
-        public Guid UserId { get; private set; }
+        public Guid TenantId { get; private set; }
         public Guid BankAccountId { get; private set; }
         public Guid CategoryId { get; private set; }
         public DateTime ReferenceDate { get; private set; }
@@ -19,9 +19,9 @@ namespace MBD.Transactions.Domain.Entities
 
         public bool ItsPaid => PaymentDate != null && Status == TransactionStatus.Paid;
 
-        public Transaction(Guid userId, Guid bankAccountId, Guid categoryId, DateTime referenceDate, DateTime dueDate, decimal value, string description)
+        public Transaction(Guid tenantId, Guid bankAccountId, Guid categoryId, DateTime referenceDate, DateTime dueDate, decimal value, string description)
         {
-            UserId = userId;
+            TenantId = tenantId;
             BankAccountId = bankAccountId;
             CategoryId = categoryId;
             ReferenceDate = referenceDate;
@@ -39,7 +39,7 @@ namespace MBD.Transactions.Domain.Entities
         }
 
         public void UndoPayment()
-        {            
+        {
             PaymentDate = null;
             Status = TransactionStatus.AwaitingPayment;
         }

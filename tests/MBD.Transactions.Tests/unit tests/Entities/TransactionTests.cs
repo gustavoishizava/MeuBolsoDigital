@@ -34,17 +34,17 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
         public void ValidParameters_NewTransaction_ReturnSuccess(decimal value, string description)
         {
             // Arrange
-            var userId = Guid.NewGuid();
+            var tenantId = Guid.NewGuid();
             var bankAccountId = Guid.NewGuid();
             var categoryId = Guid.NewGuid();
             var referenceDate = DateTime.Now;
             var dueDate = referenceDate.AddDays(5);
 
             // Act
-            var transaction = new Transaction(userId, bankAccountId, categoryId, referenceDate, dueDate, value, description);
+            var transaction = new Transaction(tenantId, bankAccountId, categoryId, referenceDate, dueDate, value, description);
 
             // Assert
-            Assert.Equal(userId, transaction.UserId);
+            Assert.Equal(tenantId, transaction.TenantId);
             Assert.Equal(bankAccountId, transaction.BankAccountId);
             Assert.Equal(categoryId, transaction.CategoryId);
             Assert.Equal(referenceDate, transaction.ReferenceDate);

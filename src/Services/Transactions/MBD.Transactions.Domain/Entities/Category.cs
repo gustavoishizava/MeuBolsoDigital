@@ -11,7 +11,7 @@ namespace MBD.Transactions.Domain.Entities
     {
         private readonly List<Category> _subCategories = new();
 
-        public Guid UserId { get; private set; }
+        public Guid TenantId { get; private set; }
         public Guid? ParentCategoryId { get; private set; }
         public string Name { get; private set; }
         public TransactionType Type { get; private set; }
@@ -25,7 +25,7 @@ namespace MBD.Transactions.Domain.Entities
             Assertions.IsNotNullOrEmpty(name, "É necessário informar um nome.");
             Assertions.HasMaxLength(name, 100, "O nome deve conter no máximo 100 caracteres.");
 
-            UserId = userId;
+            TenantId = userId;
             Name = name;
             Type = type;
             Status = Status.Active;
@@ -44,7 +44,7 @@ namespace MBD.Transactions.Domain.Entities
 
         public void AddSubCategory(string name)
         {
-            _subCategories.Add(new Category(UserId, Id, name, Type));
+            _subCategories.Add(new Category(TenantId, Id, name, Type));
         }
     }
 }

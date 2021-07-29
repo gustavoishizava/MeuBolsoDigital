@@ -14,11 +14,11 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
         public void InvalidParameters_NewCategory_ReturnDomainException()
         {
             // Arrange
-            var invalidUserId = Guid.Empty;
+            var invalidTenantId = Guid.Empty;
             var invalidName = new String('a', 101);
 
             // Act && Assert
-            Assert.Throws<DomainException>(() => new Category(invalidUserId, "Categoria", TransactionType.Income));
+            Assert.Throws<DomainException>(() => new Category(invalidTenantId, "Categoria", TransactionType.Income));
             Assert.Throws<DomainException>(() => new Category(Guid.NewGuid(), invalidName, TransactionType.Expense));
         }
 
@@ -30,13 +30,13 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
         public void ValidParameters_NewCategory_ReturnSuccess(string name, TransactionType type)
         {
             // Arrange
-            var userId = Guid.NewGuid();
+            var tenantId = Guid.NewGuid();
 
             // Act
-            var category = new Category(userId, name, type);
+            var category = new Category(tenantId, name, type);
 
             // Assert
-            Assert.Equal(userId, category.UserId);
+            Assert.Equal(tenantId, category.TenantId);
             Assert.Equal(name, category.Name);
             Assert.Equal(type, category.Type);
             Assert.Equal(Status.Active, category.Status);
@@ -49,8 +49,8 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
         public void ValidCategory_AddNewSubCategory_ReturnSuccess(TransactionType type)
         {
             // Arrange
-            var userId = Guid.NewGuid();
-            var category = new Category(userId, "Categoria pai", type);
+            var tenantId = Guid.NewGuid();
+            var category = new Category(tenantId, "Categoria pai", type);
             Category subCategory = null;
 
             // Act

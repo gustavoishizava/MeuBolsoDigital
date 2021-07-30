@@ -30,11 +30,6 @@ namespace MBD.Transactions.Infrastructure.Repositories
             _context.Remove(transaction);
         }
 
-        public async Task<int> SaveChangesAsync()
-        {
-            return await _context.SaveChangesAsync();
-        }
-
         public void Update(Transaction transaction)
         {
             _context.Update(transaction);

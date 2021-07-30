@@ -42,11 +42,6 @@ namespace MBD.Transactions.Infrastructure.Repositories
             _context.Remove(category);
         }
 
-        public async Task<int> SaveChangesAsync()
-        {
-            return await _context.SaveChangesAsync();
-        }
-
         public void Update(Category category)
         {
             _context.Update(category);

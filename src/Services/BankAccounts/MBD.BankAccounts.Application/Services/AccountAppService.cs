@@ -8,6 +8,7 @@ using MBD.BankAccounts.Application.Request;
 using MBD.BankAccounts.Application.Response;
 using MBD.BankAccounts.Domain.Entities;
 using MBD.BankAccounts.Domain.Interfaces.Repositories;
+using MBD.Core.Data;
 using MBD.Core.Identity;
 
 namespace MBD.BankAccounts.Application.Services
@@ -16,13 +17,15 @@ namespace MBD.BankAccounts.Application.Services
     {
         private readonly IAspNetUser _aspNetUser;
         private readonly IAccountRepository _repository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public AccountAppService(IAspNetUser aspNetUser, IAccountRepository repository, IMapper mapper)
+        public AccountAppService(IAspNetUser aspNetUser, IAccountRepository repository, IMapper mapper, IUnitOfWork unitOfWork)
         {
             _aspNetUser = aspNetUser;
             _repository = repository;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IResult<AccountResponse>> CreateAsync(CreateAccountRequest request)
@@ -34,7 +37,7 @@ namespace MBD.BankAccounts.Application.Services
             var account = new Account(_aspNetUser.UserId, request.Description, request.InitialBalance, request.Type);
 
             _repository.Add(account);
-            await _repository.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Result<AccountResponse>.Success(_mapper.Map<AccountResponse>(account));
         }
@@ -58,7 +61,7 @@ namespace MBD.BankAccounts.Application.Services
                 account.Deactivate();
 
             _repository.Update(account);
-            await _repository.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Result.Success();
         }
@@ -84,7 +87,7 @@ namespace MBD.BankAccounts.Application.Services
                 return Result.Fail("Conta bancária inválida.");
 
             _repository.Remove(account);
-            await _repository.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Result.Success();
         }

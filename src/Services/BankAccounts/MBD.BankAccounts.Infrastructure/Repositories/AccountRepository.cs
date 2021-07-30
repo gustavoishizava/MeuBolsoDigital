@@ -12,7 +12,7 @@ namespace MBD.BankAccounts.Infrastructure.Repositories
     public class AccountRepository : IAccountRepository
     {
         private readonly BankAccountContext _context;
-        
+
         public AccountRepository(BankAccountContext context)
         {
             _context = context;
@@ -38,11 +38,6 @@ namespace MBD.BankAccounts.Infrastructure.Repositories
         public void Remove(Account account)
         {
             _context.Remove(account);
-        }
-
-        public async Task<int> SaveChangesAsync()
-        {
-            return await _context.SaveChangesAsync();
         }
 
         public void Update(Account account)

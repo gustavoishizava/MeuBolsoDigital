@@ -3,7 +3,9 @@ using MBD.BankAccounts.Application.Interfaces;
 using MBD.BankAccounts.Application.Services;
 using MBD.BankAccounts.Domain.Interfaces.Repositories;
 using MBD.BankAccounts.Infrastructure.Repositories;
+using MBD.Core.Data;
 using MBD.Core.Identity;
+using MBD.Infrastructure.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MBD.BankAccounts.API.Configuration
@@ -28,10 +30,11 @@ namespace MBD.BankAccounts.API.Configuration
 
             return services;
         }
-       
+
         private static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }

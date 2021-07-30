@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Bogus;
+using MBD.Core.Data;
 using MBD.Identity.Domain.Entities;
 using MBD.Identity.Domain.Interfaces.Repositories;
 using MBD.Identity.Domain.Services;
@@ -44,11 +45,11 @@ namespace MBD.Identity.Tests.unit_tests.Services
 
             _mocker.GetMock<IUserRepository>()
                 .Verify(method => method.GetByEmailAsync(It.IsAny<string>()), Times.Once);
-            
+
             _mocker.GetMock<IUserRepository>()
                 .Verify(method => method.Add(It.IsAny<User>()), Times.Once);
 
-            _mocker.GetMock<IUserRepository>()
+            _mocker.GetMock<IUnitOfWork>()
                 .Verify(method => method.SaveChangesAsync(), Times.Once);
         }
 
@@ -73,11 +74,11 @@ namespace MBD.Identity.Tests.unit_tests.Services
 
             _mocker.GetMock<IUserRepository>()
                 .Verify(method => method.GetByEmailAsync(It.IsAny<string>()), Times.Once);
-            
+
             _mocker.GetMock<IUserRepository>()
                 .Verify(method => method.Add(It.IsAny<User>()), Times.Never);
 
-            _mocker.GetMock<IUserRepository>()
+            _mocker.GetMock<IUnitOfWork>()
                 .Verify(method => method.SaveChangesAsync(), Times.Never);
         }
     }

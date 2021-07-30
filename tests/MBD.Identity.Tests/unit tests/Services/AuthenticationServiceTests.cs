@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using MBD.Core.Data;
 using MBD.Core.DomainObjects;
 using MBD.Identity.Domain.Configuration;
 using MBD.Identity.Domain.Entities;
@@ -53,7 +54,7 @@ namespace MBD.Identity.Tests.unit_tests.Services
             // Assert
             _mocker.GetMock<IUserRepository>().Verify(repository => repository.GetByEmailAsync(_validEmail), Times.Once);
             _mocker.GetMock<IUserRepository>().Verify(repository => repository.AddRefreshToken(It.IsAny<RefreshToken>()), Times.Once);
-            _mocker.GetMock<IUserRepository>().Verify(repository => repository.SaveChangesAsync(), Times.Once);
+            _mocker.GetMock<IUnitOfWork>().Verify(repository => repository.SaveChangesAsync(), Times.Once);
 
             Assert.False(accessTokenResponse.HasErrors);
             Assert.NotEmpty(accessTokenResponse.AccessToken);
@@ -78,7 +79,7 @@ namespace MBD.Identity.Tests.unit_tests.Services
             // Assert
             _mocker.GetMock<IUserRepository>().Verify(repository => repository.GetByEmailAsync(email), string.IsNullOrEmpty(email) ? Times.Never : Times.Once);
             _mocker.GetMock<IUserRepository>().Verify(repository => repository.AddRefreshToken(It.IsAny<RefreshToken>()), Times.Never);
-            _mocker.GetMock<IUserRepository>().Verify(repository => repository.SaveChangesAsync(), Times.Never);
+            _mocker.GetMock<IUnitOfWork>().Verify(repository => repository.SaveChangesAsync(), Times.Never);
 
             Assert.True(accessTokenResponse.HasErrors);
         }
@@ -104,7 +105,7 @@ namespace MBD.Identity.Tests.unit_tests.Services
             var revokedRefreshTokenAuthenticationResponse = await _authenticationService.AuthenticateByRefreshTokenAsync(revokedRefreshToken.Token);
 
             // Assert
-            _mocker.GetMock<IUserRepository>().Verify(repository => repository.SaveChangesAsync(), Times.Never);
+            _mocker.GetMock<IUnitOfWork>().Verify(repository => repository.SaveChangesAsync(), Times.Never);
 
             Assert.True(emptyGuidAuthenticationResponse.HasErrors);
             Assert.True(invalidGuidAuthenticationResponse.HasErrors);
@@ -138,7 +139,7 @@ namespace MBD.Identity.Tests.unit_tests.Services
             var refreshTokenAuthenticationResponse = await _authenticationService.AuthenticateByRefreshTokenAsync(validRefreshToken.Token);
 
             // Assert
-            _mocker.GetMock<IUserRepository>().Verify(repository => repository.SaveChangesAsync(), Times.Once);
+            _mocker.GetMock<IUnitOfWork>().Verify(repository => repository.SaveChangesAsync(), Times.Once);
 
             Assert.False(refreshTokenAuthenticationResponse.HasErrors);
         }

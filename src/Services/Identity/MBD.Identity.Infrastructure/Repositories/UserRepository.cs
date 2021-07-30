@@ -40,10 +40,5 @@ namespace MBD.Identity.Infrastructure.Repositories
         {
             return await _context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == token);
         }
-
-        public async Task<int> SaveChangesAsync()
-        {
-            return await _context.SaveChangesAsync();
-        }
     }
 }

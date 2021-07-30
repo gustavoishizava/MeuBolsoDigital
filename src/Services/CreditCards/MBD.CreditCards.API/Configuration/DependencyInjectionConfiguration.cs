@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using MBD.Core.Data;
 using MBD.Core.Identity;
 using MBD.CreditCards.API.Configuration.HttpClient;
 using MBD.CreditCards.Application.Interfaces;
@@ -8,6 +9,7 @@ using MBD.CreditCards.Domain.Interfaces.Repositories;
 using MBD.CreditCards.Domain.Interfaces.Services;
 using MBD.CreditCards.Infrastructure.Repositories;
 using MBD.CreditCards.Infrastructure.Services;
+using MBD.Infrastructure.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
@@ -39,6 +41,7 @@ namespace MBD.CreditCards.API.Configuration
         private static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<ICreditCardRepository, CreditCardRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }

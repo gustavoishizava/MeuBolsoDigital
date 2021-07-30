@@ -37,11 +37,6 @@ namespace MBD.CreditCards.Infrastructure.Repositories
             _context.Update(entity);
         }
 
-        public async Task<int> SaveChangesAsync()
-        {
-            return await _context.SaveChangesAsync();
-        }
-
         public async Task<IEnumerable<CreditCard>> GetAllAsync()
         {
             return await _context.CreditCards.ToListAsync();

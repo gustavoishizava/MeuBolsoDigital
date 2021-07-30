@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using MBD.Application.Core.Response;
+using MBD.Core.Data;
 using MBD.Core.Enumerations;
 using MBD.Core.Identity;
 using MBD.CreditCards.Application.Interfaces;
@@ -20,13 +21,15 @@ namespace MBD.CreditCards.Application.Services
         private readonly IMapper _mapper;
         private readonly ICreditCardRepository _repository;
         private readonly IBankAccountService _bankAccountService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CreditCardAppService(IAspNetUser aspNetUser, IMapper mapper, ICreditCardRepository repository, IBankAccountService bankAccountService)
+        public CreditCardAppService(IAspNetUser aspNetUser, IMapper mapper, ICreditCardRepository repository, IBankAccountService bankAccountService, IUnitOfWork unitOfWork)
         {
             _aspNetUser = aspNetUser;
             _mapper = mapper;
             _repository = repository;
             _bankAccountService = bankAccountService;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IResult<CreditCardResponse>> CreateAsync(CreateCreditCardRequest request)
@@ -48,7 +51,7 @@ namespace MBD.CreditCards.Application.Services
                                             request.Brand);
 
             _repository.Add(creditCard);
-            await _repository.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Result<CreditCardResponse>.Success(_mapper.Map<CreditCardResponse>(creditCard));
         }
@@ -74,7 +77,7 @@ namespace MBD.CreditCards.Application.Services
                 return Result.Fail("Cartão de crédito inválido.");
 
             _repository.Remove(creditCard);
-            await _repository.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Result.Success();
         }
@@ -104,7 +107,7 @@ namespace MBD.CreditCards.Application.Services
             else
                 creditCard.Deactivate();
 
-            await _repository.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Result.Success();
         }

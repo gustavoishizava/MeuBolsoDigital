@@ -2,10 +2,10 @@ using System.Reflection;
 using MBD.BankAccounts.Application.Interfaces;
 using MBD.BankAccounts.Application.Services;
 using MBD.BankAccounts.Domain.Interfaces.Repositories;
+using MBD.BankAccounts.Infrastructure;
 using MBD.BankAccounts.Infrastructure.Repositories;
 using MBD.Core.Data;
 using MBD.Core.Identity;
-using MBD.Infrastructure.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MBD.BankAccounts.API.Configuration

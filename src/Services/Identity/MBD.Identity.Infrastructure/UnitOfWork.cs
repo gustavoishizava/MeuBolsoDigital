@@ -1,14 +1,14 @@
 using System.Threading.Tasks;
 using MBD.Core.Data;
-using Microsoft.EntityFrameworkCore;
+using MBD.Identity.Infrastructure.Context;
 
-namespace MBD.Infrastructure.Core
+namespace MBD.Identity.Infrastructure
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly DbContext _context;
+        private readonly IdentityContext _context;
 
-        public UnitOfWork(DbContext context)
+        public UnitOfWork(IdentityContext context)
         {
             _context = context;
         }

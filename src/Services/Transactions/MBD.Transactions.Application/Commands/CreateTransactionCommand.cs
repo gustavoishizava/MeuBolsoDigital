@@ -1,8 +1,13 @@
 using System;
+using FluentValidation;
+using FluentValidation.Results;
+using MBD.Application.Core.Response;
+using MBD.Transactions.Application.Commands.Common;
+using MBD.Transactions.Application.Response;
 
 namespace MBD.Transactions.Application.Commands
 {
-    public class CreateTransactionCommand
+    public class CreateTransactionCommand : Command<IResult<TransactionResponse>>
     {
         public Guid BankAccountId { get; private set; }
         public Guid CategoryId { get; private set; }
@@ -21,6 +26,36 @@ namespace MBD.Transactions.Application.Commands
             PaymentDate = paymentDate;
             Value = value;
             Description = description;
+        }
+
+        public override ValidationResult Validate()
+        {
+            return new CreateTransactionValidation().Validate(this);
+        }
+
+        private class CreateTransactionValidation : AbstractValidator<CreateTransactionCommand>
+        {
+            public CreateTransactionValidation()
+            {
+                RuleFor(x => x.BankAccountId)
+                    .NotEmpty();
+
+                RuleFor(x => x.CategoryId)
+                    .NotEmpty();
+
+                RuleFor(x => x.ReferenceDate)
+                    .NotEmpty();
+
+                RuleFor(x => x.DueDate)
+                    .NotEmpty();
+
+                RuleFor(x => x.Value)
+                    .NotEmpty()
+                    .GreaterThanOrEqualTo(0);
+
+                RuleFor(x => x.Description)
+                    .MaximumLength(100);
+            }
         }
     }
 }

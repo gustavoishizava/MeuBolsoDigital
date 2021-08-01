@@ -3,12 +3,13 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="10.3.0" />
-    <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="FluentValidation" Version="10.3.0"/>
+    <PackageReference Include="MediatR" Version="9.0.0"/>
+    <PackageReference Include="AutoMapper" Version="10.1.1"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Building blocks\Services\MBD.Application.Core\MBD.Application.Core.csproj" />
-    <ProjectReference Include="..\MBD.Transactions.Domain\MBD.Transactions.Domain.csproj" />
-    <ProjectReference Include="..\..\..\Building blocks\Core\MBD.Core\MBD.Core.csproj" />
+    <ProjectReference Include="..\..\..\Building blocks\Services\MBD.Application.Core\MBD.Application.Core.csproj"/>
+    <ProjectReference Include="..\MBD.Transactions.Domain\MBD.Transactions.Domain.csproj"/>
+    <ProjectReference Include="..\..\..\Building blocks\Core\MBD.Core\MBD.Core.csproj"/>
   </ItemGroup>
 </Project>

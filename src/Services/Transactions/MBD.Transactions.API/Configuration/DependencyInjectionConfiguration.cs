@@ -1,7 +1,7 @@
 using MBD.Core.Data;
 using MBD.Core.Identity;
-using MBD.Infrastructure.Core;
 using MBD.Transactions.Domain.Interfaces.Repositories;
+using MBD.Transactions.Infrastructure;
 using MBD.Transactions.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 

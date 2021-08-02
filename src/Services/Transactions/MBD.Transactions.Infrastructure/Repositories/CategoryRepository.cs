@@ -24,17 +24,30 @@ namespace MBD.Transactions.Infrastructure.Repositories
             _context.Add(category);
         }
 
+        public async Task<IEnumerable<Category>> GetAllAsync(bool includeSubCategories = true)
+        {
+            var query = _context.Categories.AsNoTracking();
+            if (includeSubCategories)
+                query = query.Where(x => x.ParentCategoryId == null).Include(x => x.SubCategories);
+
+            return await query.ToListAsync();
+        }
+
         public async Task<Category> GetByIdAsync(Guid id)
         {
             return await _context.Categories.FindAsync(id);
         }
 
-        public async Task<IEnumerable<Category>> GetByTypeAsync(TransactionType type)
+        public async Task<IEnumerable<Category>> GetByTypeAsync(TransactionType type, bool includeSubCategories = true)
         {
-            return await _context.Categories
-                    .AsNoTracking()
-                    .Where(x => x.Type == type)
-                    .ToListAsync();
+            var query = _context.Categories
+                .AsNoTracking()
+                .Where(x => x.Type == type);
+
+            if (includeSubCategories)
+                query = query.Where(x => x.ParentCategoryId == null).Include(x => x.SubCategories);
+
+            return await query.ToListAsync();
         }
 
         public void Remove(Category category)

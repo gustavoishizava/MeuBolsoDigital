@@ -43,6 +43,27 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             Assert.Null(category.ParentCategoryId);
         }
 
+        [Theory(DisplayName = "Atualizar uma categoria existente deve retornar sucesso.")]
+        [InlineData("Estudo", true)]
+        [InlineData("Telefone", false)]
+        public void ValidCategory_UpdateCategory_ReturnSuccess(string name, bool active)
+        {
+            // Arrange
+            var category = new Category(Guid.NewGuid(), "Categoria", TransactionType.Income);
+            var statusExcepted = active ? Status.Active : Status.Inactive;
+
+            // Act
+            category.SetName(name);
+            if (active)
+                category.Activate();
+            else
+                category.Deactivate();
+
+            // Arrange
+            Assert.Equal(name, category.Name);
+            Assert.Equal(statusExcepted, category.Status);
+        }
+
         [Theory(DisplayName = "Adicionar subcategoria a uma categoria válida deve retornar sucesso.")]
         [InlineData(TransactionType.Income)]
         [InlineData(TransactionType.Expense)]

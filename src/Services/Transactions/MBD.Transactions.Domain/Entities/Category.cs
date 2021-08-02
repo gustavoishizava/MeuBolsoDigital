@@ -22,13 +22,11 @@ namespace MBD.Transactions.Domain.Entities
         public Category(Guid userId, string name, TransactionType type)
         {
             Assertions.IsNotEmpty(userId, "Id de usuário inválido.");
-            Assertions.IsNotNullOrEmpty(name, "É necessário informar um nome.");
-            Assertions.HasMaxLength(name, 100, "O nome deve conter no máximo 100 caracteres.");
 
             TenantId = userId;
-            Name = name;
+            SetName(name);
             Type = type;
-            Status = Status.Active;
+            Activate();
         }
 
         /// <summary>
@@ -40,6 +38,24 @@ namespace MBD.Transactions.Domain.Entities
             Assertions.IsNotEmpty(parentCategoryId, "Id de categoria pai inválido.");
 
             ParentCategoryId = parentCategoryId;
+        }
+
+        public void SetName(string name)
+        {
+            Assertions.IsNotNullOrEmpty(name, "É necessário informar um nome.");
+            Assertions.HasMaxLength(name, 100, "O nome deve conter no máximo 100 caracteres.");
+
+            Name = name;
+        }
+
+        public void Activate()
+        {
+            Status = Status.Active;
+        }
+
+        public void Deactivate()
+        {
+            Status = Status.Inactive;
         }
 
         public void AddSubCategory(string name)

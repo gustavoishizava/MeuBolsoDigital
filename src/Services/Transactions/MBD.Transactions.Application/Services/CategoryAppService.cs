@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using MBD.Application.Core.Response;
 using MBD.Core.Data;
+using MBD.Core.Enumerations;
 using MBD.Core.Identity;
 using MBD.Transactions.Application.Interfaces;
 using MBD.Transactions.Application.Request;
 using MBD.Transactions.Application.Response;
 using MBD.Transactions.Domain.Entities;
+using MBD.Transactions.Domain.Enumerations;
 using MBD.Transactions.Domain.Interfaces.Repositories;
 
 namespace MBD.Transactions.Application.Services
@@ -42,9 +45,13 @@ namespace MBD.Transactions.Application.Services
             return Result<CategoryResponse>.Success(_mapper.Map<CategoryResponse>(category));
         }
 
-        public Task<IEnumerable<CategoryResponse>> GetAllAsync()
+        public async Task<CategoryByTypeResponse> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var allCategories = _mapper.Map<List<CategoryWithSubCategoriesResponse>>(await _repository.GetAllAsync());
+            var incomeCategories = allCategories.Where(x => x.Type == TransactionType.Income).ToList();
+            var expenseCategories = allCategories.Where(x => x.Type == TransactionType.Expense).ToList();
+
+            return new CategoryByTypeResponse(incomeCategories, expenseCategories);
         }
 
         public async Task<IResult<CategoryResponse>> GetByIdAsync(Guid id)
@@ -54,6 +61,11 @@ namespace MBD.Transactions.Application.Services
                 return Result<CategoryResponse>.Fail("Categoria inválida.");
 
             return Result<CategoryResponse>.Success(_mapper.Map<CategoryResponse>(category));
+        }
+
+        public async Task<IEnumerable<CategoryWithSubCategoriesResponse>> GetByTypeAsync(TransactionType type)
+        {
+            return _mapper.Map<List<CategoryWithSubCategoriesResponse>>(await _repository.GetByTypeAsync(type));
         }
 
         public async Task<IResult> RemoveAsync(Guid id)
@@ -68,9 +80,26 @@ namespace MBD.Transactions.Application.Services
             return Result.Success();
         }
 
-        public Task<IResult> UpdateAsync(UpdateCategoryRequest request)
+        public async Task<IResult> UpdateAsync(UpdateCategoryRequest request)
         {
-            throw new NotImplementedException();
+            var validation = request.Validate();
+            if (!validation.IsValid)
+                return Result.Fail(validation.ToString());
+
+            var category = await _repository.GetByIdAsync(request.Id);
+            if (category == null)
+                return Result.Fail("Categoria inválida.");
+
+            category.SetName(request.Name);
+            if (request.Status == Status.Active)
+                category.Activate();
+            else
+                category.Deactivate();
+
+            _repository.Update(category);
+            await _unitOfWork.SaveChangesAsync();
+
+            return Result.Success();
         }
     }
 }

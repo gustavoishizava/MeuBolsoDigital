@@ -9,6 +9,7 @@ namespace MBD.Transactions.Application.AutoMapper
         public DomainToReponseProfile()
         {
             CreateMap<Category, CategoryResponse>(MemberList.Destination);
+            CreateMap<Category, CategoryWithSubCategoriesResponse>(MemberList.Destination);
         }
     }
 }

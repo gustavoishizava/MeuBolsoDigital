@@ -40,6 +40,10 @@ namespace MBD.Transactions.Domain.Entities
             ParentCategoryId = parentCategoryId;
         }
 
+        protected Category()
+        {
+        }
+
         public void SetName(string name)
         {
             Assertions.IsNotNullOrEmpty(name, "É necessário informar um nome.");

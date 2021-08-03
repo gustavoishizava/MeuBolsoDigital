@@ -1,6 +1,7 @@
 using MBD.Core.Enumerations;
 using MBD.Infrastructure.Core.Configuration;
 using MBD.Transactions.Domain.Entities;
+using MBD.Transactions.Domain.Enumerations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -35,7 +36,7 @@ namespace MBD.Transactions.Infrastructure.Context.Configuration
                 .IsRequired()
                 .HasColumnType("VARCHAR(10)")
                 .HasMaxLength(10)
-                .HasConversion(new EnumToStringConverter<Status>());
+                .HasConversion(new EnumToStringConverter<TransactionStatus>());
 
             builder.Property(x => x.Value)
                 .IsRequired()

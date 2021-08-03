@@ -1,4 +1,3 @@
-using MBD.Core.Enumerations;
 using MBD.Infrastructure.Core.Configuration;
 using MBD.Transactions.Domain.Entities;
 using MBD.Transactions.Domain.Enumerations;

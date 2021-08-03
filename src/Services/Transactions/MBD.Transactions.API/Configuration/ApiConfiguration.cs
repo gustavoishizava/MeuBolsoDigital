@@ -16,7 +16,7 @@ namespace MBD.Transactions.API.Configuration
             {
                 routeOptions.LowercaseUrls = true;
                 routeOptions.LowercaseQueryStrings = true;
-                routeOptions.ConstraintMap.Add("transactionType", typeof(TransactionType));
+                routeOptions.ConstraintMap.Add("transactionType", typeof(TransactionTypeRouteConstraint));
             });
 
             services.AddControllers()

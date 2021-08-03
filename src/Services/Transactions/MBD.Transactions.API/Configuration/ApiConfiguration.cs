@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using MBD.Transactions.Domain.Enumerations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
@@ -15,6 +16,7 @@ namespace MBD.Transactions.API.Configuration
             {
                 routeOptions.LowercaseUrls = true;
                 routeOptions.LowercaseQueryStrings = true;
+                routeOptions.ConstraintMap.Add("transactionType", typeof(TransactionType));
             });
 
             services.AddControllers()

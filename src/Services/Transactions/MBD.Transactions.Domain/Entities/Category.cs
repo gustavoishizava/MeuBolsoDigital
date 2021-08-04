@@ -62,9 +62,19 @@ namespace MBD.Transactions.Domain.Entities
             Status = Status.Inactive;
         }
 
-        public void AddSubCategory(string name)
+        public Category AddSubCategory(string name)
         {
-            _subCategories.Add(new Category(TenantId, Id, name, Type));
+            Assertions.IsTrue(CanHaveSubCategories(), "Não é permitido adicionar subcategorias à uma categoria filha.");
+
+            var subCategory = new Category(TenantId, Id, name, Type);
+            _subCategories.Add(subCategory);
+
+            return subCategory;
+        }
+
+        public bool CanHaveSubCategories()
+        {
+            return ParentCategoryId == null;
         }
     }
 }

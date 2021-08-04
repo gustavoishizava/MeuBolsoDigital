@@ -90,7 +90,7 @@ namespace MBD.Transactions.API.Controllers
         }
 
         [HttpGet("{id:GUID}")]
-        [ProducesResponseType(typeof(CategoryByTypeResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {

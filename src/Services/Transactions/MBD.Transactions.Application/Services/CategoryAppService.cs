@@ -37,9 +37,24 @@ namespace MBD.Transactions.Application.Services
             if (!validation.IsValid)
                 return Result<CategoryResponse>.Fail(validation.ToString());
 
-            var category = new Category(_aspNetUser.UserId, request.Name, request.Type);
+            Category category = null;
+            if (request.ParentCategoryId != null)
+            {
+                var parentCategory = await _repository.GetByIdAsync(request.ParentCategoryId.Value);
+                if (parentCategory == null)
+                    return Result<CategoryResponse>.Fail("Categoria pai inválida.");
 
-            _repository.Add(category);
+                if (!parentCategory.CanHaveSubCategories())
+                    return Result<CategoryResponse>.Fail("Não é permitido adicionar uma subcategoria à uma categoria filha.");
+
+                category = parentCategory.AddSubCategory(request.Name);
+            }
+            else
+            {
+                category = new Category(_aspNetUser.UserId, request.Name, request.Type);
+                _repository.Add(category);
+            }
+
             await _unitOfWork.SaveChangesAsync();
 
             return Result<CategoryResponse>.Success(_mapper.Map<CategoryResponse>(category));

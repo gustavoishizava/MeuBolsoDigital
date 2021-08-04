@@ -75,13 +75,24 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             Category subCategory = null;
 
             // Act
-            category.AddSubCategory("Categoria filha");
-            subCategory = category.SubCategories.FirstOrDefault();
+            subCategory = category.AddSubCategory("Categoria filha");
 
             // Assert
             Assert.NotNull(subCategory);
             Assert.NotEmpty(category.SubCategories);
             Assert.Equal(type, subCategory.Type);
+            Assert.Single(category.SubCategories);
+        }
+
+        [Fact(DisplayName = "Adicionar subcategoria à uma subcategoria deve retornar Domain Exception.")]
+        public void ValidSubCategory_AddNewSubCategoryToSubCategory_ReturnDomainException()
+        {
+            // Arrange
+            var category = new Category(Guid.NewGuid(), "Categoria pai", TransactionType.Income);
+            var subCategory = category.AddSubCategory("Subcategoria");
+
+            // Act && Assert
+            Assert.Throws<DomainException>(() => subCategory.AddSubCategory("Nova Subcategoria"));
         }
     }
 }

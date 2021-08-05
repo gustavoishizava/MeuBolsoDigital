@@ -1,15 +1,19 @@
 using System;
 using System.Reflection;
+using MBD.Application.Core.Response;
 using MBD.Core.Data;
 using MBD.Core.Identity;
 using MBD.Transactions.API.Configuration.HttpClient;
+using MBD.Transactions.Application.Commands;
 using MBD.Transactions.Application.Interfaces;
+using MBD.Transactions.Application.Response;
 using MBD.Transactions.Application.Services;
 using MBD.Transactions.Domain.Interfaces.Repositories;
 using MBD.Transactions.Domain.Interfaces.Services;
 using MBD.Transactions.Infrastructure;
 using MBD.Transactions.Infrastructure.Repositories;
 using MBD.Transactions.Infrastructure.Services;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
@@ -23,7 +27,8 @@ namespace MBD.Transactions.API.Configuration
             services
                 .AddAppServices()
                 .AddRepositories()
-                .AddHttpClients(configuration);
+                .AddHttpClients(configuration)
+                .AddCommands();
 
             services.AddHttpContextAccessor();
             services.AddScoped<IAspNetUser, AspNetUser>();
@@ -60,6 +65,15 @@ namespace MBD.Transactions.API.Configuration
             .AddPolicyHandler(PollyRetryConfiguration.WaitToRetry())
             .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
 
+
+            return services;
+        }
+
+        private static IServiceCollection AddCommands(this IServiceCollection services)
+        {
+            services.AddMediatR(Assembly.GetCallingAssembly());
+
+            services.AddScoped<IRequestHandler<CreateTransactionCommand, IResult<TransactionResponse>>, TransactionCommandHandler>();
 
             return services;
         }

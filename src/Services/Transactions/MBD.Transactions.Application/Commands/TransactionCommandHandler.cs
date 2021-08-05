@@ -52,6 +52,9 @@ namespace MBD.Transactions.Application.Commands
                 request.Description
             );
 
+            if (request.PaymentDate != null)
+                transaction.Pay(request.PaymentDate.Value);
+
             _transactionRepository.Add(transaction);
             await _unitOfWork.SaveChangesAsync();
 

@@ -9,13 +9,13 @@ namespace MBD.Transactions.Application.Commands
 {
     public class CreateTransactionCommand : Command<IResult<TransactionResponse>>
     {
-        public Guid BankAccountId { get; private set; }
-        public Guid CategoryId { get; private set; }
-        public DateTime ReferenceDate { get; private set; }
-        public DateTime DueDate { get; private set; }
-        public DateTime? PaymentDate { get; private set; }
-        public decimal Value { get; private set; }
-        public string Description { get; private set; }
+        public Guid BankAccountId { get; init; }
+        public Guid CategoryId { get; init; }
+        public DateTime ReferenceDate { get; init; }
+        public DateTime DueDate { get; init; }
+        public DateTime? PaymentDate { get; init; }
+        public decimal Value { get; init; }
+        public string Description { get; init; }
 
         public CreateTransactionCommand(Guid bankAccountId, Guid categoryId, DateTime referenceDate, DateTime dueDate, DateTime? paymentDate, decimal value, string description)
         {

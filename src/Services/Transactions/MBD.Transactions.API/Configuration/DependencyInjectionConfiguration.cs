@@ -1,22 +1,29 @@
+using System;
 using System.Reflection;
 using MBD.Core.Data;
 using MBD.Core.Identity;
+using MBD.Transactions.API.Configuration.HttpClient;
 using MBD.Transactions.Application.Interfaces;
 using MBD.Transactions.Application.Services;
 using MBD.Transactions.Domain.Interfaces.Repositories;
+using MBD.Transactions.Domain.Interfaces.Services;
 using MBD.Transactions.Infrastructure;
 using MBD.Transactions.Infrastructure.Repositories;
+using MBD.Transactions.Infrastructure.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Polly;
 
 namespace MBD.Transactions.API.Configuration
 {
     public static class DependencyInjectionConfiguration
     {
-        public static IServiceCollection AddDependencyInjection(this IServiceCollection services)
+        public static IServiceCollection AddDependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
             services
                 .AddAppServices()
-                .AddRepositories();
+                .AddRepositories()
+                .AddHttpClients(configuration);
 
             services.AddHttpContextAccessor();
             services.AddScoped<IAspNetUser, AspNetUser>();
@@ -37,6 +44,22 @@ namespace MBD.Transactions.API.Configuration
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddHttpClients(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
+
+            services.AddHttpClient<IBankAccountService, BankAccountService>(config =>
+            {
+                config.BaseAddress = new Uri(configuration["UrlServices:BankAccountService"]);
+            })
+            .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
+            .AddPolicyHandler(PollyRetryConfiguration.WaitToRetry())
+            .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
+
 
             return services;
         }

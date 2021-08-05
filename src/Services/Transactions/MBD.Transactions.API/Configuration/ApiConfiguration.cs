@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -9,7 +10,7 @@ namespace MBD.Transactions.API.Configuration
 {
     public static class ApiConfiguration
     {
-        public static IServiceCollection AddApiConfiguration(this IServiceCollection services)
+        public static IServiceCollection AddApiConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<RouteOptions>(routeOptions =>
             {
@@ -27,7 +28,7 @@ namespace MBD.Transactions.API.Configuration
                 {
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
-            services.AddDependencyInjection();
+            services.AddDependencyInjection(configuration);
 
             return services;
         }

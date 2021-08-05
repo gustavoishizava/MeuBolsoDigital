@@ -26,7 +26,7 @@ namespace MBD.Transactions.API
         {
             services.AddEFContextConfiguration(Configuration);
             services.AddJwtConfiguration(Configuration);
-            services.AddApiConfiguration();
+            services.AddApiConfiguration(Configuration);
             services.AddSwaggerConfiguration();
         }
 

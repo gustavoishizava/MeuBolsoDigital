@@ -42,7 +42,7 @@ namespace MBD.Transactions.API.Controllers
 
         [HttpPut]
         [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Update([FromBody] UpdateCategoryRequest request)
         {
@@ -54,7 +54,7 @@ namespace MBD.Transactions.API.Controllers
         }
 
         [HttpDelete("{id:GUID}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {

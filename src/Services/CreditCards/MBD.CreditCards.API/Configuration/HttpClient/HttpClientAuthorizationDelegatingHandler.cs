@@ -25,9 +25,9 @@ namespace MBD.CreditCards.API.Configuration.HttpClient
                 request.Headers.Add("Authorization", new List<string>() { authorizationHeader });
 
             var accessToken = _aspNetUser.GetHttpContext().GetTokenAsync("access_token").GetAwaiter().GetResult();
-            if(!string.IsNullOrEmpty(accessToken))
+            if (!string.IsNullOrEmpty(accessToken))
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-                
+
             return base.SendAsync(request, cancellationToken);
         }
     }

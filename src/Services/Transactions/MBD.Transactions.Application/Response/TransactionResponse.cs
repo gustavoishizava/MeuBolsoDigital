@@ -1,5 +1,6 @@
 using System;
 using MBD.Transactions.Domain.Entities;
+using MBD.Transactions.Domain.Enumerations;
 
 namespace MBD.Transactions.Application.Response
 {
@@ -11,6 +12,7 @@ namespace MBD.Transactions.Application.Response
         public DateTime ReferenceDate { get; set; }
         public DateTime DueDate { get; set; }
         public DateTime? PaymentDate { get; set; }
+        public TransactionStatus Status { get; set; }
         public decimal Value { get; set; }
         public string Description { get; set; }
 
@@ -24,6 +26,7 @@ namespace MBD.Transactions.Application.Response
             PaymentDate = transaction.PaymentDate;
             Value = transaction.Value;
             Description = transaction.Description;
+            Status = transaction.Status;
         }
 
         public TransactionResponse()

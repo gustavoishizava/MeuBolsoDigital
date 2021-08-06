@@ -35,5 +35,18 @@ namespace MBD.Transactions.API.Controllers
 
             return Ok(result.Data);
         }
+
+        [HttpPut]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Update([FromBody] UpdateTransactionCommand command)
+        {
+            var result = await _mediator.Send(command);
+            if (!result.Succeeded)
+                return BadRequest(new ErrorModel(result));
+
+            return NoContent();
+        }
     }
 }

@@ -7,6 +7,7 @@ using MBD.Transactions.API.Configuration.HttpClient;
 using MBD.Transactions.Application.Commands;
 using MBD.Transactions.Application.DomainEventHandlers;
 using MBD.Transactions.Application.Interfaces;
+using MBD.Transactions.Application.Queries;
 using MBD.Transactions.Application.Response;
 using MBD.Transactions.Application.Services;
 using MBD.Transactions.Domain.Events;
@@ -31,6 +32,7 @@ namespace MBD.Transactions.API.Configuration
                 .AddRepositories()
                 .AddHttpClients(configuration)
                 .AddCommands()
+                .AddQueries()
                 .AddDomainEvents();
 
             services.AddHttpContextAccessor();
@@ -85,6 +87,13 @@ namespace MBD.Transactions.API.Configuration
         private static IServiceCollection AddDomainEvents(this IServiceCollection services)
         {
             services.AddScoped<INotificationHandler<TransactionCreatedDomainEvent>, TransactionCreatedDomainEventHandler>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddQueries(this IServiceCollection services)
+        {
+            services.AddScoped<ITransactionQuery, TransactionQuery>();
 
             return services;
         }

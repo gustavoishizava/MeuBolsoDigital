@@ -24,6 +24,7 @@ namespace MBD.Transactions.Application.DomainEventHandlers
         {
             var transactionModel = new TransactionModel(
                 notification.AggregateId,
+                notification.TenantId,
                 new BankAccountModel(notification.BankAccountId, notification.BankAccountDescription),
                 new CategoryModel(notification.CategoryId, notification.CategoryName),
                 notification.ReferenceDate,

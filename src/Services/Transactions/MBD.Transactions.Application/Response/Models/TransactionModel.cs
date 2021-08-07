@@ -8,6 +8,7 @@ namespace MBD.Transactions.Application.Response.Models
     {
         [BsonId]
         public string Id { get; set; }
+        public string TenantId { get; set; }
         public BankAccountModel BankAccount { get; set; }
         public CategoryModel Category { get; set; }
         public DateTime ReferenceDate { get; set; }
@@ -17,9 +18,10 @@ namespace MBD.Transactions.Application.Response.Models
         public decimal Value { get; set; }
         public string Description { get; set; }
 
-        public TransactionModel(Guid id, BankAccountModel bankAccount, CategoryModel category, DateTime referenceDate, DateTime dueDate, DateTime? paymentDate, TransactionStatus status, decimal value, string description)
+        public TransactionModel(Guid id, Guid tenantId, BankAccountModel bankAccount, CategoryModel category, DateTime referenceDate, DateTime dueDate, DateTime? paymentDate, TransactionStatus status, decimal value, string description)
         {
             Id = id.ToString();
+            TenantId = tenantId.ToString();
             BankAccount = bankAccount;
             Category = category;
             ReferenceDate = referenceDate;

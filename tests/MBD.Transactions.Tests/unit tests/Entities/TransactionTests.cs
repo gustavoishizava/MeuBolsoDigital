@@ -2,6 +2,7 @@ using System;
 using MBD.Core.DomainObjects;
 using MBD.Transactions.Domain.Entities;
 using MBD.Transactions.Domain.Enumerations;
+using MBD.Transactions.Domain.ValueObjects;
 using Xunit;
 
 namespace MBD.Transactions.Tests.unit_tests.Entities
@@ -9,10 +10,14 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
     public class TransactionTests
     {
         private readonly Transaction _validTransaction;
+        private readonly BankAccount _bankAccount;
+        private readonly Category _category;
 
         public TransactionTests()
         {
-            _validTransaction = new Transaction(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), DateTime.Now, DateTime.Now.AddDays(5), 100, string.Empty);
+            _bankAccount = new BankAccount { Id = Guid.NewGuid(), Description = "Nubank" };
+            _category = new Category(Guid.NewGuid(), "Category", TransactionType.Income);
+            _validTransaction = new Transaction(Guid.NewGuid(), _bankAccount, _category, DateTime.Now, DateTime.Now.AddDays(5), 100, string.Empty);
         }
 
         [Theory(DisplayName = "Criar transação com valor inválido deve retornar Domain Exception.")]
@@ -22,7 +27,7 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
         public void InvalidValue_NewTransaction_ReturnDomainException(decimal value)
         {
             // Arrange && Act && Assert
-            Assert.Throws<DomainException>(() => new Transaction(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), DateTime.Now, DateTime.Now, value, string.Empty));
+            Assert.Throws<DomainException>(() => new Transaction(Guid.NewGuid(), _bankAccount, _category, DateTime.Now, DateTime.Now, value, string.Empty));
         }
 
         [Theory(DisplayName = "Criar transação com parâmetros válidos deve retornar sucesso.")]
@@ -41,7 +46,7 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             var dueDate = referenceDate.AddDays(5);
 
             // Act
-            var transaction = new Transaction(tenantId, bankAccountId, categoryId, referenceDate, dueDate, value, description);
+            var transaction = new Transaction(tenantId, _bankAccount, _category, referenceDate, dueDate, value, description);
 
             // Assert
             Assert.Equal(tenantId, transaction.TenantId);

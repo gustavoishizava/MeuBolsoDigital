@@ -46,8 +46,8 @@ namespace MBD.Transactions.Application.Commands
 
             var transaction = new Transaction(
                 _aspNetUser.UserId,
-                bankAccount.Id,
-                category.Id,
+                bankAccount,
+                category,
                 request.ReferenceDate,
                 request.DueDate,
                 request.Value,

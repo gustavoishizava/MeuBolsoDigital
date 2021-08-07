@@ -1,11 +1,14 @@
 using System;
 using MBD.Core;
 using MBD.Core.Entities;
+using MBD.Transactions.Domain.Entities.Common;
 using MBD.Transactions.Domain.Enumerations;
+using MBD.Transactions.Domain.Events;
+using MBD.Transactions.Domain.ValueObjects;
 
 namespace MBD.Transactions.Domain.Entities
 {
-    public class Transaction : BaseEntity, IAggregateRoot
+    public class Transaction : BaseEntityWithEvent, IAggregateRoot
     {
         public Guid TenantId { get; private set; }
         public Guid BankAccountId { get; private set; }
@@ -19,17 +22,19 @@ namespace MBD.Transactions.Domain.Entities
 
         public bool ItsPaid => PaymentDate != null && Status == TransactionStatus.Paid;
 
-        public Transaction(Guid tenantId, Guid bankAccountId, Guid categoryId, DateTime referenceDate, DateTime dueDate, decimal value, string description)
+        public Transaction(Guid tenantId, BankAccount bankAccount, Category category, DateTime referenceDate, DateTime dueDate, decimal value, string description)
         {
             TenantId = tenantId;
-            BankAccountId = bankAccountId;
-            CategoryId = categoryId;
+            BankAccountId = bankAccount.Id;
+            CategoryId = category.Id;
             ReferenceDate = referenceDate;
             DueDate = dueDate;
             PaymentDate = null;
             Status = TransactionStatus.AwaitingPayment;
             SetValue(value);
             Description = description;
+
+            AddDomainEvent(new TransactionCreatedDomainEvent(this, bankAccount.Description, category.Name));
         }
 
         public void Pay(DateTime paymentDate)

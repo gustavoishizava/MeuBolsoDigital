@@ -1,8 +1,11 @@
 using System.Reflection;
+using MBD.Transactions.Application.MongoDbSettings;
 using MBD.Transactions.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 
 namespace MBD.Transactions.API.Configuration
 {
@@ -18,6 +21,16 @@ namespace MBD.Transactions.API.Configuration
                 });
                 options.UseSnakeCaseNamingConvention();
             });
+
+            return services;
+        }
+
+        public static IServiceCollection AddMongoDbConfiguration(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<TransactionDatabaseSettings>(configuration.GetSection("MongoDbSettings"));
+            
+            services.AddSingleton<ITransactionDatabaseSettings>(sp => 
+                sp.GetRequiredService<IOptions<TransactionDatabaseSettings>>().Value);
 
             return services;
         }

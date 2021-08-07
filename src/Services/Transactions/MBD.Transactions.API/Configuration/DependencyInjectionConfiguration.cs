@@ -73,8 +73,8 @@ namespace MBD.Transactions.API.Configuration
         {
             services.AddMediatR(Assembly.GetCallingAssembly());
 
-            services.AddScoped<IRequestHandler<CreateTransactionCommand, IResult<TransactionResponse>>, TransactionCommandHandler>();
-            services.AddScoped<IRequestHandler<UpdateTransactionCommand, IResult>, TransactionCommandHandler>();
+            services.AddScoped<IRequestHandler<CreateTransactionCommand, IResult<TransactionResponse>>, CreateTransactionCommandHandler>();
+            services.AddScoped<IRequestHandler<UpdateTransactionCommand, IResult>, UpdateTransactionCommandHandler>();
 
             return services;
         }

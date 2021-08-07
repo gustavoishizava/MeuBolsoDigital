@@ -1,6 +1,6 @@
 using System;
 
-namespace MBD.Transactions.Domain.Events
+namespace MBD.Transactions.Domain.Events.Common
 {
     public abstract class DomainEvent
     {

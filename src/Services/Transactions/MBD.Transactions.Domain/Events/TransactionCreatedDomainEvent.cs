@@ -1,6 +1,7 @@
 using System;
 using MBD.Transactions.Domain.Entities;
 using MBD.Transactions.Domain.Enumerations;
+using MBD.Transactions.Domain.Events.Common;
 
 namespace MBD.Transactions.Domain.Events
 {

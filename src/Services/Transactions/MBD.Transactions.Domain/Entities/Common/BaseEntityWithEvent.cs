@@ -15,12 +15,12 @@ namespace MBD.Transactions.Domain.Entities.Common
             _events.Add(@event);
         }
 
-        protected void RemoveDomainEvent(DomainEvent @event)
+        public void RemoveDomainEvent(DomainEvent @event)
         {
             _events?.Remove(@event);
         }
 
-        protected void ClearDomainEvents()
+        public void ClearDomainEvents()
         {
             _events?.Clear();
         }

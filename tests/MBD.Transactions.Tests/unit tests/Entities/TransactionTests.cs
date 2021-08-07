@@ -58,6 +58,7 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             Assert.Equal(description, transaction.Description);
             Assert.Equal(value, transaction.Value);
             Assert.Null(transaction.PaymentDate);
+            Assert.Single(transaction.Events);
         }
 
         [Fact(DisplayName = "Efetuar o pagamento de uma transação válida deve retornar sucesso.")]

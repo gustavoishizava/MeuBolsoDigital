@@ -37,6 +37,10 @@ namespace MBD.Transactions.Domain.Entities
             AddDomainEvent(new TransactionCreatedDomainEvent(this, bankAccount.Description, category.Name));
         }
 
+        #region EF
+        protected Transaction() { }
+        #endregion
+
         public void Pay(DateTime paymentDate)
         {
             PaymentDate = paymentDate;

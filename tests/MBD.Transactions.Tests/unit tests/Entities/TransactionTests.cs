@@ -95,5 +95,36 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             Assert.NotEqual(currentStatus, _validTransaction.Status);
             Assert.False(_validTransaction.ItsPaid);
         }
+
+        [Fact(DisplayName = "Atualizar os valores de uma transação existente deve retornar sucesso.")]
+        public void ValidTansaction_UpdateValues_ReturnSuccess()
+        {
+            // Arrange
+            var random = new Random();
+            var randomNumber = new Random().Next(1, 100);
+
+            var tenantId = Guid.NewGuid();
+            var bankAccount = new BankAccount { Id = Guid.NewGuid(), Description = "Santander" };
+            var category = new Category(Guid.NewGuid(), "Restaurante", TransactionType.Income);
+            var referenceDate = DateTime.Now.AddDays(randomNumber);
+            var dueDate = DateTime.Now.AddDays(randomNumber);
+            var value = random.Next(1, 10000);
+            var description = "New Description";
+            var transaction = new Transaction(tenantId, _bankAccount, _category, DateTime.Now, DateTime.Now, 100, "Transaction test");
+            transaction.ClearDomainEvents();
+
+            // Act
+            transaction.Update(bankAccount, category, referenceDate, dueDate, value, description);
+
+            // Assert
+            Assert.Single(transaction.Events);
+            Assert.Equal(tenantId, transaction.TenantId);
+            Assert.Equal(category.Id, transaction.CategoryId);
+            Assert.Equal(bankAccount.Id, transaction.BankAccountId);
+            Assert.Equal(referenceDate, transaction.ReferenceDate);
+            Assert.Equal(dueDate, transaction.DueDate);
+            Assert.Equal(value, transaction.Value);
+            Assert.Equal(description, transaction.Description);
+        }
     }
 }

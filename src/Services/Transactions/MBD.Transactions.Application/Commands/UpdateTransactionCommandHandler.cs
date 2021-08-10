@@ -41,6 +41,8 @@ namespace MBD.Transactions.Application.Commands
             if (category == null)
                 return Result<TransactionResponse>.Fail("Categoria inválida.");
 
+            transaction.Update(bankAccount, category, request.ReferenceDate, request.DueDate, request.Value, request.Description);
+
             if (request.PaymentDate != null)
                 transaction.Pay(request.PaymentDate.Value);
             else

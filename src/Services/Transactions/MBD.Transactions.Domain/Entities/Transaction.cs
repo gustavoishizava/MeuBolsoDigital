@@ -59,5 +59,18 @@ namespace MBD.Transactions.Domain.Entities
 
             Value = value;
         }
+
+        public void Update(BankAccount bankAccount, Category category, DateTime referenceDate, DateTime dueDate, decimal value, string description)
+        {
+            BankAccountId = bankAccount.Id;
+            CategoryId = category.Id;
+            ReferenceDate = referenceDate;
+            DueDate = dueDate;
+            Status = TransactionStatus.AwaitingPayment;
+            SetValue(value);
+            Description = description;
+
+            AddDomainEvent(new TransactionUpdatedDomainEvent(this, bankAccount, category));
+        }
     }
 }

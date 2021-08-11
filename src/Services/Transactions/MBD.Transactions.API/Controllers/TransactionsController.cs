@@ -79,5 +79,18 @@ namespace MBD.Transactions.API.Controllers
 
             return Ok(result.Data);
         }
+
+        [HttpDelete("{id:GUID}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
+        {
+            var command = new DeleteTransactionCommand(id);
+            var result = await _mediator.Send(command);
+            if (!result.Succeeded)
+                return BadRequest(new ErrorModel(result));
+
+            return NoContent();
+        }
     }
 }

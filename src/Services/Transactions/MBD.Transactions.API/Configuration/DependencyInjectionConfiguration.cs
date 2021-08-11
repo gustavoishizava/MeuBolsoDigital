@@ -80,6 +80,7 @@ namespace MBD.Transactions.API.Configuration
 
             services.AddScoped<IRequestHandler<CreateTransactionCommand, IResult<TransactionResponse>>, CreateTransactionCommandHandler>();
             services.AddScoped<IRequestHandler<UpdateTransactionCommand, IResult>, UpdateTransactionCommandHandler>();
+            services.AddScoped<IRequestHandler<DeleteTransactionCommand, IResult>, DeleteTransactionCommandHandler>();
 
             return services;
         }
@@ -87,6 +88,8 @@ namespace MBD.Transactions.API.Configuration
         private static IServiceCollection AddDomainEvents(this IServiceCollection services)
         {
             services.AddScoped<INotificationHandler<TransactionCreatedDomainEvent>, TransactionCreatedDomainEventHandler>();
+            services.AddScoped<INotificationHandler<TransactionUpdatedDomainEvent>, TransactionUpdatedDomainEventHandler>();
+            services.AddScoped<INotificationHandler<TransactionDeletedDomainEvent>, TransactionDeletedDomainEventHandler>();
 
             return services;
         }

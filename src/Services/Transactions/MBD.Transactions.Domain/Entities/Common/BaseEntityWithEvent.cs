@@ -9,7 +9,7 @@ namespace MBD.Transactions.Domain.Entities.Common
         private List<DomainEvent> _events;
         public IReadOnlyList<DomainEvent> Events => _events?.AsReadOnly();
 
-        protected void AddDomainEvent(DomainEvent @event)
+        public void AddDomainEvent(DomainEvent @event)
         {
             _events = _events ?? new();
             _events.Add(@event);

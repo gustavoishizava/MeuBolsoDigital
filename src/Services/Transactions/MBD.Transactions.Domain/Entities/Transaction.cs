@@ -10,7 +10,7 @@ namespace MBD.Transactions.Domain.Entities
 {
     public class Transaction : BaseEntityWithEvent, IAggregateRoot
     {
-        public Guid TenantId { get; private set; }
+        public Guid TenantId { get; private init; }
         public Guid BankAccountId { get; private set; }
         public Guid CategoryId { get; private set; }
         public DateTime ReferenceDate { get; private set; }
@@ -45,17 +45,22 @@ namespace MBD.Transactions.Domain.Entities
         {
             PaymentDate = paymentDate;
             Status = TransactionStatus.Paid;
+
+            AddDomainEvent(new RealizedPaymentDomainEvent(Id, PaymentDate.Value, Value));
         }
 
         public void UndoPayment()
         {
             PaymentDate = null;
             Status = TransactionStatus.AwaitingPayment;
+
+            AddDomainEvent(new ReversedPaymentDomainEvent(Id));
         }
 
         public void SetValue(decimal value)
         {
             Assertions.IsGreaterOrEqualsThan(value, 0, "O valor não pode ser menor que 0.");
+            AddDomainEvent(new ValueChangedDomainEvent(Id, Value, value));
 
             Value = value;
         }

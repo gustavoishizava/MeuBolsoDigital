@@ -7,17 +7,17 @@ namespace MBD.Transactions.Domain.Events
 {
     public class TransactionCreatedDomainEvent : DomainEvent
     {
-        public Guid TenantId { get; private set; }
-        public Guid BankAccountId { get; private set; }
-        public string BankAccountDescription { get; private set; }
-        public Guid CategoryId { get; private set; }
-        public string CategoryName { get; private set; }
-        public DateTime ReferenceDate { get; private set; }
-        public DateTime DueDate { get; private set; }
-        public DateTime? PaymentDate { get; private set; }
-        public TransactionStatus Status { get; private set; }
-        public decimal Value { get; private set; }
-        public string Description { get; private set; }
+        public Guid TenantId { get; private init; }
+        public Guid BankAccountId { get; private init; }
+        public string BankAccountDescription { get; private init; }
+        public Guid CategoryId { get; private init; }
+        public string CategoryName { get; private init; }
+        public DateTime ReferenceDate { get; private init; }
+        public DateTime DueDate { get; private init; }
+        public DateTime? PaymentDate { get; private init; }
+        public TransactionStatus Status { get; private init; }
+        public decimal Value { get; private init; }
+        public string Description { get; private init; }
 
         public TransactionCreatedDomainEvent(Transaction transaction, string bankAccountDescription, string categoryName)
         {

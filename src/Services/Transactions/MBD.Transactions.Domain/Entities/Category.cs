@@ -11,19 +11,19 @@ namespace MBD.Transactions.Domain.Entities
     {
         private readonly List<Category> _subCategories = new();
 
-        public Guid TenantId { get; private set; }
+        public Guid TenantId { get; private init; }
         public Guid? ParentCategoryId { get; private set; }
         public string Name { get; private set; }
-        public TransactionType Type { get; private set; }
+        public TransactionType Type { get; private init; }
         public Status Status { get; private set; }
 
         public IReadOnlyList<Category> SubCategories => _subCategories.AsReadOnly();
 
-        public Category(Guid userId, string name, TransactionType type)
+        public Category(Guid tenantId, string name, TransactionType type)
         {
-            Assertions.IsNotEmpty(userId, "Id de usuário inválido.");
+            Assertions.IsNotEmpty(tenantId, "Id de usuário inválido.");
 
-            TenantId = userId;
+            TenantId = tenantId;
             SetName(name);
             Type = type;
             Activate();

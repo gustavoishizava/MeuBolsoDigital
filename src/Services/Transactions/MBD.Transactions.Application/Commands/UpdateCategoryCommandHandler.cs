@@ -29,7 +29,7 @@ namespace MBD.Transactions.Application.Commands
             if (category == null)
                 return Result.Fail("Categoria inválida.");
 
-            category.SetName(request.Name);
+            category.ChangeName(request.Name);
             if (request.Status == Status.Active)
                 category.Activate();
             else

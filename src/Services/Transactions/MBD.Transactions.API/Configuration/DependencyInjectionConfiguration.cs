@@ -79,19 +79,22 @@ namespace MBD.Transactions.API.Configuration
             return services;
         }
 
+        private static IServiceCollection AddQueries(this IServiceCollection services)
+        {
+            services.AddScoped<ITransactionQuery, TransactionQuery>();
+            services.AddScoped<ICategoryQuery, CategoryQuery>();
+
+            return services;
+        }
+
         private static IServiceCollection AddDomainEvents(this IServiceCollection services)
         {
             services.AddScoped<INotificationHandler<TransactionCreatedDomainEvent>, TransactionCreatedDomainEventHandler>();
             services.AddScoped<INotificationHandler<TransactionUpdatedDomainEvent>, TransactionUpdatedDomainEventHandler>();
             services.AddScoped<INotificationHandler<TransactionDeletedDomainEvent>, TransactionDeletedDomainEventHandler>();
 
-            return services;
-        }
-
-        private static IServiceCollection AddQueries(this IServiceCollection services)
-        {
-            services.AddScoped<ITransactionQuery, TransactionQuery>();
-            services.AddScoped<ICategoryQuery, CategoryQuery>();
+            services.AddScoped<INotificationHandler<CategoryCreatedDomainEvent>, CategoryCreatedDomainEventHandler>();
+            services.AddScoped<INotificationHandler<CategoryNameChangedDomainEvent>, CategoryNameChangedDomainEventHandler>();
 
             return services;
         }

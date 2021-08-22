@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using MBD.Core;
 using MBD.Core.Entities;
 using MBD.Core.Enumerations;
+using MBD.Transactions.Domain.Entities.Common;
 using MBD.Transactions.Domain.Enumerations;
+using MBD.Transactions.Domain.Events;
 
 namespace MBD.Transactions.Domain.Entities
 {
-    public class Category : BaseEntity, IAggregateRoot
+    public class Category : BaseEntityWithEvent, IAggregateRoot
     {
         private readonly List<Category> _subCategories = new();
 
@@ -21,12 +23,16 @@ namespace MBD.Transactions.Domain.Entities
 
         public Category(Guid tenantId, string name, TransactionType type)
         {
+            Assertions.IsNotNullOrEmpty(name, "É necessário informar um nome.");
+            Assertions.HasMaxLength(name, 100, "O nome deve conter no máximo 100 caracteres.");
             Assertions.IsNotEmpty(tenantId, "Id de usuário inválido.");
 
             TenantId = tenantId;
-            SetName(name);
+            Name = name;
             Type = type;
             Activate();
+
+            AddDomainEvent(new CategoryCreatedDomainEvent(this));
         }
 
         /// <summary>
@@ -44,11 +50,12 @@ namespace MBD.Transactions.Domain.Entities
         {
         }
 
-        public void SetName(string name)
+        public void ChangeName(string name)
         {
             Assertions.IsNotNullOrEmpty(name, "É necessário informar um nome.");
             Assertions.HasMaxLength(name, 100, "O nome deve conter no máximo 100 caracteres.");
 
+            AddDomainEvent(new CategoryNameChangedDomainEvent(id: Id, newName: name, oldName: Name));
             Name = name;
         }
 

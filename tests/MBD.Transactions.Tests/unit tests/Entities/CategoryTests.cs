@@ -52,7 +52,7 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             var statusExcepted = active ? Status.Active : Status.Inactive;
 
             // Act
-            category.SetName(name);
+            category.ChangeName(name);
             if (active)
                 category.Activate();
             else

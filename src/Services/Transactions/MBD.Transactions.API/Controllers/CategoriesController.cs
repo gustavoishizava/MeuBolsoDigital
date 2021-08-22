@@ -4,13 +4,14 @@ using System.Net.Mime;
 using System.Threading.Tasks;
 using MBD.Core.Extensions;
 using MBD.Transactions.API.Models;
-using MBD.Transactions.Application.Interfaces;
-using MBD.Transactions.Application.Request;
 using MBD.Transactions.Application.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MBD.Transactions.Domain.Enumerations;
+using MediatR;
+using MBD.Transactions.Application.Commands;
+using MBD.Transactions.Application.Queries;
 
 namespace MBD.Transactions.API.Controllers
 {
@@ -20,20 +21,22 @@ namespace MBD.Transactions.API.Controllers
     [Authorize]
     public class CategoriesController : ControllerBase
     {
-        private readonly ICategoryAppService _service;
+        private readonly IMediator _mediator;
+        private readonly ICategoryQuery _query;
 
-        public CategoriesController(ICategoryAppService service)
+        public CategoriesController(IMediator mediator, ICategoryQuery query)
         {
-            _service = service;
+            _mediator = mediator;
+            _query = query;
         }
 
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create([FromBody] CreateCategoryRequest request)
+        public async Task<IActionResult> Create([FromBody] CreateCategoryCommand command)
         {
-            var result = await _service.CreateAsync(request);
+            var result = await _mediator.Send(command);
             if (!result.Succeeded)
                 return BadRequest(new ErrorModel(result));
 
@@ -44,9 +47,9 @@ namespace MBD.Transactions.API.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Update([FromBody] UpdateCategoryRequest request)
+        public async Task<IActionResult> Update([FromBody] UpdateCategoryCommand command)
         {
-            var result = await _service.UpdateAsync(request);
+            var result = await _mediator.Send(command);
             if (!result.Succeeded)
                 return BadRequest(new ErrorModel(result));
 
@@ -58,7 +61,7 @@ namespace MBD.Transactions.API.Controllers
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            var result = await _service.RemoveAsync(id);
+            var result = await _mediator.Send(new DeleteCategoryCommand(id));
             if (!result.Succeeded)
                 return BadRequest(new ErrorModel(result));
 
@@ -70,7 +73,7 @@ namespace MBD.Transactions.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> GetAll()
         {
-            var result = await _service.GetAllAsync();
+            var result = await _query.GetAllAsync();
             if (result.Income.IsNullOrEmpty() && result.Expense.IsNullOrEmpty())
                 return NoContent();
 
@@ -82,7 +85,7 @@ namespace MBD.Transactions.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> GetAllByType([FromRoute] TransactionType type)
         {
-            var result = await _service.GetByTypeAsync(type);
+            var result = await _query.GetByTypeAsync(type);
             if (result.IsNullOrEmpty())
                 return NoContent();
 
@@ -94,7 +97,7 @@ namespace MBD.Transactions.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
-            var result = await _service.GetByIdAsync(id);
+            var result = await _query.GetByIdAsync(id);
             if (!result.Succeeded)
                 return NotFound();
 

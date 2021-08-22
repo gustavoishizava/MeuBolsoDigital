@@ -1,12 +1,13 @@
 using System;
 using FluentValidation;
 using FluentValidation.Results;
-using MBD.Application.Core.Requests;
+using MBD.Application.Core.Response;
 using MBD.Core.Enumerations;
+using MBD.Transactions.Application.Commands.Common;
 
-namespace MBD.Transactions.Application.Request
+namespace MBD.Transactions.Application.Commands
 {
-    public class UpdateCategoryRequest : BaseRequest
+    public class UpdateCategoryCommand : Command<IResult>
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -14,12 +15,12 @@ namespace MBD.Transactions.Application.Request
 
         public override ValidationResult Validate()
         {
-            return new UpdateCategoryValidation().Validate(this);
+            return new UpdateCategoryCommandValidation().Validate(this);
         }
 
-        private class UpdateCategoryValidation : AbstractValidator<UpdateCategoryRequest>
+        private class UpdateCategoryCommandValidation : AbstractValidator<UpdateCategoryCommand>
         {
-            public UpdateCategoryValidation()
+            public UpdateCategoryCommandValidation()
             {
                 RuleFor(x => x.Id)
                     .NotEmpty();

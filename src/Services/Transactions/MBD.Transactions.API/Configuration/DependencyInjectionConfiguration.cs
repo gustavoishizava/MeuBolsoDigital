@@ -6,10 +6,8 @@ using MBD.Core.Identity;
 using MBD.Transactions.API.Configuration.HttpClient;
 using MBD.Transactions.Application.Commands;
 using MBD.Transactions.Application.DomainEventHandlers;
-using MBD.Transactions.Application.Interfaces;
 using MBD.Transactions.Application.Queries;
 using MBD.Transactions.Application.Response;
-using MBD.Transactions.Application.Services;
 using MBD.Transactions.Domain.Events;
 using MBD.Transactions.Domain.Interfaces.Repositories;
 using MBD.Transactions.Domain.Interfaces.Services;
@@ -28,7 +26,6 @@ namespace MBD.Transactions.API.Configuration
         public static IServiceCollection AddDependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
             services
-                .AddAppServices()
                 .AddRepositories()
                 .AddHttpClients(configuration)
                 .AddCommands()
@@ -38,13 +35,6 @@ namespace MBD.Transactions.API.Configuration
             services.AddHttpContextAccessor();
             services.AddScoped<IAspNetUser, AspNetUser>();
             services.AddAutoMapper(Assembly.Load("MBD.Transactions.Application"));
-
-            return services;
-        }
-
-        private static IServiceCollection AddAppServices(this IServiceCollection services)
-        {
-            services.AddScoped<ICategoryAppService, CategoryAppService>();
 
             return services;
         }
@@ -82,6 +72,10 @@ namespace MBD.Transactions.API.Configuration
             services.AddScoped<IRequestHandler<UpdateTransactionCommand, IResult>, UpdateTransactionCommandHandler>();
             services.AddScoped<IRequestHandler<DeleteTransactionCommand, IResult>, DeleteTransactionCommandHandler>();
 
+            services.AddScoped<IRequestHandler<CreateCategoryCommand, IResult<CategoryResponse>>, CreateCategoryCommandHandler>();
+            services.AddScoped<IRequestHandler<UpdateCategoryCommand, IResult>, UpdateCategoryCommandHandler>();
+            services.AddScoped<IRequestHandler<DeleteCategoryCommand, IResult>, DeleteCategoryCommandHandler>();
+
             return services;
         }
 
@@ -97,6 +91,7 @@ namespace MBD.Transactions.API.Configuration
         private static IServiceCollection AddQueries(this IServiceCollection services)
         {
             services.AddScoped<ITransactionQuery, TransactionQuery>();
+            services.AddScoped<ICategoryQuery, CategoryQuery>();
 
             return services;
         }

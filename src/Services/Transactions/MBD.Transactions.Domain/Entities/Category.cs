@@ -31,8 +31,6 @@ namespace MBD.Transactions.Domain.Entities
             Name = name;
             Type = type;
             Activate();
-
-            AddDomainEvent(new CategoryCreatedDomainEvent(this));
         }
 
         /// <summary>

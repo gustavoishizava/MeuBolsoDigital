@@ -93,7 +93,6 @@ namespace MBD.Transactions.API.Configuration
             services.AddScoped<INotificationHandler<TransactionUpdatedDomainEvent>, TransactionUpdatedDomainEventHandler>();
             services.AddScoped<INotificationHandler<TransactionDeletedDomainEvent>, TransactionDeletedDomainEventHandler>();
 
-            services.AddScoped<INotificationHandler<CategoryCreatedDomainEvent>, CategoryCreatedDomainEventHandler>();
             services.AddScoped<INotificationHandler<CategoryNameChangedDomainEvent>, CategoryNameChangedDomainEventHandler>();
 
             return services;

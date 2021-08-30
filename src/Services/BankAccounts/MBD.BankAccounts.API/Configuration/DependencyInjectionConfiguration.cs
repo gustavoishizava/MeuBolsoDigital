@@ -1,4 +1,5 @@
 using System.Reflection;
+using MBD.BankAccounts.API.Consumers;
 using MBD.BankAccounts.Application.Interfaces;
 using MBD.BankAccounts.Application.Services;
 using MBD.BankAccounts.Domain.Interfaces.Repositories;
@@ -15,7 +16,8 @@ namespace MBD.BankAccounts.API.Configuration
         public static IServiceCollection AddDependencyInjection(this IServiceCollection services)
         {
             services.AddAppServices()
-                    .AddRepositories();
+                    .AddRepositories()
+                    .AddConsumers();
 
             services.AddHttpContextAccessor();
             services.AddScoped<IAspNetUser, AspNetUser>();
@@ -35,6 +37,13 @@ namespace MBD.BankAccounts.API.Configuration
         {
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddConsumers(this IServiceCollection services)
+        {
+            services.AddHostedService<TransactionPaidConsumer>();
 
             return services;
         }

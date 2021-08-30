@@ -17,6 +17,7 @@ using MBD.Transactions.Infrastructure;
 using MBD.Transactions.Infrastructure.Repositories;
 using MBD.Transactions.Infrastructure.Services;
 using MediatR;
+using MessageBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
@@ -33,7 +34,8 @@ namespace MBD.Transactions.API.Configuration
                 .AddCommands()
                 .AddQueries()
                 .AddDomainEvents()
-                .AddIntegrationEvents();
+                .AddIntegrationEvents()
+                .AddConfigurations(configuration);
 
             services.AddHttpContextAccessor();
             services.AddScoped<IAspNetUser, AspNetUser>();
@@ -107,6 +109,13 @@ namespace MBD.Transactions.API.Configuration
         {
             services.AddScoped<INotificationHandler<TransactionPaidIntegrationEvent>, TransactionPaidIntegrationEventHandler>();
             services.AddScoped<INotificationHandler<TransactionUndoPaymentIntegrationEvent>, TransactionUndoPaymentIntegrationEventHandler>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<RabbitMqConfiguration>(configuration.GetSection(nameof(RabbitMqConfiguration)));
 
             return services;
         }

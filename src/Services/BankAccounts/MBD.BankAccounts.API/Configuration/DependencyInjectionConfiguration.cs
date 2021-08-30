@@ -7,17 +7,20 @@ using MBD.BankAccounts.Infrastructure;
 using MBD.BankAccounts.Infrastructure.Repositories;
 using MBD.Core.Data;
 using MBD.Core.Identity;
+using MessageBus;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MBD.BankAccounts.API.Configuration
 {
     public static class DependencyInjectionConfiguration
     {
-        public static IServiceCollection AddDependencyInjection(this IServiceCollection services)
+        public static IServiceCollection AddDependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAppServices()
                     .AddRepositories()
-                    .AddConsumers();
+                    .AddConsumers()
+                    .AddConfigurations(configuration);
 
             services.AddHttpContextAccessor();
             services.AddScoped<IAspNetUser, AspNetUser>();
@@ -44,6 +47,13 @@ namespace MBD.BankAccounts.API.Configuration
         private static IServiceCollection AddConsumers(this IServiceCollection services)
         {
             services.AddHostedService<TransactionPaidConsumer>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<RabbitMqConfiguration>(configuration.GetSection(nameof(RabbitMqConfiguration)));
 
             return services;
         }

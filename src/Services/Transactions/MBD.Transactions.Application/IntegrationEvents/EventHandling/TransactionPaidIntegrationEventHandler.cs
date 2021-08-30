@@ -4,7 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using MBD.Transactions.Application.IntegrationEvents.Events;
 using MediatR;
+using MessageBus;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 
 namespace MBD.Transactions.Application.IntegrationEvents.EventHandling
@@ -15,12 +17,15 @@ namespace MBD.Transactions.Application.IntegrationEvents.EventHandling
         private readonly string _queueName;
         private readonly ILogger<TransactionPaidIntegrationEventHandler> _logger;
 
-        public TransactionPaidIntegrationEventHandler(ILogger<TransactionPaidIntegrationEventHandler> logger)
+        public TransactionPaidIntegrationEventHandler(IOptions<RabbitMqConfiguration> rabbitMqOptions, ILogger<TransactionPaidIntegrationEventHandler> logger)
         {
             _queueName = nameof(TransactionPaidIntegrationEvent);
+            var rabbitMqConfiguration = rabbitMqOptions.Value;
             _connectionFactory = new ConnectionFactory()
             {
-                HostName = "localhost"
+                HostName = rabbitMqConfiguration.HostName,
+                UserName = rabbitMqConfiguration.UserName,
+                Password = rabbitMqConfiguration.Password
             };
             _logger = logger;
         }

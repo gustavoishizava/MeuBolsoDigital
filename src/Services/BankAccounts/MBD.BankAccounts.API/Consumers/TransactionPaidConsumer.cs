@@ -3,8 +3,10 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using MBD.BankAccounts.Application.IntegrationEvents;
+using MessageBus;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -17,11 +19,17 @@ namespace MBD.BankAccounts.API.Consumers
         private readonly ILogger<TransactionPaidConsumer> _logger;
         private readonly string _queueName;
 
-        public TransactionPaidConsumer(ILogger<TransactionPaidConsumer> logger)
+        public TransactionPaidConsumer(IOptions<RabbitMqConfiguration> rabbitMqOptions, ILogger<TransactionPaidConsumer> logger)
         {
             _logger = logger;
+            var rabbitMqConfiguration = rabbitMqOptions.Value;
             _queueName = nameof(TransactionPaidIntegrationEvent);
-            var factory = new ConnectionFactory() { HostName = "localhost" };
+            var factory = new ConnectionFactory()
+            {
+                HostName = rabbitMqConfiguration.HostName,
+                UserName = rabbitMqConfiguration.UserName,
+                Password = rabbitMqConfiguration.Password
+            };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
 

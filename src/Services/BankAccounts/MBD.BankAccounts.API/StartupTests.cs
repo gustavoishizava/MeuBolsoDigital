@@ -26,7 +26,7 @@ namespace MBD.BankAccounts.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddEFContextConfiguration(Configuration);
-            services.AddApiConfiguration();
+            services.AddApiConfiguration(Configuration);
 
             Seed(services);
         }

@@ -33,8 +33,8 @@ namespace MBD.Transactions.Infrastructure.Context.Configuration
 
             builder.Property(x => x.Status)
                 .IsRequired()
-                .HasColumnType("VARCHAR(10)")
-                .HasMaxLength(10)
+                .HasColumnType("VARCHAR(20)")
+                .HasMaxLength(20)
                 .HasConversion(new EnumToStringConverter<TransactionStatus>());
 
             builder.Property(x => x.Value)

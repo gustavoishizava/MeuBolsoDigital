@@ -66,11 +66,13 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
         {
             // Arrange
             var paymentDate = _validTransaction.DueDate;
+            _validTransaction.ClearDomainEvents();
 
             // Act
             _validTransaction.Pay(paymentDate);
 
             // Assert
+            Assert.Single(_validTransaction.Events);
             Assert.True(_validTransaction.ItsPaid);
             Assert.NotNull(_validTransaction.PaymentDate);
             Assert.Equal(paymentDate, _validTransaction.PaymentDate);
@@ -84,11 +86,13 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             _validTransaction.Pay(_validTransaction.DueDate);
             var currentStatus = _validTransaction.Status;
             var currentPaymentDate = _validTransaction.PaymentDate;
+            _validTransaction.ClearDomainEvents();
 
             // Act
             _validTransaction.UndoPayment();
 
             // Assert
+            Assert.Single(_validTransaction.Events);
             Assert.Null(_validTransaction.PaymentDate);
             Assert.NotEqual(currentPaymentDate, _validTransaction.PaymentDate);
             Assert.Equal(TransactionStatus.AwaitingPayment, _validTransaction.Status);

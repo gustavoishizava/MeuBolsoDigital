@@ -96,6 +96,7 @@ namespace MBD.Transactions.API.Configuration
             services.AddScoped<INotificationHandler<TransactionUpdatedDomainEvent>, TransactionUpdatedDomainEventHandler>();
             services.AddScoped<INotificationHandler<TransactionDeletedDomainEvent>, TransactionDeletedDomainEventHandler>();
             services.AddScoped<INotificationHandler<RealizedPaymentDomainEvent>, RealizedPaymentDomainEventHandler>();
+            services.AddScoped<INotificationHandler<ReversedPaymentDomainEvent>, ReversedPaymentDomainEventHandler>();
 
             services.AddScoped<INotificationHandler<CategoryNameChangedDomainEvent>, CategoryNameChangedDomainEventHandler>();
 
@@ -105,6 +106,7 @@ namespace MBD.Transactions.API.Configuration
         private static IServiceCollection AddIntegrationEvents(this IServiceCollection services)
         {
             services.AddScoped<INotificationHandler<TransactionPaidIntegrationEvent>, TransactionPaidIntegrationEventHandler>();
+            services.AddScoped<INotificationHandler<TransactionUndoPaymentIntegrationEvent>, TransactionUndoPaymentIntegrationEventHandler>();
 
             return services;
         }

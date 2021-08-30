@@ -6,6 +6,8 @@ using MBD.Core.Identity;
 using MBD.Transactions.API.Configuration.HttpClient;
 using MBD.Transactions.Application.Commands;
 using MBD.Transactions.Application.DomainEventHandlers;
+using MBD.Transactions.Application.IntegrationEvents.EventHandling;
+using MBD.Transactions.Application.IntegrationEvents.Events;
 using MBD.Transactions.Application.Queries;
 using MBD.Transactions.Application.Response;
 using MBD.Transactions.Domain.Events;
@@ -30,7 +32,8 @@ namespace MBD.Transactions.API.Configuration
                 .AddHttpClients(configuration)
                 .AddCommands()
                 .AddQueries()
-                .AddDomainEvents();
+                .AddDomainEvents()
+                .AddIntegrationEvents();
 
             services.AddHttpContextAccessor();
             services.AddScoped<IAspNetUser, AspNetUser>();
@@ -92,8 +95,16 @@ namespace MBD.Transactions.API.Configuration
             services.AddScoped<INotificationHandler<TransactionCreatedDomainEvent>, TransactionCreatedDomainEventHandler>();
             services.AddScoped<INotificationHandler<TransactionUpdatedDomainEvent>, TransactionUpdatedDomainEventHandler>();
             services.AddScoped<INotificationHandler<TransactionDeletedDomainEvent>, TransactionDeletedDomainEventHandler>();
+            services.AddScoped<INotificationHandler<RealizedPaymentDomainEvent>, RealizedPaymentDomainEventHandler>();
 
             services.AddScoped<INotificationHandler<CategoryNameChangedDomainEvent>, CategoryNameChangedDomainEventHandler>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddIntegrationEvents(this IServiceCollection services)
+        {
+            services.AddScoped<INotificationHandler<TransactionPaidIntegrationEvent>, TransactionPaidIntegrationEventHandler>();
 
             return services;
         }

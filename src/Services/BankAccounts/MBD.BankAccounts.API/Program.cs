@@ -1,5 +1,6 @@
 using MBD.BankAccounts.Infrastructure.Context;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -15,7 +16,7 @@ namespace MBD.BankAccounts.API
             var service = serviceScope.ServiceProvider;
             var context = service.GetRequiredService<BankAccountContext>();
 
-            context.Database.EnsureCreated();
+            context.Database.Migrate();
 
             host.Run();
         }

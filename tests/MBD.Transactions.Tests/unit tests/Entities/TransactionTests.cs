@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using MBD.Core.DomainObjects;
 using MBD.Transactions.Domain.Entities;
 using MBD.Transactions.Domain.Enumerations;
@@ -40,8 +41,6 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
         {
             // Arrange
             var tenantId = Guid.NewGuid();
-            var bankAccountId = Guid.NewGuid();
-            var categoryId = Guid.NewGuid();
             var referenceDate = DateTime.Now;
             var dueDate = referenceDate.AddDays(5);
 
@@ -50,8 +49,8 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
 
             // Assert
             Assert.Equal(tenantId, transaction.TenantId);
-            Assert.Equal(bankAccountId, transaction.BankAccountId);
-            Assert.Equal(categoryId, transaction.CategoryId);
+            Assert.Equal(_bankAccount.Id, transaction.BankAccountId);
+            Assert.Equal(_category.Id, transaction.CategoryId);
             Assert.Equal(referenceDate, transaction.ReferenceDate);
             Assert.Equal(dueDate, transaction.DueDate);
             Assert.Equal(TransactionStatus.AwaitingPayment, transaction.Status);
@@ -121,7 +120,7 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             transaction.Update(bankAccount, category, referenceDate, dueDate, value, description);
 
             // Assert
-            Assert.Single(transaction.Events);
+            Assert.Equal(2, transaction.Events.Count());
             Assert.Equal(tenantId, transaction.TenantId);
             Assert.Equal(category.Id, transaction.CategoryId);
             Assert.Equal(bankAccount.Id, transaction.BankAccountId);

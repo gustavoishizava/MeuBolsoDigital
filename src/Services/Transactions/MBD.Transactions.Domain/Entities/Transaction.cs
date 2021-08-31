@@ -24,6 +24,8 @@ namespace MBD.Transactions.Domain.Entities
 
         public Transaction(Guid tenantId, BankAccount bankAccount, Category category, DateTime referenceDate, DateTime dueDate, decimal value, string description)
         {
+            Assertions.IsGreaterOrEqualsThan(value, 0, "O valor não pode ser menor que 0.");
+
             TenantId = tenantId;
             BankAccountId = bankAccount.Id;
             CategoryId = category.Id;
@@ -31,7 +33,7 @@ namespace MBD.Transactions.Domain.Entities
             DueDate = dueDate;
             PaymentDate = null;
             Status = TransactionStatus.AwaitingPayment;
-            SetValue(value);
+            Value = value;
             Description = description;
 
             AddDomainEvent(new TransactionCreatedDomainEvent(this, bankAccount.Description, category.Name));

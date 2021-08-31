@@ -9,7 +9,7 @@ namespace MBD.BankAccounts.API.Models
 
         public ErrorModel(IResult result)
         {
-            Errors.AddRange(result.Message.Split("\r\n"));
+            Errors.AddRange(result.Message.Split("\n"));
         }
 
         public ErrorModel() { }

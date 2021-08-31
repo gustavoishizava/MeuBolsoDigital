@@ -1,5 +1,6 @@
 using MBD.CreditCards.Infrastructure.Context;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -15,7 +16,7 @@ namespace MBD.CreditCards.API
             var service = serviceScope.ServiceProvider;
             var context = service.GetRequiredService<CreditCardContext>();
 
-            context.Database.EnsureCreated();
+            context.Database.Migrate();
 
             host.Run();
         }

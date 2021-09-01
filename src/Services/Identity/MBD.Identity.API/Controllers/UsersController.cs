@@ -23,16 +23,16 @@ namespace MBD.Identity.API.Controllers
 
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
         [AllowAnonymous]
         public async Task<IActionResult> Create(CreateUserRequest request)
         {
             var response = await _service.CreateAsync(request);
-            if(!response.Succeeded)
+            if (!response.Succeeded)
                 return BadRequest(response);
-            
-            return Ok();
+
+            return NoContent();
         }
     }
 }

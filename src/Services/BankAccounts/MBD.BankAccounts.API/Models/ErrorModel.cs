@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using MBD.Application.Core.Response;
+using MBD.Core.Extensions;
 
 namespace MBD.BankAccounts.API.Models
 {
@@ -9,7 +10,7 @@ namespace MBD.BankAccounts.API.Models
 
         public ErrorModel(IResult result)
         {
-            Errors.AddRange(result.Message.Split("\n"));
+            Errors.AddRange(result.Message.ConvertToArray());
         }
 
         public ErrorModel() { }

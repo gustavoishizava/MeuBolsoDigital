@@ -21,6 +21,7 @@ namespace MBD.Transactions.Domain.Entities
         public string Description { get; private set; }
 
         public bool ItsPaid => PaymentDate != null && Status == TransactionStatus.Paid;
+        public Category Category { get; private set; }
 
         public Transaction(Guid tenantId, BankAccount bankAccount, Category category, DateTime referenceDate, DateTime dueDate, decimal value, string description)
         {
@@ -29,6 +30,7 @@ namespace MBD.Transactions.Domain.Entities
             TenantId = tenantId;
             BankAccountId = bankAccount.Id;
             CategoryId = category.Id;
+            Category = category;
             ReferenceDate = referenceDate;
             DueDate = dueDate;
             PaymentDate = null;
@@ -48,7 +50,7 @@ namespace MBD.Transactions.Domain.Entities
             PaymentDate = paymentDate;
             Status = TransactionStatus.Paid;
 
-            AddDomainEvent(new RealizedPaymentDomainEvent(Id, PaymentDate.Value, Value));
+            AddDomainEvent(new RealizedPaymentDomainEvent(Id, PaymentDate.Value, Value, BankAccountId, Category.Type));
         }
 
         public void UndoPayment()

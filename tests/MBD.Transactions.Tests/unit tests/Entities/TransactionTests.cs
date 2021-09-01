@@ -51,6 +51,7 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             Assert.Equal(tenantId, transaction.TenantId);
             Assert.Equal(_bankAccount.Id, transaction.BankAccountId);
             Assert.Equal(_category.Id, transaction.CategoryId);
+            Assert.Equal(_category, transaction.Category);
             Assert.Equal(referenceDate, transaction.ReferenceDate);
             Assert.Equal(dueDate, transaction.DueDate);
             Assert.Equal(TransactionStatus.AwaitingPayment, transaction.Status);

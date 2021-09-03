@@ -3,6 +3,8 @@ using MBD.BankAccounts.API.Consumers;
 using MBD.BankAccounts.Application.Interfaces;
 using MBD.BankAccounts.Application.Services;
 using MBD.BankAccounts.Domain.Interfaces.Repositories;
+using MBD.BankAccounts.Domain.Interfaces.Services;
+using MBD.BankAccounts.Domain.Services;
 using MBD.BankAccounts.Infrastructure;
 using MBD.BankAccounts.Infrastructure.Repositories;
 using MBD.Core.Data;
@@ -17,7 +19,8 @@ namespace MBD.BankAccounts.API.Configuration
     {
         public static IServiceCollection AddDependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddAppServices()
+            services.AddDomaindServices()
+                    .AddAppServices()
                     .AddRepositories()
                     .AddConsumers()
                     .AddConfigurations(configuration);
@@ -25,6 +28,13 @@ namespace MBD.BankAccounts.API.Configuration
             services.AddHttpContextAccessor();
             services.AddScoped<IAspNetUser, AspNetUser>();
             services.AddAutoMapper(Assembly.Load("MBD.BankAccounts.Application"));
+
+            return services;
+        }
+
+        private static IServiceCollection AddDomaindServices(this IServiceCollection services)
+        {
+            services.AddScoped<ITransactionManagementService, TransactionManagementService>();
 
             return services;
         }

@@ -17,7 +17,7 @@ namespace MBD.Transactions.Application.DomainEventHandlers
 
         public Task Handle(RealizedPaymentDomainEvent notification, CancellationToken cancellationToken)
         {
-            var integrationEvent = new TransactionPaidIntegrationEvent(notification.Id, notification.Value, notification.Date, notification.BankAccountId, notification.Type.ToString());
+            var integrationEvent = new TransactionPaidIntegrationEvent(notification.Id, notification.Value, notification.Date, notification.BankAccountId, notification.Type);
             _mediator.Publish(integrationEvent);
 
             return Task.CompletedTask;

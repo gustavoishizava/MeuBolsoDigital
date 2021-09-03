@@ -21,11 +21,12 @@ namespace MBD.BankAccounts.Domain.Services
 
         public async Task AddTransactionToAccountAsync(Guid accountId, Guid transactionId, decimal value, TransactionType type, DateTime createdAt)
         {
-            var account = await _accountRepository.GetByIdAsync(accountId);
+            var account = await _accountRepository.GetByIdAsync(accountId, true);
             if (account == null)
                 throw new DomainException($"Nenhuma conta encontrada com o Id='{accountId}'.");
 
             account.AddTransaction(transactionId, createdAt, value, type);
+            _accountRepository.Update(account);
 
             await _unitOfWork.SaveChangesAsync();
         }

@@ -32,7 +32,7 @@ namespace MBD.Transactions.Application.IntegrationEvents.EventHandling
 
         public Task Handle(TransactionPaidIntegrationEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("---------- Ingration Event: Transação paga ------------");
+            _logger.LogInformation("============= Ingration Event: Transação paga =============");
 
             using var connection = _connectionFactory.CreateConnection();
             using var channel = connection.CreateModel();

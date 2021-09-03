@@ -26,18 +26,21 @@ namespace MBD.BankAccounts.Infrastructure.Context.Configuration
                 .IsRequired()
                 .HasColumnType("NUMERIC(18,2)")
                 .HasPrecision(18, 2);
-            
+
             builder.Property(x => x.Type)
                 .IsRequired()
                 .HasColumnType("VARCHAR(20)")
                 .HasMaxLength(20)
                 .HasConversion(new EnumToStringConverter<AccountType>());
-            
+
             builder.Property(x => x.Status)
                 .IsRequired()
                 .HasColumnType("VARCHAR(10)")
                 .HasMaxLength(10)
                 .HasConversion(new EnumToStringConverter<Status>());
+
+            builder.Navigation(x => x.Transactions)
+                .HasField("_transactions");
         }
     }
 }

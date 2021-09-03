@@ -1,4 +1,5 @@
 using System;
+using MBD.Transactions.Domain.Enumerations;
 using MediatR;
 
 namespace MBD.Transactions.Application.IntegrationEvents.Events
@@ -11,13 +12,13 @@ namespace MBD.Transactions.Application.IntegrationEvents.Events
         public decimal Value { get; private init; }
         public DateTime Date { get; private init; }
 
-        public TransactionPaidIntegrationEvent(Guid id, decimal value, DateTime date, Guid bankAccountId, string type)
+        public TransactionPaidIntegrationEvent(Guid id, decimal value, DateTime date, Guid bankAccountId, TransactionType type)
         {
             Id = id;
             Value = value;
             Date = date;
             BankAccountId = bankAccountId;
-            Type = type;
+            Type = type.ToString();
         }
     }
 }

@@ -47,7 +47,7 @@ namespace MBD.Transactions.Infrastructure.Context.Configuration
                 .HasColumnType("VARCHAR(100)")
                 .HasMaxLength(100);
 
-            builder.HasOne<Category>()
+            builder.HasOne(x => x.Category)
                 .WithMany()
                 .HasForeignKey(x => x.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);

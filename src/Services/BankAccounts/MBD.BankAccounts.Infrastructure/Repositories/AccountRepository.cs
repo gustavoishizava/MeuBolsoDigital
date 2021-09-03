@@ -32,7 +32,18 @@ namespace MBD.BankAccounts.Infrastructure.Repositories
 
         public async Task<Account> GetByIdAsync(Guid id)
         {
-            return await _context.Accounts.FindAsync(id);
+            return await _context.Accounts.AsTracking()
+                .Include(x => x.Transactions)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<Account> GetByIdAsync(Guid id, bool ignoreGlobalFilter)
+        {
+            var query = _context.Accounts.AsTracking();
+            if (ignoreGlobalFilter)
+                query = query.IgnoreQueryFilters();
+
+            return await query.Include(x => x.Transactions).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public void Remove(Account account)

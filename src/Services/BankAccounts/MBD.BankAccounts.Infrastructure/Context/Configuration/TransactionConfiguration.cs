@@ -25,7 +25,7 @@ namespace MBD.BankAccounts.Infrastructure.Context.Configuration
                 .IsRequired()
                 .HasColumnType("NUMERIC(18,2)")
                 .HasPrecision(18, 2);
-            
+
             builder.Property(x => x.Type)
                 .IsRequired()
                 .HasColumnType("VARCHAR(10)")
@@ -33,7 +33,7 @@ namespace MBD.BankAccounts.Infrastructure.Context.Configuration
                 .HasConversion(new EnumToStringConverter<TransactionType>());
 
             builder.HasOne<Account>()
-                .WithMany()
+                .WithMany(x => x.Transactions)
                 .HasForeignKey(x => x.AccountId)
                 .OnDelete(DeleteBehavior.Restrict);
         }

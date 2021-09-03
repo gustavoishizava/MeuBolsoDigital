@@ -23,6 +23,7 @@ namespace MBD.BankAccounts.Domain.Entities
         #region Navigation
 
         public decimal Balance => InitialBalance + _transactions.Sum(x => x.Type == TransactionType.Income ? x.Value : x.Value * -1);
+        public IReadOnlyList<Transaction> Transactions => _transactions.AsReadOnly();
 
         #endregion
 

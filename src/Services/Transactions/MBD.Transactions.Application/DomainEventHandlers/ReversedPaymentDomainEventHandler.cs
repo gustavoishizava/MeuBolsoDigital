@@ -17,7 +17,7 @@ namespace MBD.Transactions.Application.DomainEventHandlers
 
         public Task Handle(ReversedPaymentDomainEvent notification, CancellationToken cancellationToken)
         {
-            var integrationEvent = new TransactionUndoPaymentIntegrationEvent(notification.Id, notification.Value);
+            var integrationEvent = new TransactionUndoPaymentIntegrationEvent(notification.Id);
             _mediator.Publish(integrationEvent);
 
             return Task.CompletedTask;

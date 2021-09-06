@@ -58,7 +58,7 @@ namespace MBD.Transactions.Domain.Entities
             PaymentDate = null;
             Status = TransactionStatus.AwaitingPayment;
 
-            AddDomainEvent(new ReversedPaymentDomainEvent(Id, Value));
+            AddDomainEvent(new ReversedPaymentDomainEvent(Id));
         }
 
         public void SetValue(decimal value)

@@ -46,9 +46,19 @@ namespace MBD.BankAccounts.Infrastructure.Repositories
             return await query.Include(x => x.Transactions).FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<Transaction> GetTransactionByIdAsync(Guid transactionId)
+        {
+            return await _context.Transactions.FindAsync(transactionId);
+        }
+
         public void Remove(Account account)
         {
             _context.Remove(account);
+        }
+
+        public void RemoveTransaction(Transaction transaction)
+        {
+            _context.Remove(transaction);
         }
 
         public void Update(Account account)

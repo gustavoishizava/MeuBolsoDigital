@@ -56,7 +56,7 @@ namespace MBD.BankAccounts.API.Configuration
 
         private static IServiceCollection AddConsumers(this IServiceCollection services)
         {
-            services.AddHostedService<TransactionPaidConsumer>();
+            services.AddHostedService<TransactionConsumer>();
 
             return services;
         }

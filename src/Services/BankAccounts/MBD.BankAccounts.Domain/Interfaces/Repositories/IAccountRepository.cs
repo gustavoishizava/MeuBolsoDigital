@@ -10,5 +10,7 @@ namespace MBD.BankAccounts.Domain.Interfaces.Repositories
     {
         Task<IEnumerable<Account>> GetAllAsync();
         Task<Account> GetByIdAsync(Guid id, bool ignoreGlobalFilter);
+        Task<Transaction> GetTransactionByIdAsync(Guid transactionId);
+        void RemoveTransaction(Transaction transaction);
     }
 }

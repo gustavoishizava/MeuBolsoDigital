@@ -30,5 +30,15 @@ namespace MBD.BankAccounts.Domain.Services
 
             await _unitOfWork.SaveChangesAsync();
         }
+
+        public async Task RemoveTransactionAsync(Guid transactionId)
+        {
+            var transaction = await _accountRepository.GetTransactionByIdAsync(transactionId);
+            if (transaction == null)
+                await Task.CompletedTask;
+
+            _accountRepository.RemoveTransaction(transaction);
+            await _unitOfWork.SaveChangesAsync();
+        }
     }
 }

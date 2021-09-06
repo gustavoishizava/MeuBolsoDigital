@@ -16,20 +16,22 @@ using RabbitMQ.Client.Events;
 
 namespace MBD.BankAccounts.API.Consumers
 {
-    public class TransactionPaidConsumer : BackgroundService
+    public class TransactionConsumer : BackgroundService
     {
         private IConnection _connection;
         private IModel _channel;
-        private readonly ILogger<TransactionPaidConsumer> _logger;
-        private readonly string _queueName;
+        private readonly ILogger<TransactionConsumer> _logger;
+        private readonly string _transactionPaidQueueName;
+        private readonly string _transactionUndoPaymentQueueName;
 
         private readonly IServiceProvider _serviceProvider;
 
-        public TransactionPaidConsumer(IOptions<RabbitMqConfiguration> rabbitMqOptions, ILogger<TransactionPaidConsumer> logger, IServiceProvider serviceProvider)
+        public TransactionConsumer(IOptions<RabbitMqConfiguration> rabbitMqOptions, ILogger<TransactionConsumer> logger, IServiceProvider serviceProvider)
         {
             _logger = logger;
             var rabbitMqConfiguration = rabbitMqOptions.Value;
-            _queueName = nameof(TransactionPaidIntegrationEvent);
+            _transactionPaidQueueName = nameof(TransactionPaidIntegrationEvent);
+            _transactionUndoPaymentQueueName = nameof(TransactionUndoPaymentIntegrationEvent);
             var factory = new ConnectionFactory()
             {
                 HostName = rabbitMqConfiguration.HostName,
@@ -40,7 +42,14 @@ namespace MBD.BankAccounts.API.Consumers
             _channel = _connection.CreateModel();
 
             _channel.QueueDeclare(
-                queue: _queueName,
+                queue: _transactionPaidQueueName,
+                durable: false,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null);
+
+            _channel.QueueDeclare(
+                queue: _transactionUndoPaymentQueueName,
                 durable: false,
                 exclusive: false,
                 autoDelete: false,
@@ -55,11 +64,19 @@ namespace MBD.BankAccounts.API.Consumers
         {
             _logger.LogInformation("========= Serviço em execução. =========");
 
+            AddTransaction();
+            RemoveTranscation();
+
+            return Task.CompletedTask;
+        }
+
+        private void AddTransaction()
+        {
             var consumer = new EventingBasicConsumer(_channel);
 
             consumer.Received += async (sender, eventArgs) =>
             {
-                _logger.LogInformation("========= Recebendo mensagem de integração =========");
+                _logger.LogInformation($"========= Recebendo mensagem de integração {_transactionPaidQueueName} =========");
 
                 var contentArray = eventArgs.Body.ToArray();
                 var contentString = Encoding.UTF8.GetString(contentArray);
@@ -92,11 +109,48 @@ namespace MBD.BankAccounts.API.Consumers
             };
 
             _channel.BasicConsume(
-                queue: _queueName,
+                queue: _transactionPaidQueueName,
                 autoAck: false,
                 consumer: consumer);
+        }
 
-            return Task.CompletedTask;
+        private void RemoveTranscation()
+        {
+            var consumer = new EventingBasicConsumer(_channel);
+
+            consumer.Received += async (sender, eventArgs) =>
+            {
+                _logger.LogInformation($"========= Recebendo mensagem de integração {_transactionUndoPaymentQueueName} =========");
+
+                var contentArray = eventArgs.Body.ToArray();
+                var contentString = Encoding.UTF8.GetString(contentArray);
+                var message = JsonSerializer.Deserialize<TransactionUndoPaymentIntegrationEvent>(contentString, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+                try
+                {
+                    _logger.LogInformation(contentString);
+
+                    using var scope = _serviceProvider.CreateScope();
+                    var service = scope.ServiceProvider.GetRequiredService<ITransactionManagementService>();
+
+                    await service.RemoveTransactionAsync(message.Id);
+                }
+                catch (Exception exception)
+                {
+                    _logger.LogError(exception.Message);
+                    _channel.BasicAck(eventArgs.DeliveryTag, false);
+
+                    throw;
+                }
+            };
+
+            _channel.BasicConsume(
+                queue: _transactionUndoPaymentQueueName,
+                autoAck: false,
+                consumer: consumer);
         }
     }
 }

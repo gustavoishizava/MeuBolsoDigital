@@ -23,6 +23,7 @@ namespace MBD.BankAccounts.API.Consumers
         private readonly ILogger<TransactionConsumer> _logger;
         private readonly string _transactionPaidQueueName;
         private readonly string _transactionUndoPaymentQueueName;
+        private readonly string _transactionValueChangedQueueName;
 
         private readonly IServiceProvider _serviceProvider;
 
@@ -30,8 +31,11 @@ namespace MBD.BankAccounts.API.Consumers
         {
             _logger = logger;
             var rabbitMqConfiguration = rabbitMqOptions.Value;
+
             _transactionPaidQueueName = nameof(TransactionPaidIntegrationEvent);
             _transactionUndoPaymentQueueName = nameof(TransactionUndoPaymentIntegrationEvent);
+            _transactionValueChangedQueueName = nameof(TransactionValueChangedIntegrationEvent);
+
             var factory = new ConnectionFactory()
             {
                 HostName = rabbitMqConfiguration.HostName,
@@ -55,6 +59,13 @@ namespace MBD.BankAccounts.API.Consumers
                 autoDelete: false,
                 arguments: null);
 
+            _channel.QueueDeclare(
+                queue: _transactionValueChangedQueueName,
+                durable: false,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null);
+
             _serviceProvider = serviceProvider;
 
             _logger.LogInformation("========= Conectando ao RabbitMQ. =========");
@@ -66,6 +77,7 @@ namespace MBD.BankAccounts.API.Consumers
 
             AddTransaction();
             RemoveTranscation();
+            SetValue();
 
             return Task.CompletedTask;
         }
@@ -151,6 +163,39 @@ namespace MBD.BankAccounts.API.Consumers
                 queue: _transactionUndoPaymentQueueName,
                 autoAck: false,
                 consumer: consumer);
+        }
+
+        private void SetValue()
+        {
+            var consumer = new EventingBasicConsumer(_channel);
+            consumer.Received += async (sender, eventArgs) =>
+            {
+                _logger.LogInformation($"========= Recebendo mensagem de integração {_transactionValueChangedQueueName} =========");
+
+                var contentArray = eventArgs.Body.ToArray();
+                var contentString = Encoding.UTF8.GetString(contentArray);
+                var message = JsonSerializer.Deserialize<TransactionValueChangedIntegrationEvent>(contentString, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+                try
+                {
+                    _logger.LogInformation(contentString);
+
+                    using var scope = _serviceProvider.CreateScope();
+                    var service = scope.ServiceProvider.GetRequiredService<ITransactionManagementService>();
+
+                    await service.SetTransactionValue(message.Id, message.NewValue);
+                }
+                catch (Exception exception)
+                {
+                    _logger.LogError(exception.Message);
+                    _channel.BasicAck(eventArgs.DeliveryTag, false);
+
+                    throw;
+                }
+            };
         }
     }
 }

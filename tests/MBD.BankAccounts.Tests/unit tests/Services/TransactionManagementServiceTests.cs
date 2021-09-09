@@ -40,7 +40,7 @@ namespace MBD.BankAccounts.Tests.unit_tests.Services
             Transaction transaction;
 
             _mock.GetMock<IAccountRepository>()
-                .Setup(method => method.GetByIdAsync(It.IsAny<Guid>()))
+                .Setup(method => method.GetByIdAsync(It.IsAny<Guid>(), true))
                 .ReturnsAsync(account);
 
             // Act
@@ -57,7 +57,7 @@ namespace MBD.BankAccounts.Tests.unit_tests.Services
             Assert.NotNull(transaction);
 
             _mock.GetMock<IAccountRepository>()
-                .Verify(method => method.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
+                .Verify(method => method.GetByIdAsync(It.IsAny<Guid>(), true), Times.Once);
 
             _mock.GetMock<IUnitOfWork>()
                 .Verify(method => method.SaveChangesAsync(), Times.Once);
@@ -68,7 +68,7 @@ namespace MBD.BankAccounts.Tests.unit_tests.Services
         {
             // Arrange
             _mock.GetMock<IAccountRepository>()
-                .Setup(method => method.GetByIdAsync(It.IsAny<Guid>()))
+                .Setup(method => method.GetByIdAsync(It.IsAny<Guid>(), true))
                 .ReturnsAsync((Account)null);
 
             // Act && Assert
@@ -81,7 +81,102 @@ namespace MBD.BankAccounts.Tests.unit_tests.Services
                     DateTime.Now));
 
             _mock.GetMock<IAccountRepository>()
-                .Verify(method => method.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
+                .Verify(method => method.GetByIdAsync(It.IsAny<Guid>(), true), Times.Once);
+
+            _mock.GetMock<IUnitOfWork>()
+                .Verify(method => method.SaveChangesAsync(), Times.Never);
+        }
+
+        [Fact(DisplayName = "Remover uma transação existente deve retornar sucesso.")]
+        public async Task ExistsTransaction_RemoveTransaction_ReturnSuccess()
+        {
+            // Arrange
+            var account = new Account(Guid.NewGuid(), "account", 1000, AccountType.CheckingAccount);
+            var transactionId = Guid.NewGuid();
+            account.AddTransaction(transactionId, DateTime.Now, 100, TransactionType.Income);
+            var transaction = account.GetTransaction(transactionId);
+
+            _mock.GetMock<IAccountRepository>()
+                .Setup(method => method.GetTransactionByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(transaction);
+
+            // Act
+            await _service.RemoveTransactionAsync(Guid.NewGuid());
+
+            // Assert
+            _mock.GetMock<IAccountRepository>()
+                .Verify(method => method.GetTransactionByIdAsync(It.IsAny<Guid>()), Times.Once);
+
+            _mock.GetMock<IAccountRepository>()
+                .Verify(method => method.RemoveTransaction(transaction), Times.Once);
+
+            _mock.GetMock<IUnitOfWork>()
+                .Verify(method => method.SaveChangesAsync(), Times.Once);
+        }
+
+        [Fact(DisplayName = "Remover uma transação inexistente não deve causar erros nem efeitos colaterais.")]
+        public async Task NotFoundTransaction_RemoveTransaction_DoNothing()
+        {
+            // Arrange
+            _mock.GetMock<IAccountRepository>()
+                .Setup(method => method.GetTransactionByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync((Transaction)null);
+
+            // Act
+            await _service.RemoveTransactionAsync(Guid.NewGuid());
+
+            // Assert
+            _mock.GetMock<IAccountRepository>()
+                .Verify(method => method.GetTransactionByIdAsync(It.IsAny<Guid>()), Times.Once);
+
+            _mock.GetMock<IAccountRepository>()
+                .Verify(method => method.RemoveTransaction(It.IsAny<Transaction>()), Times.Never);
+
+            _mock.GetMock<IUnitOfWork>()
+                .Verify(method => method.SaveChangesAsync(), Times.Never);
+        }
+
+        [Fact(DisplayName = "Alterar o valor de uma transação existente deve retornar sucesso.")]
+        public async Task ExistsTransaction_SetTransactionValue_ReturnSuccess()
+        {
+            // Arrange
+            var account = new Account(Guid.NewGuid(), "account", 1000, AccountType.CheckingAccount);
+            var transactionId = Guid.NewGuid();
+            var newTransactionValue = _faker.Finance.Amount(10, 100);
+            account.AddTransaction(transactionId, DateTime.Now, 100, TransactionType.Income);
+            var transaction = account.GetTransaction(transactionId);
+
+            _mock.GetMock<IAccountRepository>()
+                .Setup(method => method.GetTransactionByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(transaction);
+
+            // Act
+            await _service.SetTransactionValue(transactionId, newTransactionValue);
+
+            // Assert
+            Assert.Equal(newTransactionValue, transaction.Value);
+
+            _mock.GetMock<IAccountRepository>()
+                .Verify(method => method.GetTransactionByIdAsync(It.IsAny<Guid>()), Times.Once);
+
+            _mock.GetMock<IUnitOfWork>()
+                .Verify(method => method.SaveChangesAsync(), Times.Once);
+        }
+
+        [Fact(DisplayName = "Alterar o valor de uma transação inexistente não deve retornar erros, nem causar efeitos colaterais.")]
+        public async Task NotFoundTransaction_SetTransactionValue_DoNothing()
+        {
+            // Arrange
+            _mock.GetMock<IAccountRepository>()
+                .Setup(method => method.GetTransactionByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync((Transaction)null);
+
+            // Act
+            await _service.SetTransactionValue(Guid.NewGuid(), _faker.Finance.Amount(0, 100));
+
+            // Assert
+            _mock.GetMock<IAccountRepository>()
+                .Verify(method => method.GetTransactionByIdAsync(It.IsAny<Guid>()), Times.Once);
 
             _mock.GetMock<IUnitOfWork>()
                 .Verify(method => method.SaveChangesAsync(), Times.Never);

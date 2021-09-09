@@ -8,5 +8,6 @@ namespace MBD.BankAccounts.Domain.Interfaces.Services
     {
         Task AddTransactionToAccountAsync(Guid accountId, Guid transactionId, decimal value, TransactionType type, DateTime createdAt);
         Task RemoveTransactionAsync(Guid transactionId);
+        Task SetTransactionValue(Guid transactionId, decimal value);
     }
 }

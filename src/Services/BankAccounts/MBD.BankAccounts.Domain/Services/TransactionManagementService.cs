@@ -25,7 +25,12 @@ namespace MBD.BankAccounts.Domain.Services
             if (account == null)
                 throw new DomainException($"Nenhuma conta encontrada com o Id='{accountId}'.");
 
-            account.AddTransaction(transactionId, createdAt, value, type);
+            var transaction = account.GetTransaction(transactionId);
+            if (transaction is null)
+                account.AddTransaction(transactionId, createdAt, value, type);
+            else
+                account.UpdateTransaction(transactionId, createdAt, value);
+
             _accountRepository.Update(account);
 
             await _unitOfWork.SaveChangesAsync();

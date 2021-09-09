@@ -4,6 +4,7 @@ using System.Linq;
 using MBD.BankAccounts.Domain.Enumerations;
 using MBD.BankAccounts.Domain.Resources;
 using MBD.Core;
+using MBD.Core.DomainObjects;
 using MBD.Core.Entities;
 using MBD.Core.Enumerations;
 using MBD.Core.Extensions;
@@ -82,6 +83,16 @@ namespace MBD.BankAccounts.Domain.Entities
         public bool ExistingTransaction(Guid transactionId)
         {
             return _transactions.Any(x => x.Id == transactionId);
+        }
+
+        public void UpdateTransaction(Guid transactionId, DateTime createdAt, decimal value)
+        {
+            var transaction = GetTransaction(transactionId);
+            if (transaction is null)
+                throw new DomainException("Transação não encontrada.");
+
+            transaction.SetValue(value);
+            transaction.SetDate(createdAt);
         }
 
         #endregion

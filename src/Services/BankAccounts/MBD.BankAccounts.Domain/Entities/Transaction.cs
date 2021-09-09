@@ -6,11 +6,11 @@ namespace MBD.BankAccounts.Domain.Entities
 {
     public class Transaction
     {
-        public Guid Id { get; private set; }
-        public Guid AccountId { get; private set; }
+        public Guid Id { get; private init; }
+        public Guid AccountId { get; private init; }
         public DateTime CreatedAt { get; private set; }
         public decimal Value { get; private set; }
-        public TransactionType Type { get; private set; }
+        public TransactionType Type { get; private init; }
 
         internal Transaction(Guid id, Guid accountId, DateTime createdAt, decimal value, TransactionType type)
         {
@@ -25,6 +25,11 @@ namespace MBD.BankAccounts.Domain.Entities
         {
             Assertions.IsGreaterOrEqualsThan(value, 0, "O valor não pode ser menor que 0.");
             Value = value;
+        }
+
+        internal void SetDate(DateTime date)
+        {
+            CreatedAt = date;
         }
     }
 }

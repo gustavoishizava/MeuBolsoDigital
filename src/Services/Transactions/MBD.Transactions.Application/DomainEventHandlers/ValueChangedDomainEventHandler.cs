@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using MBD.Transactions.Application.IntegrationEvents.Events;
 using MBD.Transactions.Domain.Events;
 using MediatR;
 
@@ -7,10 +8,16 @@ namespace MBD.Transactions.Application.DomainEventHandlers
 {
     public class ValueChangedDomainEventHandler : INotificationHandler<ValueChangedDomainEvent>
     {
-        public Task Handle(ValueChangedDomainEvent notification, CancellationToken cancellationToken)
+        private readonly IMediator _mediator;
+
+        public ValueChangedDomainEventHandler(IMediator mediator)
         {
-            // TODO: Lançar evento de integração
-            return Task.CompletedTask;
+            _mediator = mediator;
+        }
+
+        public async Task Handle(ValueChangedDomainEvent notification, CancellationToken cancellationToken)
+        {
+            await _mediator.Publish(new TransactionValueChangedIntegrationEvent(notification.Id, notification.NewValue, notification.OldValue));
         }
     }
 }

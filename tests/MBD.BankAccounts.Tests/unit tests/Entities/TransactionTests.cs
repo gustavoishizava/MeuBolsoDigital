@@ -1,4 +1,5 @@
 using System;
+using Bogus;
 using MBD.BankAccounts.Domain.Entities;
 using MBD.BankAccounts.Domain.Enumerations;
 using MBD.Core.DomainObjects;
@@ -9,10 +10,12 @@ namespace MBD.BankAccounts.Tests.unit_tests.Entities
     public class TransactionTests
     {
         private readonly Account _validAccount;
+        private readonly Faker _faker;
 
         public TransactionTests()
         {
             _validAccount = new Account(Guid.NewGuid(), "Conta válida", 1000, AccountType.CheckingAccount);
+            _faker = new Faker();
         }
 
         [Theory(DisplayName = "Adicionar uma transação válida deve alterar o saldo da conta e retornar valor correto.")]
@@ -62,8 +65,35 @@ namespace MBD.BankAccounts.Tests.unit_tests.Entities
             var transaction = _validAccount.GetTransaction(transactionId);
 
             // Act && Assert
-            Assert.Throws<DomainException>(() => 
+            Assert.Throws<DomainException>(() =>
                 _validAccount.AddTransaction(transaction.Id, transaction.CreatedAt, transaction.Value, transaction.Type));
+        }
+
+        [Fact(DisplayName = "Atualizar uma transação existente deve retornar sucesso.")]
+        public void ExistsTransaction_UpdateTransaction_ReturnSuccess()
+        {
+            // Arrange
+            var transactionId = Guid.NewGuid();
+            var newValue = _faker.Finance.Amount(100, 1000);
+            var newDate = DateTime.Now.AddDays(_faker.Random.Int(5, 10));
+            Transaction transaction;
+
+            _validAccount.AddTransaction(transactionId, DateTime.Now, _faker.Finance.Amount(10, 50), TransactionType.Income);
+
+            // Act
+            _validAccount.UpdateTransaction(transactionId, newDate, newValue);
+            transaction = _validAccount.GetTransaction(transactionId);
+
+            // Assert
+            Assert.Equal(newValue, transaction.Value);
+            Assert.Equal(newDate, transaction.CreatedAt);
+        }
+
+        [Fact(DisplayName = "Atualizar uma transação inexistente deve retornar DomainException.")]
+        public void NotFoundTransaction_UpdateTransaction_ReturnDomainException()
+        {
+            // Arrange && Act && Assert
+            Assert.Throws<DomainException>(() => _validAccount.UpdateTransaction(Guid.NewGuid(), DateTime.Now, 10));
         }
     }
 }

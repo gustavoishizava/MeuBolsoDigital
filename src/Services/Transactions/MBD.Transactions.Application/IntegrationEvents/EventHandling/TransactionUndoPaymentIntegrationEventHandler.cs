@@ -4,7 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using MBD.Transactions.Application.IntegrationEvents.Events;
 using MediatR;
+using MessageBus;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 
 namespace MBD.Transactions.Application.IntegrationEvents.EventHandling
@@ -15,12 +17,15 @@ namespace MBD.Transactions.Application.IntegrationEvents.EventHandling
         private readonly string _queueName;
         private readonly ILogger<TransactionUndoPaymentIntegrationEventHandler> _logger;
 
-        public TransactionUndoPaymentIntegrationEventHandler(ILogger<TransactionUndoPaymentIntegrationEventHandler> logger)
+        public TransactionUndoPaymentIntegrationEventHandler(IOptions<RabbitMqConfiguration> rabbitMqOptions, ILogger<TransactionUndoPaymentIntegrationEventHandler> logger)
         {
             _queueName = nameof(TransactionUndoPaymentIntegrationEvent);
+            var rabbitMqConfiguration = rabbitMqOptions.Value;
             _connectionFactory = new ConnectionFactory()
             {
-                HostName = "localhost"
+                HostName = rabbitMqConfiguration.HostName,
+                UserName = rabbitMqConfiguration.UserName,
+                Password = rabbitMqConfiguration.Password
             };
             _logger = logger;
         }

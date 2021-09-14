@@ -1,35 +1,89 @@
+using System.Text;
 using System;
-using System.Threading.Tasks;
+using System.Text.Json;
 using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
+using Microsoft.Extensions.Options;
+using RabbitMQ.Client.Events;
 
 namespace MessageBus
 {
     public class MessageBus : IMessageBus
     {
+        private readonly RabbitMqConfiguration _configuration;
         private IConnection _connection;
-
         public bool IsConnected => _connection?.IsOpen ?? false;
+
+        public MessageBus(IOptions<RabbitMqConfiguration> options)
+        {
+            _configuration = options.Value;
+        }
 
         public void Publish<T>(T message) where T : class
         {
-            throw new NotImplementedException();
-        }
+            TryConnect();
 
-        public Task PublishAsync<T>(T message) where T : class
-        {
-            throw new NotImplementedException();
+            using var channel = _connection.CreateModel();
+
+            channel.QueueDeclare(
+                queue: nameof(T),
+                durable: false,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null);
+
+            var stringfiedMessage = JsonSerializer.Serialize(message, new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            var messageBytes = Encoding.UTF8.GetBytes(stringfiedMessage);
+
+            channel.BasicPublish(
+                exchange: string.Empty,
+                routingKey: nameof(T),
+                basicProperties: null,
+                body: messageBytes);
         }
 
         public void Subscribe<T>(string subscriptionId, Action<T> onMessage) where T : class
         {
-            throw new NotImplementedException();
-        }
+            using var channel = _connection.CreateModel();
 
-        public Task SubscribeAsync<T>(string subscriptionId, Func<T, Task> onMessage) where T : class
-        {
-            throw new NotImplementedException();
+            channel.QueueDeclare(
+                queue: subscriptionId,
+                durable: false,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null);
+
+            var consumer = new EventingBasicConsumer(channel);
+
+            consumer.Received += (sender, eventArgs) =>
+            {
+                var contentArray = eventArgs.Body.ToArray();
+                var contentString = Encoding.UTF8.GetString(contentArray);
+                var message = JsonSerializer.Deserialize<T>(contentString, new JsonSerializerOptions()
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+                try
+                {
+                    onMessage(message);
+                }
+                catch
+                {
+                    channel.BasicAck(eventArgs.DeliveryTag, false);
+                    throw;
+                }
+            };
+
+            channel.BasicConsume(
+                queue: subscriptionId,
+                autoAck: false,
+                consumer: consumer);
         }
 
         private void TryConnect()
@@ -45,7 +99,9 @@ namespace MessageBus
             {
                 var factory = new ConnectionFactory()
                 {
-                    HostName = "localhost"
+                    HostName = _configuration.HostName,
+                    UserName = _configuration.UserName,
+                    Password = _configuration.Password
                 };
                 _connection = factory.CreateConnection();
                 _connection.ConnectionShutdown += OnDisconnect;

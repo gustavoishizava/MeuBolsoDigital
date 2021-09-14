@@ -16,6 +16,6 @@
   <ItemGroup>
     <ProjectReference Include="..\MBD.BankAccounts.Infrastructure\MBD.BankAccounts.Infrastructure.csproj" />
     <ProjectReference Include="..\MBD.BankAccounts.Application\MBD.BankAccounts.Application.csproj" />
-    <ProjectReference Include="..\..\..\Building blocks\MessageBus\MessageBus.csproj" />
+    <ProjectReference Include="..\..\..\Building blocks\Core\MBD.MessageBus\MBD.MessageBus.csproj" />
   </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@ using System.Reflection;
 using MBD.Application.Core.Response;
 using MBD.Core.Data;
 using MBD.Core.Identity;
+using MBD.MessageBus;
 using MBD.Transactions.API.Configuration.HttpClient;
 using MBD.Transactions.Application.Commands;
 using MBD.Transactions.Application.DomainEventHandlers;
@@ -17,7 +18,6 @@ using MBD.Transactions.Infrastructure;
 using MBD.Transactions.Infrastructure.Repositories;
 using MBD.Transactions.Infrastructure.Services;
 using MediatR;
-using MessageBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
@@ -35,7 +35,8 @@ namespace MBD.Transactions.API.Configuration
                 .AddQueries()
                 .AddDomainEvents()
                 .AddIntegrationEvents()
-                .AddConfigurations(configuration);
+                .AddConfigurations(configuration)
+                .AddMessageBus();
 
             services.AddHttpContextAccessor();
             services.AddScoped<IAspNetUser, AspNetUser>();
@@ -118,6 +119,13 @@ namespace MBD.Transactions.API.Configuration
         private static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<RabbitMqConfiguration>(configuration.GetSection(nameof(RabbitMqConfiguration)));
+
+            return services;
+        }
+
+        private static IServiceCollection AddMessageBus(this IServiceCollection services)
+        {
+            services.AddScoped<IMessageBus, MBD.MessageBus.MessageBus>();
 
             return services;
         }

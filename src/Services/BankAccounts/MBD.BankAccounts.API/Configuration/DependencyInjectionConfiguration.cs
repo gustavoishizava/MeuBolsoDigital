@@ -9,7 +9,7 @@ using MBD.BankAccounts.Infrastructure;
 using MBD.BankAccounts.Infrastructure.Repositories;
 using MBD.Core.Data;
 using MBD.Core.Identity;
-using MessageBus;
+using MBD.MessageBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

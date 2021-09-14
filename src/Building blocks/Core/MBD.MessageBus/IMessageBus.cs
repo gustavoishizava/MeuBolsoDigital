@@ -1,6 +1,6 @@
 using System;
 
-namespace MessageBus
+namespace MBD.MessageBus
 {
     public interface IMessageBus : IDisposable
     {

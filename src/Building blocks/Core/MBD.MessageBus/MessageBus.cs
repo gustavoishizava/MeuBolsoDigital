@@ -7,7 +7,7 @@ using RabbitMQ.Client.Exceptions;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client.Events;
 
-namespace MessageBus
+namespace MBD.MessageBus
 {
     public class MessageBus : IMessageBus
     {

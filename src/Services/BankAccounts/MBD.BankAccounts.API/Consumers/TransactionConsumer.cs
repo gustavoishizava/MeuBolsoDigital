@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MBD.BankAccounts.Application.IntegrationEvents;
 using MBD.BankAccounts.Domain.Enumerations;
 using MBD.BankAccounts.Domain.Interfaces.Services;
-using MessageBus;
+using MBD.MessageBus;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;

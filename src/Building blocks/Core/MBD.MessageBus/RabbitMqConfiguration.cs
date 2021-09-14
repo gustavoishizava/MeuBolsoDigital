@@ -1,4 +1,4 @@
-namespace MessageBus
+namespace MBD.MessageBus
 {
     public class RabbitMqConfiguration
     {

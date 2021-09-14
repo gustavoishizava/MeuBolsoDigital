@@ -15,6 +15,6 @@
     <ProjectReference Include="..\..\..\Building blocks\Services\MBD.Application.Core\MBD.Application.Core.csproj" />
     <ProjectReference Include="..\MBD.Transactions.Domain\MBD.Transactions.Domain.csproj" />
     <ProjectReference Include="..\..\..\Building blocks\Core\MBD.Core\MBD.Core.csproj" />
-    <ProjectReference Include="..\..\..\Building blocks\MessageBus\MessageBus.csproj" />
+    <ProjectReference Include="..\..\..\Building blocks\Core\MBD.MessageBus\MBD.MessageBus.csproj" />
   </ItemGroup>
 </Project>

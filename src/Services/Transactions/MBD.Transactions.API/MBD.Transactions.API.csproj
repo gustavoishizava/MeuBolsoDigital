@@ -22,6 +22,6 @@
     <ProjectReference Include="..\MBD.Transactions.Infrastructure\MBD.Transactions.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\Building blocks\Core\MBD.Infrastructure.Core\MBD.Infrastructure.Core.csproj" />
     <ProjectReference Include="..\..\..\Building blocks\Core\MBD.Core\MBD.Core.csproj" />
-    <ProjectReference Include="..\..\..\Building blocks\MessageBus\MessageBus.csproj" />
+    <ProjectReference Include="..\..\..\Building blocks\Core\MBD.MessageBus\MBD.MessageBus.csproj" />
   </ItemGroup>
 </Project>

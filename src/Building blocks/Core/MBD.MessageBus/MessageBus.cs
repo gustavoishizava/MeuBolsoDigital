@@ -27,7 +27,7 @@ namespace MBD.MessageBus
             using var channel = _connection.CreateModel();
 
             channel.QueueDeclare(
-                queue: nameof(T),
+                queue: message.GetType().Name,
                 durable: false,
                 exclusive: false,
                 autoDelete: false,
@@ -42,13 +42,15 @@ namespace MBD.MessageBus
 
             channel.BasicPublish(
                 exchange: string.Empty,
-                routingKey: nameof(T),
+                routingKey: message.GetType().Name,
                 basicProperties: null,
                 body: messageBytes);
         }
 
         public void Subscribe<T>(string subscriptionId, Action<T> onMessage) where T : class
         {
+            TryConnect();
+
             using var channel = _connection.CreateModel();
 
             channel.QueueDeclare(

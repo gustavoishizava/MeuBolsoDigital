@@ -125,7 +125,7 @@ namespace MBD.Transactions.API.Configuration
 
         private static IServiceCollection AddMessageBus(this IServiceCollection services)
         {
-            services.AddScoped<IMessageBus, MBD.MessageBus.MessageBus>();
+            services.AddSingleton<IMessageBus, MBD.MessageBus.MessageBus>();
 
             return services;
         }

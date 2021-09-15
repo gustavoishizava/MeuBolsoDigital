@@ -23,7 +23,8 @@ namespace MBD.BankAccounts.API.Configuration
                     .AddAppServices()
                     .AddRepositories()
                     .AddConsumers()
-                    .AddConfigurations(configuration);
+                    .AddConfigurations(configuration)
+                    .AddMessageBus();
 
             services.AddHttpContextAccessor();
             services.AddScoped<IAspNetUser, AspNetUser>();
@@ -64,6 +65,13 @@ namespace MBD.BankAccounts.API.Configuration
         private static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<RabbitMqConfiguration>(configuration.GetSection(nameof(RabbitMqConfiguration)));
+
+            return services;
+        }
+
+        private static IServiceCollection AddMessageBus(this IServiceCollection services)
+        {
+            services.AddSingleton<IMessageBus, MBD.MessageBus.MessageBus>();
 
             return services;
         }

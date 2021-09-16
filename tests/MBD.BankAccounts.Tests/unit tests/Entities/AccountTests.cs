@@ -56,7 +56,7 @@ namespace MBD.BankAccounts.Tests.unit_tests.Entities
         [Fact(DisplayName = "Alterar uma conta bancária exitente com sucesso.")]
         public void ValidAccount_UpdateAccount_ReturnSuccess()
         {
-            // Arrange            
+            // Arrange
             var account = new Account(Guid.NewGuid(), "Conta existente", 100, AccountType.CheckingAccount);
             var newDescription = "Novo nome";
             var newType = AccountType.Money;
@@ -68,9 +68,23 @@ namespace MBD.BankAccounts.Tests.unit_tests.Entities
             account.Deactivate();
 
             // Assert
+            Assert.Single(account.Events);
             Assert.Equal(newDescription, account.Description);
             Assert.Equal(newType, account.Type);
             Assert.Equal(newStatus, account.Status);
+        }
+
+        [Theory(DisplayName = "Atualizar descrição com valor inválido deve retornar DomainException.")]
+        [InlineData(null)]
+        [InlineData("")]
+        public void InvalidDescription_SetDescription_ReturnDomainException(string description)
+        {
+            // Arrange
+            var account = new Account(Guid.NewGuid(), "Account", 100, AccountType.CheckingAccount);
+
+            // Act && Assert
+            Assert.Throws<DomainException>(() => account.SetDescription(description));
+            Assert.Throws<DomainException>(() => account.SetDescription(new String('a', 151)));
         }
     }
 }

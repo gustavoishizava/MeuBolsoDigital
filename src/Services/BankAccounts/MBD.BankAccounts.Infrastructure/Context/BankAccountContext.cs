@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using MBD.BankAccounts.Domain.Entities;
+using MBD.BankAccounts.Domain.Events.Common;
 using MBD.Core.Identity;
 using MBD.Infrastructure.Core.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace MBD.BankAccounts.Infrastructure.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Ignore<DomainEvent>();
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             modelBuilder.Entity<Account>().HasQueryFilter(x => x.TenantId == _aspNetUser.UserId);

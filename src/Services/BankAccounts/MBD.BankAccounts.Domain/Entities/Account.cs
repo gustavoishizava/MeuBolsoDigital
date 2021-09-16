@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MBD.BankAccounts.Domain.Entities.Common;
 using MBD.BankAccounts.Domain.Enumerations;
+using MBD.BankAccounts.Domain.Events;
 using MBD.BankAccounts.Domain.Resources;
 using MBD.Core;
 using MBD.Core.DomainObjects;
@@ -11,7 +13,7 @@ using MBD.Core.Extensions;
 
 namespace MBD.BankAccounts.Domain.Entities
 {
-    public class Account : BaseEntity, IAggregateRoot, ITenant
+    public class Account : BaseEntityWithEvent, IAggregateRoot, ITenant
     {
         private readonly List<Transaction> _transactions = new List<Transaction>();
 
@@ -31,9 +33,11 @@ namespace MBD.BankAccounts.Domain.Entities
         public Account(Guid tenantId, string description, decimal initialBalance, AccountType type)
         {
             Assertions.IsGreaterOrEqualsThan(initialBalance, 0, ResourceCodes.Account.InitialValueMinValue.GetResource());
+            Assertions.IsNotNullOrEmpty(description, ResourceCodes.Account.DescriptionEmpty.GetResource());
+            Assertions.HasMaxLength(description, 150, ResourceCodes.Account.DescriptionMaxLength.GetResource());
 
             TenantId = tenantId;
-            SetDescription(description);
+            Description = description;
             InitialBalance = initialBalance;
             SetType(type);
             Activate();
@@ -45,6 +49,9 @@ namespace MBD.BankAccounts.Domain.Entities
         {
             Assertions.IsNotNullOrEmpty(description, ResourceCodes.Account.DescriptionEmpty.GetResource());
             Assertions.HasMaxLength(description, 150, ResourceCodes.Account.DescriptionMaxLength.GetResource());
+
+            if (!Description.Equals(description))
+                AddDomainEvent(new DescriptionChangedDomainEvent(Id, Description, description));
 
             Description = description;
         }

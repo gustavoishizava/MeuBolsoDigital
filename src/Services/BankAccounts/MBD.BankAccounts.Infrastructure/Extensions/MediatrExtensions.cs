@@ -1,15 +1,15 @@
 using System.Linq;
 using System.Threading.Tasks;
+using MBD.BankAccounts.Domain.Entities.Common;
+using MBD.BankAccounts.Infrastructure.Context;
 using MBD.Core.Extensions;
-using MBD.Transactions.Domain.Entities.Common;
-using MBD.Transactions.Infrastructure.Context;
 using MediatR;
 
-namespace MBD.Transactions.Infrastructure.Extensions
+namespace MBD.BankAccounts.Infrastructure.Extensions
 {
     public static class MediatrExtensions
     {
-        public static async Task DispatchDomainEventsAsync(this IMediator mediator, TransactionContext context)
+        public static async Task DispatchDomainEventsAsync(this IMediator mediator, BankAccountContext context)
         {
             var entities = context.ChangeTracker.Entries<BaseEntityWithEvent>()
                 .Where(x => !x.Entity.Events.IsNullOrEmpty());

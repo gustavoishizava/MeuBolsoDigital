@@ -1,7 +1,9 @@
 using System.Reflection;
 using MBD.BankAccounts.API.Consumers;
+using MBD.BankAccounts.Application.DomainEvents;
 using MBD.BankAccounts.Application.Interfaces;
 using MBD.BankAccounts.Application.Services;
+using MBD.BankAccounts.Domain.Events;
 using MBD.BankAccounts.Domain.Interfaces.Repositories;
 using MBD.BankAccounts.Domain.Interfaces.Services;
 using MBD.BankAccounts.Domain.Services;
@@ -10,6 +12,7 @@ using MBD.BankAccounts.Infrastructure.Repositories;
 using MBD.Core.Data;
 using MBD.Core.Identity;
 using MBD.MessageBus;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,10 +27,12 @@ namespace MBD.BankAccounts.API.Configuration
                     .AddRepositories()
                     .AddConsumers()
                     .AddConfigurations(configuration)
-                    .AddMessageBus();
+                    .AddMessageBus()
+                    .AddDomainEvents();
 
             services.AddHttpContextAccessor();
             services.AddScoped<IAspNetUser, AspNetUser>();
+            services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(Assembly.Load("MBD.BankAccounts.Application"));
 
             return services;
@@ -72,6 +77,13 @@ namespace MBD.BankAccounts.API.Configuration
         private static IServiceCollection AddMessageBus(this IServiceCollection services)
         {
             services.AddSingleton<IMessageBus, MBD.MessageBus.MessageBus>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddDomainEvents(this IServiceCollection services)
+        {
+            services.AddScoped<INotificationHandler<DescriptionChangedDomainEvent>, DescriptionChangedDomainEventHandler>();
 
             return services;
         }

@@ -5,6 +5,7 @@ using MBD.Core.Data;
 using MBD.Core.Identity;
 using MBD.MessageBus;
 using MBD.Transactions.API.Configuration.HttpClient;
+using MBD.Transactions.API.Consumers;
 using MBD.Transactions.Application.Commands;
 using MBD.Transactions.Application.DomainEventHandlers;
 using MBD.Transactions.Application.IntegrationEvents.EventHandling;
@@ -36,7 +37,8 @@ namespace MBD.Transactions.API.Configuration
                 .AddDomainEvents()
                 .AddIntegrationEvents()
                 .AddConfigurations(configuration)
-                .AddMessageBus();
+                .AddMessageBus()
+                .AddConsumers();
 
             services.AddHttpContextAccessor();
             services.AddScoped<IAspNetUser, AspNetUser>();
@@ -112,6 +114,7 @@ namespace MBD.Transactions.API.Configuration
             services.AddScoped<INotificationHandler<TransactionPaidIntegrationEvent>, TransactionPaidIntegrationEventHandler>();
             services.AddScoped<INotificationHandler<TransactionUndoPaymentIntegrationEvent>, TransactionUndoPaymentIntegrationEventHandler>();
             services.AddScoped<INotificationHandler<TransactionValueChangedIntegrationEvent>, TransactionValueChangedIntegrationEventHandler>();
+            services.AddScoped<INotificationHandler<BankAccountDescriptionChangedIntegrationEvent>, BankAccountDescriptionIntegrationEventHandler>();
 
             return services;
         }
@@ -126,6 +129,13 @@ namespace MBD.Transactions.API.Configuration
         private static IServiceCollection AddMessageBus(this IServiceCollection services)
         {
             services.AddSingleton<IMessageBus, MBD.MessageBus.MessageBus>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddConsumers(this IServiceCollection services)
+        {
+            services.AddHostedService<BankAccountConsumer>();
 
             return services;
         }

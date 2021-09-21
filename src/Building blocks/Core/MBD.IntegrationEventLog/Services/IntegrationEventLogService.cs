@@ -27,15 +27,11 @@ namespace MBD.IntegrationEventLog.Services
             return await _context.IntegrationEventLogs.AsNoTracking().ToListAsync();
         }
 
-        public async Task SaveEventAsync<T>(T @event, IDbContextTransaction transaction) where T : class
+        public async Task SaveEventAsync<T>(T @event) where T : class
         {
-            if (transaction is null)
-                throw new ArgumentNullException(nameof(transaction));
-
             var content = JsonSerializer.Serialize(@event);
             var integrationEventLog = new IntegrationEventLogEntry(@event.GetType().Name, content);
 
-            _context.Database.UseTransaction(transaction.GetDbTransaction());
             _context.Add(integrationEventLog);
 
             await _context.SaveChangesAsync();

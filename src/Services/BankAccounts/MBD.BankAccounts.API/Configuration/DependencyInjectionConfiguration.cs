@@ -12,6 +12,7 @@ using MBD.BankAccounts.Infrastructure;
 using MBD.BankAccounts.Infrastructure.Repositories;
 using MBD.Core.Data;
 using MBD.Core.Identity;
+using MBD.IntegrationEventLog.Services;
 using MBD.MessageBus;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -30,7 +31,8 @@ namespace MBD.BankAccounts.API.Configuration
                     .AddConfigurations(configuration)
                     .AddMessageBus()
                     .AddDomainEvents()
-                    .AddIntegrationEvents();
+                    .AddIntegrationEvents()
+                    .AddIntegrationEventLogsService();
 
             services.AddHttpContextAccessor();
             services.AddScoped<IAspNetUser, AspNetUser>();
@@ -93,6 +95,13 @@ namespace MBD.BankAccounts.API.Configuration
         private static IServiceCollection AddIntegrationEvents(this IServiceCollection services)
         {
             services.AddScoped<INotificationHandler<BankAccountDescriptionChangedIntegrationEvent>, BankAccountDescriptionChangedIntegrationEventHandler>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddIntegrationEventLogsService(this IServiceCollection services)
+        {
+            services.AddScoped<IIntegrationEventLogService, IntegrationEventLogService>();
 
             return services;
         }

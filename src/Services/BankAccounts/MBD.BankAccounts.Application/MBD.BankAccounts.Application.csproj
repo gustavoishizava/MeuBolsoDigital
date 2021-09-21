@@ -6,10 +6,13 @@
     <PackageReference Include="FluentValidation" Version="10.2.3" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.10"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MBD.BankAccounts.Domain\MBD.BankAccounts.Domain.csproj" />
     <ProjectReference Include="..\..\..\Building blocks\Services\MBD.Application.Core\MBD.Application.Core.csproj" />
     <ProjectReference Include="..\..\..\Building blocks\Core\MBD.MessageBus\MBD.MessageBus.csproj" />
+    <ProjectReference Include="..\..\..\Building blocks\Core\MBD.IntegrationEventLog\MBD.IntegrationEventLog.csproj" />
+    <ProjectReference Include="..\MBD.BankAccounts.Infrastructure\MBD.BankAccounts.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

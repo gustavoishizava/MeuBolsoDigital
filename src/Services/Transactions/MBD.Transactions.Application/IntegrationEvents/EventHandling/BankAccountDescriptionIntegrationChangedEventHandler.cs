@@ -8,11 +8,11 @@ using MongoDB.Driver;
 
 namespace MBD.Transactions.Application.IntegrationEvents.EventHandling
 {
-    public class BankAccountDescriptionIntegrationEventHandler : INotificationHandler<BankAccountDescriptionChangedIntegrationEvent>
+    public class BankAccountDescriptionChangedIntegrationEventHandler : INotificationHandler<BankAccountDescriptionChangedIntegrationEvent>
     {
         private readonly IMongoCollection<TransactionModel> _transactions;
 
-        public BankAccountDescriptionIntegrationEventHandler(ITransactionDatabaseSettings settings)
+        public BankAccountDescriptionChangedIntegrationEventHandler(ITransactionDatabaseSettings settings)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);

@@ -1,4 +1,5 @@
 using MBD.BankAccounts.Infrastructure.Context;
+using MBD.IntegrationEventLog;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,9 +15,11 @@ namespace MBD.BankAccounts.API
 
             using var serviceScope = host.Services.CreateScope();
             var service = serviceScope.ServiceProvider;
-            var context = service.GetRequiredService<BankAccountContext>();
+            var bankAccountContext = service.GetRequiredService<BankAccountContext>();
+            var integrationEventLogContext = service.GetRequiredService<IntegrationEventLogContext>();
 
-            context.Database.Migrate();
+            bankAccountContext.Database.Migrate();
+            integrationEventLogContext.Database.Migrate();
 
             host.Run();
         }

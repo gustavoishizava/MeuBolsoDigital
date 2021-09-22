@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace MBD.IntegrationEventLog.Services
 {

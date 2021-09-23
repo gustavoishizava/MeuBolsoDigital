@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using MBD.Core.Extensions;
@@ -50,7 +51,11 @@ namespace MBD.BankAccounts.API.Services
             {
                 try
                 {
-                    // TODO: Publicar no RabbitMQ
+                    var message = JsonSerializer.Deserialize<object>(@event.Content);
+                    if (message is null)
+                        continue;
+
+                    _messageBus.Publish(message, @event.EventTypeName);
 
                     await integrationEventLogService.RemoveEventAsync(@event);
                 }

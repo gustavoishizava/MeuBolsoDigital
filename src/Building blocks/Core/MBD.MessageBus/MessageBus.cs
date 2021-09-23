@@ -52,6 +52,33 @@ namespace MBD.MessageBus
             _logger.LogInformation($"Mensagem publicada: {stringfiedMessage}");
         }
 
+        public void Publish<T>(T message, string queueName) where T : class
+        {
+            TryConnect();
+
+            _channel.QueueDeclare(
+                queue: queueName,
+                durable: false,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null);
+
+            var stringfiedMessage = JsonSerializer.Serialize(message, new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            var messageBytes = Encoding.UTF8.GetBytes(stringfiedMessage);
+
+            _channel.BasicPublish(
+                exchange: string.Empty,
+                routingKey: queueName,
+                basicProperties: null,
+                body: messageBytes);
+
+            _logger.LogInformation($"Mensagem publicada: {stringfiedMessage}");
+        }
+
         public void Subscribe<T>(string subscriptionId, Action<T> onMessage) where T : class
         {
             TryConnect();

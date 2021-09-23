@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace MBD.BankAccounts.API.Services
+namespace MBD.BankAccounts.Application.BackgroundServices
 {
     public class PublishIntegrationEventsService : BackgroundService
     {

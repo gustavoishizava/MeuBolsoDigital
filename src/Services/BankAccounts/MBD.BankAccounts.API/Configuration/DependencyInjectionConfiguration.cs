@@ -1,5 +1,4 @@
 using System.Reflection;
-using MBD.BankAccounts.API.Services;
 using MBD.BankAccounts.Application.BackgroundServices;
 using MBD.BankAccounts.Application.DomainEvents;
 using MBD.BankAccounts.Application.IntegrationEvents;

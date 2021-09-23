@@ -1,6 +1,6 @@
 using System.Reflection;
-using MBD.BankAccounts.API.Consumers;
 using MBD.BankAccounts.API.Services;
+using MBD.BankAccounts.Application.BackgroundServices;
 using MBD.BankAccounts.Application.DomainEvents;
 using MBD.BankAccounts.Application.IntegrationEvents;
 using MBD.BankAccounts.Application.Interfaces;
@@ -68,7 +68,7 @@ namespace MBD.BankAccounts.API.Configuration
 
         private static IServiceCollection AddConsumers(this IServiceCollection services)
         {
-            services.AddHostedService<TransactionConsumer>();
+            services.AddHostedService<TransactionConsumerService>();
 
             return services;
         }

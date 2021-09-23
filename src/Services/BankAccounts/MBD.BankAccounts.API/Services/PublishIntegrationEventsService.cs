@@ -41,7 +41,7 @@ namespace MBD.BankAccounts.API.Services
         private async Task PublishEventsAsync()
         {
             using var scope = _serviceProvider.CreateScope();
-            var integrationEventLogService = scope.ServiceProvider.GetRequiredService<IntegrationEventLogService>();
+            var integrationEventLogService = scope.ServiceProvider.GetRequiredService<IIntegrationEventLogService>();
 
             var events = await integrationEventLogService.RetrieveEventLogsPendingToPublishAsync();
             if (events.IsNullOrEmpty())

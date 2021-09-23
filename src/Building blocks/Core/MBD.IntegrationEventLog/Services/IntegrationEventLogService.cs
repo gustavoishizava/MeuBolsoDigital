@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +23,10 @@ namespace MBD.IntegrationEventLog.Services
 
         public async Task<IEnumerable<IntegrationEventLogEntry>> RetrieveEventLogsPendingToPublishAsync()
         {
-            return await _context.IntegrationEventLogs.AsNoTracking().ToListAsync();
+            return await _context.IntegrationEventLogs
+                            .AsNoTracking()
+                            .OrderBy(x => x.CreatedAt)
+                            .ToListAsync();
         }
 
         public async Task SaveEventAsync<T>(T @event) where T : class

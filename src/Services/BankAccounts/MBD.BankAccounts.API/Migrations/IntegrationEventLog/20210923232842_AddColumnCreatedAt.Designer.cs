@@ -3,15 +3,17 @@ using System;
 using MBD.IntegrationEventLog;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace MBD.BankAccounts.API.Migrations.IntegrationEventLog
 {
     [DbContext(typeof(IntegrationEventLogContext))]
-    partial class IntegrationEventLogContextModelSnapshot : ModelSnapshot
+    [Migration("20210923232842_AddColumnCreatedAt")]
+    partial class AddColumnCreatedAt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

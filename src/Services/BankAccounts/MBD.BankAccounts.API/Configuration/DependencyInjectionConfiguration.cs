@@ -1,5 +1,6 @@
 using System.Reflection;
 using MBD.BankAccounts.API.Consumers;
+using MBD.BankAccounts.API.Services;
 using MBD.BankAccounts.Application.DomainEvents;
 using MBD.BankAccounts.Application.IntegrationEvents;
 using MBD.BankAccounts.Application.Interfaces;
@@ -32,7 +33,8 @@ namespace MBD.BankAccounts.API.Configuration
                     .AddMessageBus()
                     .AddDomainEvents()
                     .AddIntegrationEvents()
-                    .AddIntegrationEventLogsService();
+                    .AddIntegrationEventLogsService()
+                    .AddOutBoxTransaction();
 
             services.AddHttpContextAccessor();
             services.AddScoped<IAspNetUser, AspNetUser>();
@@ -102,6 +104,13 @@ namespace MBD.BankAccounts.API.Configuration
         private static IServiceCollection AddIntegrationEventLogsService(this IServiceCollection services)
         {
             services.AddScoped<IIntegrationEventLogService, IntegrationEventLogService>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddOutBoxTransaction(this IServiceCollection services)
+        {
+            services.AddHostedService<PublishIntegrationEventsService>();
 
             return services;
         }

@@ -23,6 +23,9 @@ namespace MBD.IntegrationEventLog
             builder.Property(x => x.Id)
                 .ValueGeneratedNever();
 
+            builder.Property(x => x.CreatedAt)
+                .IsRequired();
+
             builder.Property(x => x.EventTypeName)
                 .IsRequired()
                 .HasColumnType("VARCHAR(200)");

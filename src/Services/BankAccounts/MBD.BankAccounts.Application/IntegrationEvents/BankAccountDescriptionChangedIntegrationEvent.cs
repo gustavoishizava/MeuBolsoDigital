@@ -1,9 +1,8 @@
 using System;
-using MediatR;
 
 namespace MBD.BankAccounts.Application.IntegrationEvents
 {
-    public class BankAccountDescriptionChangedIntegrationEvent : INotification
+    public class BankAccountDescriptionChangedIntegrationEvent
     {
         public Guid Id { get; init; }
         public string OldDescription { get; init; }

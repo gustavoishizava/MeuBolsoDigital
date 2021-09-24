@@ -1,7 +1,6 @@
 using System.Reflection;
 using MBD.BankAccounts.Application.BackgroundServices;
 using MBD.BankAccounts.Application.DomainEvents;
-using MBD.BankAccounts.Application.IntegrationEvents;
 using MBD.BankAccounts.Application.Interfaces;
 using MBD.BankAccounts.Application.Services;
 using MBD.BankAccounts.Domain.Events;
@@ -31,7 +30,6 @@ namespace MBD.BankAccounts.API.Configuration
                     .AddConfigurations(configuration)
                     .AddMessageBus()
                     .AddDomainEvents()
-                    .AddIntegrationEvents()
                     .AddIntegrationEventLogsService()
                     .AddOutBoxTransaction();
 
@@ -89,13 +87,6 @@ namespace MBD.BankAccounts.API.Configuration
         private static IServiceCollection AddDomainEvents(this IServiceCollection services)
         {
             services.AddScoped<INotificationHandler<DescriptionChangedDomainEvent>, DescriptionChangedDomainEventHandler>();
-
-            return services;
-        }
-
-        private static IServiceCollection AddIntegrationEvents(this IServiceCollection services)
-        {
-            services.AddScoped<INotificationHandler<BankAccountDescriptionChangedIntegrationEvent>, BankAccountDescriptionChangedIntegrationEventHandler>();
 
             return services;
         }

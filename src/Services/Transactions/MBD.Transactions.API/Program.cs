@@ -1,3 +1,4 @@
+using MBD.IntegrationEventLog;
 using MBD.Transactions.Infrastructure.Context;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +15,11 @@ namespace MBD.Transactions.API
 
             using var serviceScope = host.Services.CreateScope();
             var service = serviceScope.ServiceProvider;
-            var context = service.GetRequiredService<TransactionContext>();
+            var transactionContext = service.GetRequiredService<TransactionContext>();
+            var integrationEventLogContext = service.GetRequiredService<IntegrationEventLogContext>();
 
-            context.Database.Migrate();
+            transactionContext.Database.Migrate();
+            integrationEventLogContext.Database.Migrate();
 
             host.Run();
         }

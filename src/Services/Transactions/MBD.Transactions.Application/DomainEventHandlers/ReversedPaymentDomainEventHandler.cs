@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using MBD.IntegrationEventLog.Services;
 using MBD.Transactions.Application.IntegrationEvents.Events;
 using MBD.Transactions.Domain.Events;
 using MediatR;
@@ -8,19 +9,17 @@ namespace MBD.Transactions.Application.DomainEventHandlers
 {
     public class ReversedPaymentDomainEventHandler : INotificationHandler<ReversedPaymentDomainEvent>
     {
-        private readonly IMediator _mediator;
+        private readonly IIntegrationEventLogService _integrationEventLogService;
 
-        public ReversedPaymentDomainEventHandler(IMediator mediator)
+        public ReversedPaymentDomainEventHandler(IIntegrationEventLogService integrationEventLogService)
         {
-            _mediator = mediator;
+            _integrationEventLogService = integrationEventLogService;
         }
 
-        public Task Handle(ReversedPaymentDomainEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(ReversedPaymentDomainEvent notification, CancellationToken cancellationToken)
         {
-            var integrationEvent = new TransactionUndoPaymentIntegrationEvent(notification.Id);
-            _mediator.Publish(integrationEvent);
-
-            return Task.CompletedTask;
+            await _integrationEventLogService
+                .SaveEventAsync(new TransactionUndoPaymentIntegrationEvent(notification.Id));
         }
     }
 }

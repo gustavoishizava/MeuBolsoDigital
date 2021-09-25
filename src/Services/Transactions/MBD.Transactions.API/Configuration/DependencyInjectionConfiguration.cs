@@ -114,9 +114,6 @@ namespace MBD.Transactions.API.Configuration
 
         private static IServiceCollection AddIntegrationEvents(this IServiceCollection services)
         {
-            services.AddScoped<INotificationHandler<TransactionPaidIntegrationEvent>, TransactionPaidIntegrationEventHandler>();
-            services.AddScoped<INotificationHandler<TransactionUndoPaymentIntegrationEvent>, TransactionUndoPaymentIntegrationEventHandler>();
-            services.AddScoped<INotificationHandler<TransactionValueChangedIntegrationEvent>, TransactionValueChangedIntegrationEventHandler>();
             services.AddScoped<INotificationHandler<BankAccountDescriptionChangedIntegrationEvent>, BankAccountDescriptionChangedIntegrationEventHandler>();
 
             return services;

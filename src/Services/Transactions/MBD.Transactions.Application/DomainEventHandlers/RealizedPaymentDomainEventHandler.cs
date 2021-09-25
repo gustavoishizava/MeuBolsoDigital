@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using MBD.IntegrationEventLog.Services;
 using MBD.Transactions.Application.IntegrationEvents.Events;
 using MBD.Transactions.Domain.Events;
 using MediatR;
@@ -8,19 +9,18 @@ namespace MBD.Transactions.Application.DomainEventHandlers
 {
     public class RealizedPaymentDomainEventHandler : INotificationHandler<RealizedPaymentDomainEvent>
     {
-        private readonly IMediator _mediator;
+        private readonly IIntegrationEventLogService _integrationEventLogService;
 
-        public RealizedPaymentDomainEventHandler(IMediator mediator)
+        public RealizedPaymentDomainEventHandler(IIntegrationEventLogService integrationEventLogService)
         {
-            _mediator = mediator;
+            _integrationEventLogService = integrationEventLogService;
         }
 
-        public Task Handle(RealizedPaymentDomainEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(RealizedPaymentDomainEvent notification, CancellationToken cancellationToken)
         {
-            var integrationEvent = new TransactionPaidIntegrationEvent(notification.Id, notification.Value, notification.Date, notification.BankAccountId, notification.Type);
-            _mediator.Publish(integrationEvent);
-
-            return Task.CompletedTask;
+            await _integrationEventLogService
+                .SaveEventAsync(new TransactionPaidIntegrationEvent(
+                    notification.Id, notification.Value, notification.Date, notification.BankAccountId, notification.Type));
         }
     }
 }

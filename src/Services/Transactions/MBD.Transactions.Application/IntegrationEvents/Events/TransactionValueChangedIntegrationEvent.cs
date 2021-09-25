@@ -1,9 +1,8 @@
 using System;
-using MediatR;
 
 namespace MBD.Transactions.Application.IntegrationEvents.Events
 {
-    public class TransactionValueChangedIntegrationEvent : INotification
+    public class TransactionValueChangedIntegrationEvent
     {
         public Guid Id { get; init; }
         public decimal NewValue { get; init; }

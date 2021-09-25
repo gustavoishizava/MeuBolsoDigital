@@ -1,9 +1,8 @@
 using System;
-using MediatR;
 
 namespace MBD.Transactions.Application.IntegrationEvents.Events
 {
-    public class TransactionUndoPaymentIntegrationEvent : INotification
+    public class TransactionUndoPaymentIntegrationEvent
     {
         public Guid Id { get; private init; }
 

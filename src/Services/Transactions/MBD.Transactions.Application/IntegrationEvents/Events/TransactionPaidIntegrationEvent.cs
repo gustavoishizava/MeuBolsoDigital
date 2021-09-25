@@ -1,10 +1,9 @@
 using System;
 using MBD.Transactions.Domain.Enumerations;
-using MediatR;
 
 namespace MBD.Transactions.Application.IntegrationEvents.Events
 {
-    public class TransactionPaidIntegrationEvent : INotification
+    public class TransactionPaidIntegrationEvent
     {
         public Guid Id { get; private init; }
         public Guid BankAccountId { get; private init; }

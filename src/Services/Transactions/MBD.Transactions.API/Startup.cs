@@ -25,6 +25,7 @@ namespace MBD.Transactions.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddEFContextConfiguration(Configuration);
+            services.AddEFIntegrationEventLogsContext(Configuration);
             services.AddMongoDbConfiguration(Configuration);
             services.AddJwtConfiguration(Configuration);
             services.AddApiConfiguration(Configuration);

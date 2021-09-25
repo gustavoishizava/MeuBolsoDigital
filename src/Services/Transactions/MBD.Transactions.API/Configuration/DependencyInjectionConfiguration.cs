@@ -5,7 +5,7 @@ using MBD.Core.Data;
 using MBD.Core.Identity;
 using MBD.MessageBus;
 using MBD.Transactions.API.Configuration.HttpClient;
-using MBD.Transactions.API.Consumers;
+using MBD.Transactions.Application.BackgroundServices;
 using MBD.Transactions.Application.Commands;
 using MBD.Transactions.Application.DomainEventHandlers;
 using MBD.Transactions.Application.IntegrationEvents.EventHandling;
@@ -135,7 +135,7 @@ namespace MBD.Transactions.API.Configuration
 
         private static IServiceCollection AddConsumers(this IServiceCollection services)
         {
-            services.AddHostedService<BankAccountConsumer>();
+            services.AddHostedService<BankAccountConsumerService>();
 
             return services;
         }

@@ -8,15 +8,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace MBD.Transactions.API.Consumers
+namespace MBD.Transactions.Application.BackgroundServices
 {
-    public class BankAccountConsumer : BackgroundService
+    public class BankAccountConsumerService : BackgroundService
     {
         private readonly IMessageBus _messageBus;
         private readonly IServiceProvider _serviceProvider;
-        private readonly ILogger<BankAccountConsumer> _logger;
+        private readonly ILogger<BankAccountConsumerService> _logger;
 
-        public BankAccountConsumer(IMessageBus messageBus, IServiceProvider serviceProvider, ILogger<BankAccountConsumer> logger)
+        public BankAccountConsumerService(IMessageBus messageBus, IServiceProvider serviceProvider, ILogger<BankAccountConsumerService> logger)
         {
             _messageBus = messageBus;
             _serviceProvider = serviceProvider;

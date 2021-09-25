@@ -3,6 +3,7 @@ using System.Reflection;
 using MBD.Application.Core.Response;
 using MBD.Core.Data;
 using MBD.Core.Identity;
+using MBD.IntegrationEventLog.Services;
 using MBD.MessageBus;
 using MBD.Transactions.API.Configuration.HttpClient;
 using MBD.Transactions.Application.BackgroundServices;
@@ -38,7 +39,9 @@ namespace MBD.Transactions.API.Configuration
                 .AddIntegrationEvents()
                 .AddConfigurations(configuration)
                 .AddMessageBus()
-                .AddConsumers();
+                .AddConsumers()
+                .AddIntegrationEventLogsService()
+                .AddOutBoxTransaction();
 
             services.AddHttpContextAccessor();
             services.AddScoped<IAspNetUser, AspNetUser>();
@@ -136,6 +139,20 @@ namespace MBD.Transactions.API.Configuration
         private static IServiceCollection AddConsumers(this IServiceCollection services)
         {
             services.AddHostedService<BankAccountConsumerService>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddIntegrationEventLogsService(this IServiceCollection services)
+        {
+            services.AddScoped<IIntegrationEventLogService, IntegrationEventLogService>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddOutBoxTransaction(this IServiceCollection services)
+        {
+            services.AddHostedService<PublishIntegrationEventsService>();
 
             return services;
         }

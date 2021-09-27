@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace MBD.Identity.API.Configuration
 {
@@ -15,6 +16,8 @@ namespace MBD.Identity.API.Configuration
                                 Title = "Meu Bolso Digital Identity API",
                                 Version = "v1"
                             });
+
+                            c.AddFluentValidationRulesScoped();
                         });
 
             return services;

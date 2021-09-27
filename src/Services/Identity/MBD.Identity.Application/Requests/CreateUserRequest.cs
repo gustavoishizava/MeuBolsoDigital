@@ -17,7 +17,7 @@ namespace MBD.Identity.Application.Requests
             return new CreateUserValidation().Validate(this);
         }
 
-        protected class CreateUserValidation : AbstractValidator<CreateUserRequest>
+        public class CreateUserValidation : AbstractValidator<CreateUserRequest>
         {
             public CreateUserValidation()
             {

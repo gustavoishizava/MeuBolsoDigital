@@ -16,7 +16,7 @@ namespace MBD.Identity.API
                 .AddJsonFile("appsettings.json", true, true)
                 .AddJsonFile($"appsettings.{hostEnvironment.EnvironmentName}.json", true, true)
                 .AddEnvironmentVariables();
-            
+
             Configuration = builder.Build();
         }
 
@@ -27,6 +27,7 @@ namespace MBD.Identity.API
             services.AddEFContextConfiguration(Configuration);
             services.AddJwtConfiguration(Configuration);
             services.AddApiConfiguration();
+            services.AddFluentValidationConfiguration();
             services.AddSwaggerConfiguration();
         }
 

@@ -18,7 +18,7 @@ namespace MBD.Transactions.Application.Commands
             return new UpdateCategoryCommandValidation().Validate(this);
         }
 
-        private class UpdateCategoryCommandValidation : AbstractValidator<UpdateCategoryCommand>
+        public class UpdateCategoryCommandValidation : AbstractValidator<UpdateCategoryCommand>
         {
             public UpdateCategoryCommandValidation()
             {

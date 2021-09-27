@@ -14,14 +14,14 @@ namespace MBD.Identity.Application.Requests
             return new AuthenticateValidation().Validate(this);
         }
 
-        protected class AuthenticateValidation : AbstractValidator<AuthenticateRequest>
+        public class AuthenticateValidation : AbstractValidator<AuthenticateRequest>
         {
             public AuthenticateValidation()
             {
                 RuleFor(x => x.Email)
                     .NotEmpty()
                     .EmailAddress();
-                
+
                 RuleFor(x => x.Password)
                     .NotEmpty();
             }

@@ -23,7 +23,7 @@ namespace MBD.CreditCards.Application.Requests
             return new UpdateCreditCardValidation().Validate(this);
         }
 
-        private class UpdateCreditCardValidation : AbstractValidator<UpdateCreditCardRequest>
+        public class UpdateCreditCardValidation : AbstractValidator<UpdateCreditCardRequest>
         {
             public UpdateCreditCardValidation()
             {

@@ -14,7 +14,7 @@ namespace MBD.Identity.Application.Requests
             return new RefreshTokenValidation().Validate(this);
         }
 
-        protected class RefreshTokenValidation : AbstractValidator<RefreshTokenRequest>
+        public class RefreshTokenValidation : AbstractValidator<RefreshTokenRequest>
         {
             public RefreshTokenValidation()
             {

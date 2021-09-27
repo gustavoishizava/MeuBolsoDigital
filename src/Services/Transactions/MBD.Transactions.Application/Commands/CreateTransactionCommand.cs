@@ -33,7 +33,7 @@ namespace MBD.Transactions.Application.Commands
             return new CreateTransactionValidation().Validate(this);
         }
 
-        private class CreateTransactionValidation : AbstractValidator<CreateTransactionCommand>
+        public class CreateTransactionValidation : AbstractValidator<CreateTransactionCommand>
         {
             public CreateTransactionValidation()
             {

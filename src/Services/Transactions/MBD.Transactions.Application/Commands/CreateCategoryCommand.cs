@@ -19,7 +19,7 @@ namespace MBD.Transactions.Application.Commands
             return new CreateCategoryCommandValidation().Validate(this);
         }
 
-        private class CreateCategoryCommandValidation : AbstractValidator<CreateCategoryCommand>
+        public class CreateCategoryCommandValidation : AbstractValidator<CreateCategoryCommand>
         {
             public CreateCategoryCommandValidation()
             {

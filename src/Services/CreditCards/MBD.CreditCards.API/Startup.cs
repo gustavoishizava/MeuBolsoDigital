@@ -27,6 +27,7 @@ namespace MBD.CreditCards.API
             services.AddEFContextConfiguration(Configuration);
             services.AddJwtConfiguration(Configuration);
             services.AddApiConfiguration(Configuration);
+            services.AddFluentValidationConfiguration();
             services.AddSwaggerConfiguration();
         }
 

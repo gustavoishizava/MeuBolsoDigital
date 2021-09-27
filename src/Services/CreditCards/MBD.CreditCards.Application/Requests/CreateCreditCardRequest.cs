@@ -20,7 +20,7 @@ namespace MBD.CreditCards.Application.Requests
             return new CreateCreditCardValidation().Validate(this);
         }
 
-        private class CreateCreditCardValidation : AbstractValidator<CreateCreditCardRequest>
+        public class CreateCreditCardValidation : AbstractValidator<CreateCreditCardRequest>
         {
             public CreateCreditCardValidation()
             {
@@ -46,7 +46,7 @@ namespace MBD.CreditCards.Application.Requests
                     .GreaterThan(0);
 
                 RuleFor(x => x.Brand)
-                    .IsInEnum();                
+                    .IsInEnum();
             }
         }
     }

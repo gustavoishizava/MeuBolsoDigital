@@ -210,6 +210,7 @@ namespace MBD.MessageBus
         public void Dispose()
         {
             _connection?.Dispose();
+            _channel?.Dispose();
         }
     }
 }

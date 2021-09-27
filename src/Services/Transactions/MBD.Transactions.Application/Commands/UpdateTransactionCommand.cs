@@ -34,7 +34,7 @@ namespace MBD.Transactions.Application.Commands
             return new UpdateTransactionValidation().Validate(this);
         }
 
-        private class UpdateTransactionValidation : AbstractValidator<UpdateTransactionCommand>
+        public class UpdateTransactionValidation : AbstractValidator<UpdateTransactionCommand>
         {
             public UpdateTransactionValidation()
             {

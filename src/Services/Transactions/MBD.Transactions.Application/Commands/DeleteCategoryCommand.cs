@@ -20,7 +20,7 @@ namespace MBD.Transactions.Application.Commands
             return new DeleteCategoryCommandValidation().Validate(this);
         }
 
-        private class DeleteCategoryCommandValidation : AbstractValidator<DeleteCategoryCommand>
+        public class DeleteCategoryCommandValidation : AbstractValidator<DeleteCategoryCommand>
         {
             public DeleteCategoryCommandValidation()
             {

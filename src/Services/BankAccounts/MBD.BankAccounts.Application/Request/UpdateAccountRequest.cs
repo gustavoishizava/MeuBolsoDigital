@@ -19,13 +19,13 @@ namespace MBD.BankAccounts.Application.Request
             return new UpdateAccountValidation().Validate(this);
         }
 
-        private class UpdateAccountValidation : AbstractValidator<UpdateAccountRequest>
+        public class UpdateAccountValidation : AbstractValidator<UpdateAccountRequest>
         {
             public UpdateAccountValidation()
             {
                 RuleFor(x => x.Id)
                     .NotEmpty();
-                    
+
                 RuleFor(x => x.Description)
                     .NotEmpty()
                     .MaximumLength(150);

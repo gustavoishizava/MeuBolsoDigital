@@ -20,7 +20,7 @@ namespace MBD.Transactions.Application.Commands
             return new DeleteTransactionValidation().Validate(this);
         }
 
-        private class DeleteTransactionValidation : AbstractValidator<DeleteTransactionCommand>
+        public class DeleteTransactionValidation : AbstractValidator<DeleteTransactionCommand>
         {
             public DeleteTransactionValidation()
             {

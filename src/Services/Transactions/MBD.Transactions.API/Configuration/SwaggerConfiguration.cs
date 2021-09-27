@@ -2,6 +2,7 @@ using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace MBD.Transactions.API.Configuration
 {
@@ -43,6 +44,8 @@ namespace MBD.Transactions.API.Configuration
                             Array.Empty<string>()
                         }
                     });
+
+                    c.AddFluentValidationRulesScoped();
                 });
 
             return services;

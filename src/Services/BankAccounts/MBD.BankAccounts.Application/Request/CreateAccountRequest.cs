@@ -16,20 +16,20 @@ namespace MBD.BankAccounts.Application.Request
             return new CreateAccountValidation().Validate(this);
         }
 
-        private class CreateAccountValidation : AbstractValidator<CreateAccountRequest>
+        public class CreateAccountValidation : AbstractValidator<CreateAccountRequest>
         {
             public CreateAccountValidation()
             {
                 RuleFor(x => x.Description)
                     .NotEmpty()
                     .MaximumLength(150);
-                
+
                 RuleFor(x => x.InitialBalance)
                     .NotEmpty()
                     .GreaterThan(0);
 
                 RuleFor(x => x.Type)
-                    .IsInEnum();                    
+                    .IsInEnum();
             }
         }
     }

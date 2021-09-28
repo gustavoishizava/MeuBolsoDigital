@@ -26,6 +26,7 @@ namespace MBD.BankAccounts.API
         {
             services.AddEFContextConfiguration(Configuration);
             services.AddEFContextIntegrationEventLogs(Configuration);
+            services.AddHealthCheckConfiguration();
             services.AddJwtConfiguration(Configuration);
             services.AddApiConfiguration(Configuration);
             services.AddFluentValidationConfiguration();

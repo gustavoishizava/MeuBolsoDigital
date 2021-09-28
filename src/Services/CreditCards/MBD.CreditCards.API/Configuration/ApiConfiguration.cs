@@ -49,6 +49,7 @@ namespace MBD.CreditCards.API.Configuration
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthCheckEndpoint();
             });
 
             return app;

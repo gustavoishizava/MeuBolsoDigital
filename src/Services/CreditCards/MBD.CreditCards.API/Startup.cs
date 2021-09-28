@@ -25,6 +25,7 @@ namespace MBD.CreditCards.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddEFContextConfiguration(Configuration);
+            services.AddHealthCheckConfiguration();
             services.AddJwtConfiguration(Configuration);
             services.AddApiConfiguration(Configuration);
             services.AddFluentValidationConfiguration();

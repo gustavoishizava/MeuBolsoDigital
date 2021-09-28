@@ -39,6 +39,7 @@ namespace MBD.Identity.API.Configuration
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthCheckEndpoint();
             });
 
             return app;

@@ -50,6 +50,7 @@ namespace MBD.Transactions.API.Configuration
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthCheckEndpoint();
             });
 
             return app;

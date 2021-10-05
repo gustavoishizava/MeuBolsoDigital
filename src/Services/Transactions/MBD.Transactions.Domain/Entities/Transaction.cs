@@ -13,6 +13,7 @@ namespace MBD.Transactions.Domain.Entities
         public Guid TenantId { get; private init; }
         public Guid BankAccountId { get; private set; }
         public Guid CategoryId { get; private set; }
+        public Guid? CreditCardBillId { get; private set; }
         public DateTime ReferenceDate { get; private set; }
         public DateTime DueDate { get; private set; }
         public DateTime? PaymentDate { get; private set; }
@@ -32,6 +33,7 @@ namespace MBD.Transactions.Domain.Entities
             BankAccountId = bankAccount.Id;
             CategoryId = category.Id;
             Category = category;
+            CreditCardBillId = null;
             ReferenceDate = referenceDate;
             DueDate = dueDate;
             PaymentDate = null;
@@ -84,6 +86,21 @@ namespace MBD.Transactions.Domain.Entities
             Description = description;
 
             AddDomainEvent(new TransactionUpdatedDomainEvent(this, bankAccount, category));
+        }
+
+        public void LinkCreditCardBill(Guid creditCardBillId)
+        {
+            Assertions.IsNull(CreditCardBillId, "A transação já possui fatura de cartão de crédito vinculada.");
+            Assertions.IsNotEmpty(creditCardBillId, "O Id da fatura do cartão de crédito está inválido.");
+            Assertions.IsFalse(ItsPaid, "Não é possível vincular uma fatura de cartão de crédito a uma transação já paga.");
+            Assertions.IsTrue(Category.Type == TransactionType.Expense, "Não é possível vincular uma fatura de cartão de crédito a uma transação de receita.");
+
+            CreditCardBillId = creditCardBillId;
+        }
+
+        public void UnlinkCreditCardBill()
+        {
+            CreditCardBillId = null;
         }
     }
 }

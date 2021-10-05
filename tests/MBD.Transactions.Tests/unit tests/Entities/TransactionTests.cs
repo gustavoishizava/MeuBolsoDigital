@@ -58,6 +58,7 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             Assert.Equal(description, transaction.Description);
             Assert.Equal(value, transaction.Value);
             Assert.Null(transaction.PaymentDate);
+            Assert.Null(transaction.CreditCardBillId);
             Assert.Single(transaction.Events);
         }
 
@@ -129,6 +130,89 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             Assert.Equal(dueDate, transaction.DueDate);
             Assert.Equal(value, transaction.Value);
             Assert.Equal(description, transaction.Description);
+        }
+
+        [Fact(DisplayName = "Vincular fatura de cartão de crédito a uma transação deve retornar sucesso.")]
+        public void TransactionWithoutCreditCardBill_LinkCreditCardBillIdValid_ReturnSucess()
+        {
+            // Arrange
+            var tenantId = Guid.NewGuid();
+            var creditCardBillId = Guid.NewGuid();
+            var category = new Category(tenantId, "Expense", TransactionType.Expense);
+            var transaction = new Transaction(tenantId, _bankAccount, category, DateTime.Now, DateTime.Now, 100, "Test");
+
+            // Act
+            transaction.LinkCreditCardBill(creditCardBillId);
+
+            // Assert
+            Assert.Equal(creditCardBillId, transaction.CreditCardBillId);
+        }
+
+        [Fact(DisplayName = "Desvincular fatura de cartão de crédito a uma transação deve retornar sucesso.")]
+        public void TransactionWithCreditCardBill_UnlinkCreditCardBill_ReturnSuccess()
+        {
+            // Arrange
+            var tenantId = Guid.NewGuid();
+            var category = new Category(tenantId, "Expense", TransactionType.Expense);
+            var transaction = new Transaction(tenantId, _bankAccount, category, DateTime.Now, DateTime.Now, 100, "Test");
+
+            transaction.LinkCreditCardBill(Guid.NewGuid());
+
+            // Act
+            transaction.UnlinkCreditCardBill();
+
+            // Assert
+            Assert.Null(transaction.CreditCardBillId);
+        }
+
+        [Fact(DisplayName = "Vincular fatura de cartão de crédito inválida deve retornar Domain Exception")]
+        public void TransactionWithoutCreditCardBill_LinkInvalidCreditCardBillId_ReturnDomainException()
+        {
+            // Arrange
+            var tenantId = Guid.NewGuid();
+            var category = new Category(tenantId, "Expense", TransactionType.Expense);
+            var transaction = new Transaction(tenantId, _bankAccount, category, DateTime.Now, DateTime.Now, 100, "Test");
+
+            // Act && Assert
+            Assert.Throws<DomainException>(() => transaction.LinkCreditCardBill(Guid.Empty));
+        }
+
+        [Fact(DisplayName = "Vincular fatura de cartão de crédito a uma transação que já possui, deve retornar Domain Exception")]
+        public void TransactionWithCreditCardBill_LinkCreditCardBillId_ReturnDomainException()
+        {
+            // Arrange
+            var tenantId = Guid.NewGuid();
+            var category = new Category(tenantId, "Expense", TransactionType.Expense);
+            var transaction = new Transaction(tenantId, _bankAccount, category, DateTime.Now, DateTime.Now, 100, "Test");
+            transaction.LinkCreditCardBill(Guid.NewGuid());
+
+            // Act && Assert
+            Assert.Throws<DomainException>(() => transaction.LinkCreditCardBill(Guid.NewGuid()));
+        }
+
+        [Fact(DisplayName = "Vincular fatura de cartão de crédito a uma transação já paga, deve retornar Domain Exception")]
+        public void TransactionPaid_LinkCreditCardBillId_ReturnDomainException()
+        {
+            // Arrange
+            var tenantId = Guid.NewGuid();
+            var category = new Category(tenantId, "Expense", TransactionType.Expense);
+            var transaction = new Transaction(tenantId, _bankAccount, category, DateTime.Now, DateTime.Now, 100, "Test");
+            transaction.Pay(DateTime.Now);
+
+            // Act && Assert
+            Assert.Throws<DomainException>(() => transaction.LinkCreditCardBill(Guid.NewGuid()));
+        }
+
+        [Fact(DisplayName = "Vincular fatura de cartão de crédito a uma transação do tipo receita, deve retornar Domain Exception")]
+        public void TransactionIncome_LinkCreditCardBillId_ReturnDomainException()
+        {
+            // Arrange
+            var tenantId = Guid.NewGuid();
+            var category = new Category(tenantId, "Income", TransactionType.Income);
+            var transaction = new Transaction(tenantId, _bankAccount, category, DateTime.Now, DateTime.Now, 100, "Test");
+
+            // Act && Assert
+            Assert.Throws<DomainException>(() => transaction.LinkCreditCardBill(Guid.NewGuid()));
         }
     }
 }

@@ -22,6 +22,9 @@ namespace MBD.Transactions.Infrastructure.Context.Configuration
             builder.Property(x => x.CategoryId)
                 .IsRequired();
 
+            builder.Property(x => x.CreditCardBillId)
+                .IsRequired(false);
+
             builder.Property(x => x.ReferenceDate)
                 .IsRequired();
 

@@ -96,10 +96,15 @@ namespace MBD.Transactions.Domain.Entities
             Assertions.IsTrue(Category.Type == TransactionType.Expense, "Não é possível vincular uma fatura de cartão de crédito a uma transação de receita.");
 
             CreditCardBillId = creditCardBillId;
+            AddDomainEvent(new LinkedToCreditCardBillDomainEvent(Id, BankAccountId, CreditCardBillId.Value, CreatedAt, Value));
         }
 
         public void UnlinkCreditCardBill()
         {
+            if (CreditCardBillId is null)
+                return;
+
+            AddDomainEvent(new UnlinkedToCreditCardBillDomainEvent(Id, BankAccountId, CreditCardBillId.Value));
             CreditCardBillId = null;
         }
     }

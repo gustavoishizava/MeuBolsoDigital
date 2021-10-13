@@ -140,11 +140,13 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             var creditCardBillId = Guid.NewGuid();
             var category = new Category(tenantId, "Expense", TransactionType.Expense);
             var transaction = new Transaction(tenantId, _bankAccount, category, DateTime.Now, DateTime.Now, 100, "Test");
+            transaction.ClearDomainEvents();
 
             // Act
             transaction.LinkCreditCardBill(creditCardBillId);
 
             // Assert
+            Assert.Single(transaction.Events);
             Assert.Equal(creditCardBillId, transaction.CreditCardBillId);
         }
 
@@ -157,11 +159,13 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             var transaction = new Transaction(tenantId, _bankAccount, category, DateTime.Now, DateTime.Now, 100, "Test");
 
             transaction.LinkCreditCardBill(Guid.NewGuid());
+            transaction.ClearDomainEvents();
 
             // Act
             transaction.UnlinkCreditCardBill();
 
             // Assert
+            Assert.Single(transaction.Events);
             Assert.Null(transaction.CreditCardBillId);
         }
 

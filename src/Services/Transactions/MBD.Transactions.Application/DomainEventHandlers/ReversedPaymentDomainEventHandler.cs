@@ -4,7 +4,6 @@ using MBD.IntegrationEventLog.Services;
 using MBD.Transactions.Application.IntegrationEvents.Events;
 using MBD.Transactions.Application.MongoDbSettings;
 using MBD.Transactions.Application.Response.Models;
-using MBD.Transactions.Domain.Enumerations;
 using MBD.Transactions.Domain.Events;
 using MediatR;
 using MongoDB.Driver;
@@ -28,10 +27,6 @@ namespace MBD.Transactions.Application.DomainEventHandlers
 
         public async Task Handle(ReversedPaymentDomainEvent notification, CancellationToken cancellationToken)
         {
-            var filter = Builders<TransactionModel>.Filter.Where(x => x.Id == notification.Id.ToString());
-            var update = Builders<TransactionModel>.Update.Set(x => x.Status, TransactionStatus.AwaitingPayment);
-            await _transactions.UpdateOneAsync(filter, update);
-
             await _integrationEventLogService
                 .SaveEventAsync(new TransactionUndoPaymentIntegrationEvent(notification.Id));
         }

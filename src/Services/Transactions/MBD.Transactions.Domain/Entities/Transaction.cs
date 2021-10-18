@@ -25,7 +25,7 @@ namespace MBD.Transactions.Domain.Entities
         public Category Category { get; private set; }
         private bool _valueChanged { get; set; } = false;
 
-        public Transaction(Guid tenantId, BankAccount bankAccount, Category category, DateTime referenceDate, DateTime dueDate, decimal value, string description)
+        public Transaction(Guid tenantId, BankAccount bankAccount, Category category, DateTime referenceDate, DateTime dueDate, decimal value, string description, DateTime? paymentDate)
         {
             Assertions.IsGreaterOrEqualsThan(value, 0, "O valor não pode ser menor que 0.");
 
@@ -41,6 +41,9 @@ namespace MBD.Transactions.Domain.Entities
             Value = value;
             Description = description;
 
+            if (paymentDate is not null)
+                Pay(paymentDate.Value);
+
             AddDomainEvent(new TransactionCreatedDomainEvent(this, bankAccount.Description, category.Name));
         }
 
@@ -48,7 +51,7 @@ namespace MBD.Transactions.Domain.Entities
         protected Transaction() { }
         #endregion
 
-        public void Pay(DateTime paymentDate)
+        private void Pay(DateTime paymentDate)
         {
             if (!ItsPaid || PaymentDate != paymentDate || _valueChanged)
                 AddDomainEvent(new RealizedPaymentDomainEvent(Id, paymentDate, Value, BankAccountId, Category.Type));
@@ -57,8 +60,11 @@ namespace MBD.Transactions.Domain.Entities
             Status = TransactionStatus.Paid;
         }
 
-        public void UndoPayment()
+        private void UndoPayment()
         {
+            if (!ItsPaid)
+                return;
+
             PaymentDate = null;
             Status = TransactionStatus.AwaitingPayment;
 
@@ -76,7 +82,7 @@ namespace MBD.Transactions.Domain.Entities
             Value = value;
         }
 
-        public void Update(BankAccount bankAccount, Category category, DateTime referenceDate, DateTime dueDate, decimal value, string description)
+        public void Update(BankAccount bankAccount, Category category, DateTime referenceDate, DateTime dueDate, decimal value, string description, DateTime? paymentDate)
         {
             BankAccountId = bankAccount.Id;
             CategoryId = category.Id;
@@ -84,6 +90,11 @@ namespace MBD.Transactions.Domain.Entities
             DueDate = dueDate;
             SetValue(value);
             Description = description;
+
+            if (paymentDate is null)
+                UndoPayment();
+            else
+                Pay(paymentDate.Value);
 
             AddDomainEvent(new TransactionUpdatedDomainEvent(this, bankAccount, category));
         }

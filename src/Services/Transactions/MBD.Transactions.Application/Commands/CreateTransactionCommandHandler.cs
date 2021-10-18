@@ -49,11 +49,9 @@ namespace MBD.Transactions.Application.Commands
                 request.ReferenceDate,
                 request.DueDate,
                 request.Value,
-                request.Description
+                request.Description,
+                request.PaymentDate
             );
-
-            if (request.PaymentDate != null)
-                transaction.Pay(request.PaymentDate.Value);
 
             _transactionRepository.Add(transaction);
             await _unitOfWork.SaveChangesAsync();

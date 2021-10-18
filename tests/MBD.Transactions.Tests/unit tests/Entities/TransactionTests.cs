@@ -18,7 +18,7 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
         {
             _bankAccount = new BankAccount { Id = Guid.NewGuid(), Description = "Nubank" };
             _category = new Category(Guid.NewGuid(), "Category", TransactionType.Income);
-            _validTransaction = new Transaction(Guid.NewGuid(), _bankAccount, _category, DateTime.Now, DateTime.Now.AddDays(5), 100, string.Empty);
+            _validTransaction = new Transaction(Guid.NewGuid(), _bankAccount, _category, DateTime.Now, DateTime.Now.AddDays(5), 100, string.Empty, null);
         }
 
         [Theory(DisplayName = "Criar transação com valor inválido deve retornar Domain Exception.")]
@@ -28,24 +28,27 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
         public void InvalidValue_NewTransaction_ReturnDomainException(decimal value)
         {
             // Arrange && Act && Assert
-            Assert.Throws<DomainException>(() => new Transaction(Guid.NewGuid(), _bankAccount, _category, DateTime.Now, DateTime.Now, value, string.Empty));
+            Assert.Throws<DomainException>(() => new Transaction(Guid.NewGuid(), _bankAccount, _category, DateTime.Now, DateTime.Now, value, string.Empty, null));
         }
 
         [Theory(DisplayName = "Criar transação com parâmetros válidos deve retornar sucesso.")]
-        [InlineData(0, "Zero")]
-        [InlineData(10, "Dez")]
-        [InlineData(100.50, "Cem")]
-        [InlineData(1000, "Mil")]
-        [InlineData(10000.50, "Dez mil")]
-        public void ValidParameters_NewTransaction_ReturnSuccess(decimal value, string description)
+        [InlineData(0, "Zero", true)]
+        [InlineData(10, "Dez", false)]
+        [InlineData(100.50, "Cem", true)]
+        [InlineData(1000, "Mil", false)]
+        [InlineData(10000.50, "Dez mil", true)]
+        public void ValidParameters_NewTransaction_ReturnSuccess(decimal value, string description, bool pay)
         {
             // Arrange
             var tenantId = Guid.NewGuid();
             var referenceDate = DateTime.Now;
             var dueDate = referenceDate.AddDays(5);
+            DateTime? paymentDate = pay ? DateTime.Now : null;
+            var eventsCount = pay ? 2 : 1;
+            var status = pay ? TransactionStatus.Paid : TransactionStatus.AwaitingPayment;
 
             // Act
-            var transaction = new Transaction(tenantId, _bankAccount, _category, referenceDate, dueDate, value, description);
+            var transaction = new Transaction(tenantId, _bankAccount, _category, referenceDate, dueDate, value, description, paymentDate);
 
             // Assert
             Assert.Equal(tenantId, transaction.TenantId);
@@ -54,55 +57,21 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             Assert.Equal(_category, transaction.Category);
             Assert.Equal(referenceDate, transaction.ReferenceDate);
             Assert.Equal(dueDate, transaction.DueDate);
-            Assert.Equal(TransactionStatus.AwaitingPayment, transaction.Status);
             Assert.Equal(description, transaction.Description);
             Assert.Equal(value, transaction.Value);
-            Assert.Null(transaction.PaymentDate);
+            Assert.Equal(paymentDate, transaction.PaymentDate);
+            Assert.Equal(pay, transaction.ItsPaid);
+            Assert.Equal(status, transaction.Status);
             Assert.Null(transaction.CreditCardBillId);
-            Assert.Single(transaction.Events);
+            Assert.Equal(eventsCount, transaction.Events.Count);
         }
 
-        [Fact(DisplayName = "Efetuar o pagamento de uma transação válida deve retornar sucesso.")]
-        public void ValidTransaction_ProcessPayment_ReturnSuccess()
-        {
-            // Arrange
-            var paymentDate = _validTransaction.DueDate;
-            _validTransaction.ClearDomainEvents();
-
-            // Act
-            _validTransaction.Pay(paymentDate);
-
-            // Assert
-            Assert.Single(_validTransaction.Events);
-            Assert.True(_validTransaction.ItsPaid);
-            Assert.NotNull(_validTransaction.PaymentDate);
-            Assert.Equal(paymentDate, _validTransaction.PaymentDate);
-            Assert.Equal(TransactionStatus.Paid, _validTransaction.Status);
-        }
-
-        [Fact(DisplayName = "Desfazer o pagamento de uma transação paga.")]
-        public void PaidTransaction_UndoPayment_ReturnSuccess()
-        {
-            // Arrange
-            _validTransaction.Pay(_validTransaction.DueDate);
-            var currentStatus = _validTransaction.Status;
-            var currentPaymentDate = _validTransaction.PaymentDate;
-            _validTransaction.ClearDomainEvents();
-
-            // Act
-            _validTransaction.UndoPayment();
-
-            // Assert
-            Assert.Single(_validTransaction.Events);
-            Assert.Null(_validTransaction.PaymentDate);
-            Assert.NotEqual(currentPaymentDate, _validTransaction.PaymentDate);
-            Assert.Equal(TransactionStatus.AwaitingPayment, _validTransaction.Status);
-            Assert.NotEqual(currentStatus, _validTransaction.Status);
-            Assert.False(_validTransaction.ItsPaid);
-        }
-
-        [Fact(DisplayName = "Atualizar os valores de uma transação existente deve retornar sucesso.")]
-        public void ValidTansaction_UpdateValues_ReturnSuccess()
+        [Theory(DisplayName = "Atualizar os valores de uma transação existente deve retornar sucesso.")]
+        [InlineData(true, true)]
+        [InlineData(true, false)]
+        [InlineData(false, true)]
+        [InlineData(false, false)]
+        public void ValidTansaction_UpdateValues_ReturnSuccess(bool itsPaid, bool pay)
         {
             // Arrange
             var random = new Random();
@@ -115,14 +84,24 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             var dueDate = DateTime.Now.AddDays(randomNumber);
             var value = random.Next(1, 10000);
             var description = "New Description";
-            var transaction = new Transaction(tenantId, _bankAccount, _category, DateTime.Now, DateTime.Now, 100, "Transaction test");
+            var eventCount = itsPaid == pay ? 2 : 3;
+            if (itsPaid is true && pay is true)
+                eventCount = 3;
+
+            DateTime? paymentDate = itsPaid ? DateTime.Now : null;
+            var currentStatus = itsPaid ? TransactionStatus.Paid : TransactionStatus.AwaitingPayment;
+
+            DateTime? newPaymenteDate = pay ? DateTime.Now : null;
+            var expectedStatus = pay ? TransactionStatus.Paid : TransactionStatus.AwaitingPayment;
+
+            var transaction = new Transaction(tenantId, _bankAccount, _category, DateTime.Now, DateTime.Now, 100, "Transaction test", paymentDate);
             transaction.ClearDomainEvents();
 
             // Act
-            transaction.Update(bankAccount, category, referenceDate, dueDate, value, description);
+            transaction.Update(bankAccount, category, referenceDate, dueDate, value, description, newPaymenteDate);
 
             // Assert
-            Assert.Equal(2, transaction.Events.Count());
+            Assert.Equal(eventCount, transaction.Events.Count());
             Assert.Equal(tenantId, transaction.TenantId);
             Assert.Equal(category.Id, transaction.CategoryId);
             Assert.Equal(bankAccount.Id, transaction.BankAccountId);
@@ -130,6 +109,13 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             Assert.Equal(dueDate, transaction.DueDate);
             Assert.Equal(value, transaction.Value);
             Assert.Equal(description, transaction.Description);
+            Assert.Equal(expectedStatus, transaction.Status);
+
+            if (itsPaid == pay)
+                Assert.Equal(currentStatus, transaction.Status);
+
+            if (itsPaid != pay)
+                Assert.NotEqual(currentStatus, transaction.Status);
         }
 
         [Fact(DisplayName = "Vincular fatura de cartão de crédito a uma transação deve retornar sucesso.")]
@@ -139,7 +125,7 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             var tenantId = Guid.NewGuid();
             var creditCardBillId = Guid.NewGuid();
             var category = new Category(tenantId, "Expense", TransactionType.Expense);
-            var transaction = new Transaction(tenantId, _bankAccount, category, DateTime.Now, DateTime.Now, 100, "Test");
+            var transaction = new Transaction(tenantId, _bankAccount, category, DateTime.Now, DateTime.Now, 100, "Test", null);
             transaction.ClearDomainEvents();
 
             // Act
@@ -156,7 +142,7 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             // Arrange
             var tenantId = Guid.NewGuid();
             var category = new Category(tenantId, "Expense", TransactionType.Expense);
-            var transaction = new Transaction(tenantId, _bankAccount, category, DateTime.Now, DateTime.Now, 100, "Test");
+            var transaction = new Transaction(tenantId, _bankAccount, category, DateTime.Now, DateTime.Now, 100, "Test", null);
 
             transaction.LinkCreditCardBill(Guid.NewGuid());
             transaction.ClearDomainEvents();
@@ -175,7 +161,7 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             // Arrange
             var tenantId = Guid.NewGuid();
             var category = new Category(tenantId, "Expense", TransactionType.Expense);
-            var transaction = new Transaction(tenantId, _bankAccount, category, DateTime.Now, DateTime.Now, 100, "Test");
+            var transaction = new Transaction(tenantId, _bankAccount, category, DateTime.Now, DateTime.Now, 100, "Test", null);
 
             // Act && Assert
             Assert.Throws<DomainException>(() => transaction.LinkCreditCardBill(Guid.Empty));
@@ -187,7 +173,7 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             // Arrange
             var tenantId = Guid.NewGuid();
             var category = new Category(tenantId, "Expense", TransactionType.Expense);
-            var transaction = new Transaction(tenantId, _bankAccount, category, DateTime.Now, DateTime.Now, 100, "Test");
+            var transaction = new Transaction(tenantId, _bankAccount, category, DateTime.Now, DateTime.Now, 100, "Test", null);
             transaction.LinkCreditCardBill(Guid.NewGuid());
 
             // Act && Assert
@@ -200,8 +186,7 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             // Arrange
             var tenantId = Guid.NewGuid();
             var category = new Category(tenantId, "Expense", TransactionType.Expense);
-            var transaction = new Transaction(tenantId, _bankAccount, category, DateTime.Now, DateTime.Now, 100, "Test");
-            transaction.Pay(DateTime.Now);
+            var transaction = new Transaction(tenantId, _bankAccount, category, DateTime.Now, DateTime.Now, 100, "Test", DateTime.Now);
 
             // Act && Assert
             Assert.Throws<DomainException>(() => transaction.LinkCreditCardBill(Guid.NewGuid()));
@@ -213,7 +198,7 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             // Arrange
             var tenantId = Guid.NewGuid();
             var category = new Category(tenantId, "Income", TransactionType.Income);
-            var transaction = new Transaction(tenantId, _bankAccount, category, DateTime.Now, DateTime.Now, 100, "Test");
+            var transaction = new Transaction(tenantId, _bankAccount, category, DateTime.Now, DateTime.Now, 100, "Test", null);
 
             // Act && Assert
             Assert.Throws<DomainException>(() => transaction.LinkCreditCardBill(Guid.NewGuid()));

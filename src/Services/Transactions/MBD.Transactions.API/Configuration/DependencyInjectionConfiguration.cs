@@ -12,7 +12,6 @@ using MBD.Transactions.Application.Commands;
 using MBD.Transactions.Application.DomainEventHandlers;
 using MBD.Transactions.Application.IntegrationEvents.EventHandling;
 using MBD.Transactions.Application.IntegrationEvents.Events;
-using MBD.Transactions.Application.Queries;
 using MBD.Transactions.Application.Queries.Transactions.Handlers;
 using MBD.Transactions.Application.Queries.Transactions.Queries;
 using MBD.Transactions.Application.Response;
@@ -27,6 +26,8 @@ using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
+using MBD.Transactions.Application.Queries.Categories.Queries;
+using MBD.Transactions.Application.Queries.Categories.Handlers;
 
 namespace MBD.Transactions.API.Configuration
 {
@@ -96,10 +97,12 @@ namespace MBD.Transactions.API.Configuration
 
         private static IServiceCollection AddQueries(this IServiceCollection services)
         {
-            services.AddScoped<ICategoryQuery, CategoryQuery>();
-
             services.AddScoped<IRequestHandler<GetTransactionByIdQuery, IResult<TransactionModel>>, GetTransactionByIdQueryHandler>();
             services.AddScoped<IRequestHandler<GetAllTransactionsQuery, IEnumerable<TransactionModel>>, GetAllTransactionsQueryHandler>();
+
+            services.AddScoped<IRequestHandler<GetCategoryByIdQuery, IResult<CategoryResponse>>, GetCategoryByIdQueryHandler>();
+            services.AddScoped<IRequestHandler<GetAllCategoriesQuery, CategoryByTypeResponse>, GetAllCategoriesQueryHandler>();
+            services.AddScoped<IRequestHandler<GetAllCategoriesByTypeQuery, IEnumerable<CategoryWithSubCategoriesResponse>>, GetAllCategoriesByTypeQueryHandler>();
 
             return services;
         }

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using MBD.Core.Extensions;
 using MBD.Transactions.API.Models;
 using MBD.Transactions.Application.Commands;
-using MBD.Transactions.Application.Queries;
 using MBD.Transactions.Application.Queries.Transactions.Queries;
 using MBD.Transactions.Application.Response;
 using MBD.Transactions.Application.Response.Models;

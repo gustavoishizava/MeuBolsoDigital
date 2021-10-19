@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using MBD.Transactions.Domain.Enumerations;
 using MediatR;
 using MBD.Transactions.Application.Commands;
-using MBD.Transactions.Application.Queries;
+using MBD.Transactions.Application.Queries.Categories.Queries;
 
 namespace MBD.Transactions.API.Controllers
 {
@@ -22,12 +22,10 @@ namespace MBD.Transactions.API.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ICategoryQuery _query;
 
-        public CategoriesController(IMediator mediator, ICategoryQuery query)
+        public CategoriesController(IMediator mediator)
         {
             _mediator = mediator;
-            _query = query;
         }
 
         [HttpPost]
@@ -73,7 +71,7 @@ namespace MBD.Transactions.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> GetAll()
         {
-            var result = await _query.GetAllAsync();
+            var result = await _mediator.Send(new GetAllCategoriesQuery());
             if (result.Income.IsNullOrEmpty() && result.Expense.IsNullOrEmpty())
                 return NoContent();
 
@@ -85,7 +83,7 @@ namespace MBD.Transactions.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> GetAllByType([FromRoute] TransactionType type)
         {
-            var result = await _query.GetByTypeAsync(type);
+            var result = await _mediator.Send(new GetAllCategoriesByTypeQuery(type));
             if (result.IsNullOrEmpty())
                 return NoContent();
 
@@ -97,7 +95,7 @@ namespace MBD.Transactions.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
-            var result = await _query.GetByIdAsync(id);
+            var result = await _mediator.Send(new GetCategoryByIdQuery(id));
             if (!result.Succeeded)
                 return NotFound();
 

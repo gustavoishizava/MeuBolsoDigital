@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System;
 using System.Reflection;
 using MBD.Application.Core.Response;
@@ -12,7 +13,10 @@ using MBD.Transactions.Application.DomainEventHandlers;
 using MBD.Transactions.Application.IntegrationEvents.EventHandling;
 using MBD.Transactions.Application.IntegrationEvents.Events;
 using MBD.Transactions.Application.Queries;
+using MBD.Transactions.Application.Queries.Transactions.Handlers;
+using MBD.Transactions.Application.Queries.Transactions.Queries;
 using MBD.Transactions.Application.Response;
+using MBD.Transactions.Application.Response.Models;
 using MBD.Transactions.Domain.Events;
 using MBD.Transactions.Domain.Interfaces.Repositories;
 using MBD.Transactions.Domain.Interfaces.Services;
@@ -92,8 +96,10 @@ namespace MBD.Transactions.API.Configuration
 
         private static IServiceCollection AddQueries(this IServiceCollection services)
         {
-            services.AddScoped<ITransactionQuery, TransactionQuery>();
             services.AddScoped<ICategoryQuery, CategoryQuery>();
+
+            services.AddScoped<IRequestHandler<GetTransactionByIdQuery, IResult<TransactionModel>>, GetTransactionByIdQueryHandler>();
+            services.AddScoped<IRequestHandler<GetAllTransactionsQuery, IEnumerable<TransactionModel>>, GetAllTransactionsQueryHandler>();
 
             return services;
         }

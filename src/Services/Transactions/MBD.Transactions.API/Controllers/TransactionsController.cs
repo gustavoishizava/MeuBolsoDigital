@@ -6,6 +6,7 @@ using MBD.Core.Extensions;
 using MBD.Transactions.API.Models;
 using MBD.Transactions.Application.Commands;
 using MBD.Transactions.Application.Queries;
+using MBD.Transactions.Application.Queries.Transactions.Queries;
 using MBD.Transactions.Application.Response;
 using MBD.Transactions.Application.Response.Models;
 using MediatR;
@@ -22,12 +23,10 @@ namespace MBD.Transactions.API.Controllers
     public class TransactionsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ITransactionQuery _query;
 
-        public TransactionsController(IMediator mediator, ITransactionQuery query)
+        public TransactionsController(IMediator mediator)
         {
             _mediator = mediator;
-            _query = query;
         }
 
         [HttpPost]
@@ -61,7 +60,7 @@ namespace MBD.Transactions.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> GetAll()
         {
-            var result = await _query.GetAllAsync();
+            var result = await _mediator.Send(new GetAllTransactionsQuery());
             if (result.IsNullOrEmpty())
                 return NoContent();
 
@@ -73,7 +72,7 @@ namespace MBD.Transactions.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
-            var result = await _query.GetByIdAsync(id);
+            var result = await _mediator.Send(new GetTransactionByIdQuery(id));
             if (!result.Succeeded)
                 return NotFound();
 

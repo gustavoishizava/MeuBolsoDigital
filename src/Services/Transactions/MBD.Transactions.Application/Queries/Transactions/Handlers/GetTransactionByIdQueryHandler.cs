@@ -1,21 +1,22 @@
-using System;
-using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MBD.Application.Core.Response;
-using MBD.Transactions.Application.MongoDbSettings;
-using MBD.Transactions.Application.Response.Models;
-using MongoDB.Driver;
-using System.Linq;
 using MBD.Core.Identity;
+using MBD.Transactions.Application.MongoDbSettings;
+using MBD.Transactions.Application.Queries.Transactions.Queries;
+using MBD.Transactions.Application.Response.Models;
+using MediatR;
+using MongoDB.Driver;
 
-namespace MBD.Transactions.Application.Queries
+namespace MBD.Transactions.Application.Queries.Transactions.Handlers
 {
-    public class TransactionQuery : ITransactionQuery
+    public class GetTransactionByIdQueryHandler : IRequestHandler<GetTransactionByIdQuery, IResult<TransactionModel>>
     {
         private readonly IMongoCollection<TransactionModel> _transactions;
         private readonly IAspNetUser _aspNetUser;
 
-        public TransactionQuery(ITransactionDatabaseSettings settings, IAspNetUser aspNetUser)
+        public GetTransactionByIdQueryHandler(ITransactionDatabaseSettings settings, IAspNetUser aspNetUser)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
@@ -24,17 +25,11 @@ namespace MBD.Transactions.Application.Queries
             _aspNetUser = aspNetUser;
         }
 
-        public async Task<IEnumerable<TransactionModel>> GetAllAsync()
+        public async Task<IResult<TransactionModel>> Handle(GetTransactionByIdQuery request, CancellationToken cancellationToken)
         {
-            var resultTask = await _transactions.FindAsync(x => x.TenantId == _aspNetUser.UserId.ToString());
-            return resultTask.ToList();
-        }
-
-        public async Task<IResult<TransactionModel>> GetByIdAsync(Guid id)
-        {
-            var resultTask = await _transactions.FindAsync(x => x.Id == id.ToString() && x.TenantId == _aspNetUser.UserId.ToString());
+            var resultTask = await _transactions.FindAsync(x => x.Id == request.Id.ToString() && x.TenantId == _aspNetUser.UserId.ToString());
             var transaction = resultTask.FirstOrDefault();
-            if(transaction == null)
+            if (transaction == null)
                 return Result<TransactionModel>.Fail("Transação inválida.");
 
             return Result<TransactionModel>.Success(transaction);

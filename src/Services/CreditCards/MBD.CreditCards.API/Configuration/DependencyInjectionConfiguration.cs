@@ -3,6 +3,9 @@ using System.Reflection;
 using MBD.Core.Data;
 using MBD.Core.Identity;
 using MBD.CreditCards.API.Configuration.HttpClient;
+using MBD.CreditCards.Application.BackgroundServices;
+using MBD.CreditCards.Application.IntegrationEvents.Events;
+using MBD.CreditCards.Application.IntegrationEvents.Handlers;
 using MBD.CreditCards.Application.Interfaces;
 using MBD.CreditCards.Application.Services;
 using MBD.CreditCards.Domain.Interfaces.Repositories;
@@ -10,6 +13,8 @@ using MBD.CreditCards.Domain.Interfaces.Services;
 using MBD.CreditCards.Infrastructure;
 using MBD.CreditCards.Infrastructure.Repositories;
 using MBD.CreditCards.Infrastructure.Services;
+using MBD.MessageBus;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
@@ -22,10 +27,15 @@ namespace MBD.CreditCards.API.Configuration
         {
             services.AddAppServices()
                     .AddRepositories()
-                    .AddHttpClients(configuration);
+                    .AddHttpClients(configuration)
+                    .AddConsumers()
+                    .AddMessageBus()
+                    .AddConfigurations(configuration)
+                    .AddIntegrationEvents();
 
             services.AddHttpContextAccessor();
             services.AddScoped<IAspNetUser, AspNetUser>();
+            services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(Assembly.Load("MBD.CreditCards.Application"));
 
             return services;
@@ -57,6 +67,34 @@ namespace MBD.CreditCards.API.Configuration
             .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
             .AddPolicyHandler(PollyRetryConfiguration.WaitToRetry())
             .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
+
+            return services;
+        }
+
+        private static IServiceCollection AddConsumers(this IServiceCollection services)
+        {
+            services.AddHostedService<TransactionsConsumerService>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddMessageBus(this IServiceCollection services)
+        {
+            services.AddSingleton<IMessageBus, MessageBus.MessageBus>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<RabbitMqConfiguration>(configuration.GetSection(nameof(RabbitMqConfiguration)));
+
+            return services;
+        }
+
+        private static IServiceCollection AddIntegrationEvents(this IServiceCollection services)
+        {
+            services.AddScoped<INotificationHandler<TransactionLinkedToCreditCardBillIntegrationEvent>, TransactionLinkedToCreditCardBillIntegrationEventHandler>();
 
             return services;
         }

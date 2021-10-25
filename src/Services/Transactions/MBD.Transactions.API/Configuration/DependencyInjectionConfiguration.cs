@@ -8,7 +8,6 @@ using MBD.IntegrationEventLog.Services;
 using MBD.MessageBus;
 using MBD.Transactions.API.Configuration.HttpClient;
 using MBD.Transactions.Application.BackgroundServices;
-using MBD.Transactions.Application.Commands;
 using MBD.Transactions.Application.DomainEventHandlers;
 using MBD.Transactions.Application.IntegrationEvents.EventHandling;
 using MBD.Transactions.Application.IntegrationEvents.Events;
@@ -28,6 +27,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using MBD.Transactions.Application.Queries.Categories.Queries;
 using MBD.Transactions.Application.Queries.Categories.Handlers;
+using MBD.Transactions.Application.Commands.Transactions;
+using MBD.Transactions.Application.Commands.Categories;
 
 namespace MBD.Transactions.API.Configuration
 {

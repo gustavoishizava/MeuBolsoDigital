@@ -6,7 +6,7 @@ using MBD.Transactions.Domain.Events;
 using MBD.Transactions.Domain.Interfaces.Repositories;
 using MediatR;
 
-namespace MBD.Transactions.Application.Commands
+namespace MBD.Transactions.Application.Commands.Transactions
 {
     public class DeleteTransactionCommandHandler : IRequestHandler<DeleteTransactionCommand, IResult>
     {

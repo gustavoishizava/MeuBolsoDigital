@@ -10,8 +10,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MBD.Transactions.Domain.Enumerations;
 using MediatR;
-using MBD.Transactions.Application.Commands;
 using MBD.Transactions.Application.Queries.Categories.Queries;
+using MBD.Transactions.Application.Commands.Categories;
 
 namespace MBD.Transactions.API.Controllers
 {

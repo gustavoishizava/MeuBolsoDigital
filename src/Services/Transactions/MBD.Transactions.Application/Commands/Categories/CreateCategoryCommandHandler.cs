@@ -9,7 +9,7 @@ using MBD.Transactions.Domain.Entities;
 using MBD.Transactions.Domain.Interfaces.Repositories;
 using MediatR;
 
-namespace MBD.Transactions.Application.Commands
+namespace MBD.Transactions.Application.Commands.Categories
 {
     public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, IResult<CategoryResponse>>
     {

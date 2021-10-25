@@ -6,7 +6,7 @@ using MBD.Transactions.Application.Commands.Common;
 using MBD.Transactions.Application.Response;
 using MBD.Transactions.Domain.Enumerations;
 
-namespace MBD.Transactions.Application.Commands
+namespace MBD.Transactions.Application.Commands.Categories
 {
     public class CreateCategoryCommand : Command<IResult<CategoryResponse>>
     {

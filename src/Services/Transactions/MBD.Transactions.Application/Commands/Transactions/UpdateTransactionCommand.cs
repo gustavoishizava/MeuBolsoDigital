@@ -3,12 +3,12 @@ using FluentValidation;
 using FluentValidation.Results;
 using MBD.Application.Core.Response;
 using MBD.Transactions.Application.Commands.Common;
-using MBD.Transactions.Application.Response;
 
-namespace MBD.Transactions.Application.Commands
+namespace MBD.Transactions.Application.Commands.Transactions
 {
-    public class CreateTransactionCommand : Command<IResult<TransactionResponse>>
+    public class UpdateTransactionCommand : Command<IResult>
     {
+        public Guid Id { get; init; }
         public Guid BankAccountId { get; init; }
         public Guid CategoryId { get; init; }
         public DateTime ReferenceDate { get; init; }
@@ -17,8 +17,9 @@ namespace MBD.Transactions.Application.Commands
         public decimal Value { get; init; }
         public string Description { get; init; }
 
-        public CreateTransactionCommand(Guid bankAccountId, Guid categoryId, DateTime referenceDate, DateTime dueDate, DateTime? paymentDate, decimal value, string description)
+        public UpdateTransactionCommand(Guid id, Guid bankAccountId, Guid categoryId, DateTime referenceDate, DateTime dueDate, DateTime? paymentDate, decimal value, string description)
         {
+            Id = id;
             BankAccountId = bankAccountId;
             CategoryId = categoryId;
             ReferenceDate = referenceDate;
@@ -30,13 +31,16 @@ namespace MBD.Transactions.Application.Commands
 
         public override ValidationResult Validate()
         {
-            return new CreateTransactionValidation().Validate(this);
+            return new UpdateTransactionValidation().Validate(this);
         }
 
-        public class CreateTransactionValidation : AbstractValidator<CreateTransactionCommand>
+        public class UpdateTransactionValidation : AbstractValidator<UpdateTransactionCommand>
         {
-            public CreateTransactionValidation()
+            public UpdateTransactionValidation()
             {
+                RuleFor(x => x.Id)
+                    .NotEmpty();
+
                 RuleFor(x => x.BankAccountId)
                     .NotEmpty();
 

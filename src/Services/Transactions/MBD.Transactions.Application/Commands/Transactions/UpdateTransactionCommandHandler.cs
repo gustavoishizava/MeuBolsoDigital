@@ -4,14 +4,13 @@ using MBD.Application.Core.Response;
 using MBD.Core.Data;
 using MBD.Core.Identity;
 using MBD.Transactions.Application.Response;
-using MBD.Transactions.Domain.Entities;
 using MBD.Transactions.Domain.Interfaces.Repositories;
 using MBD.Transactions.Domain.Interfaces.Services;
 using MediatR;
 
-namespace MBD.Transactions.Application.Commands
+namespace MBD.Transactions.Application.Commands.Transactions
 {
-    public class CreateTransactionCommandHandler : IRequestHandler<CreateTransactionCommand, IResult<TransactionResponse>>
+    public class UpdateTransactionCommandHandler : IRequestHandler<UpdateTransactionCommand, IResult>
     {
         private readonly ITransactionRepository _transactionRepository;
         private readonly IAspNetUser _aspNetUser;
@@ -19,7 +18,7 @@ namespace MBD.Transactions.Application.Commands
         private readonly IBankAccountService _bankAccountService;
         private readonly ICategoryRepository _categoryRepository;
 
-        public CreateTransactionCommandHandler(ITransactionRepository transactionRepository, IAspNetUser aspNetUser, IUnitOfWork unitOfWork, IBankAccountService bankAccountService, ICategoryRepository categoryRepository)
+        public UpdateTransactionCommandHandler(ITransactionRepository transactionRepository, IAspNetUser aspNetUser, IUnitOfWork unitOfWork, IBankAccountService bankAccountService, ICategoryRepository categoryRepository)
         {
             _transactionRepository = transactionRepository;
             _aspNetUser = aspNetUser;
@@ -28,11 +27,11 @@ namespace MBD.Transactions.Application.Commands
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<IResult<TransactionResponse>> Handle(CreateTransactionCommand request, CancellationToken cancellationToken)
+        public async Task<IResult> Handle(UpdateTransactionCommand request, CancellationToken cancellationToken)
         {
-            var validation = request.Validate();
-            if (!validation.IsValid)
-                return Result<TransactionResponse>.Fail();
+            var transaction = await _transactionRepository.GetByIdAsync(request.Id);
+            if (transaction == null)
+                return Result.Fail("Transação inválida.");
 
             var bankAccount = await _bankAccountService.GetByIdAsync(request.BankAccountId);
             if (bankAccount == null)
@@ -42,21 +41,11 @@ namespace MBD.Transactions.Application.Commands
             if (category == null)
                 return Result<TransactionResponse>.Fail("Categoria inválida.");
 
-            var transaction = new Transaction(
-                _aspNetUser.UserId,
-                bankAccount,
-                category,
-                request.ReferenceDate,
-                request.DueDate,
-                request.Value,
-                request.Description,
-                request.PaymentDate
-            );
+            transaction.Update(bankAccount, category, request.ReferenceDate, request.DueDate, request.Value, request.Description, request.PaymentDate);
 
-            _transactionRepository.Add(transaction);
             await _unitOfWork.SaveChangesAsync();
 
-            return Result<TransactionResponse>.Success(new TransactionResponse(transaction));
+            return Result.Success();
         }
     }
 }

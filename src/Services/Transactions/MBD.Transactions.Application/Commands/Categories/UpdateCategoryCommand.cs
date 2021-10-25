@@ -5,7 +5,7 @@ using MBD.Application.Core.Response;
 using MBD.Core.Enumerations;
 using MBD.Transactions.Application.Commands.Common;
 
-namespace MBD.Transactions.Application.Commands
+namespace MBD.Transactions.Application.Commands.Categories
 {
     public class UpdateCategoryCommand : Command<IResult>
     {

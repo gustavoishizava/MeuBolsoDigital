@@ -48,6 +48,10 @@ namespace MBD.CreditCards.Infrastructure.Context.Configuration
                 .HasMaxLength(10)
                 .HasConversion(new EnumToStringConverter<Status>());
 
+            builder.HasOne<BankAccount>()
+                .WithMany()
+                .HasForeignKey(x => x.BankAccountId);
+
             builder.Navigation(x => x.Bills)
                 .HasField("_bills");
         }

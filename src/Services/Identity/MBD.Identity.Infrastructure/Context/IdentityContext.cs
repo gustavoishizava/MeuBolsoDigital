@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace MBD.Identity.Infrastructure.Context
         public IdentityContext(DbContextOptions<IdentityContext> options)
          : base(options)
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
         public DbSet<User> Users { get; set; }

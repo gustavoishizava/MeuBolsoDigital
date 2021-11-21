@@ -41,6 +41,8 @@ namespace MBD.BankAccounts.Domain.Entities
             InitialBalance = initialBalance;
             SetType(type);
             Activate();
+
+            AddDomainEvent(new AccountCreatedDomainEvent(this));
         }
 
         #region Account

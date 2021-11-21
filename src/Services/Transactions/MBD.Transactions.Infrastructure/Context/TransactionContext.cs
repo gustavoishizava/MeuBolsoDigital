@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace MBD.Transactions.Infrastructure.Context
         {
             _aspNetUser = aspNetUser;
             _mediator = mediator;
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
         public DbSet<Category> Categories { get; set; }

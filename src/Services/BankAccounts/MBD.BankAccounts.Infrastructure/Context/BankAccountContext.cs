@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace MBD.BankAccounts.Infrastructure.Context
         {
             _aspNetUser = aspNetUser;
             _mediator = mediator;
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
         public DbSet<Account> Accounts { get; set; }

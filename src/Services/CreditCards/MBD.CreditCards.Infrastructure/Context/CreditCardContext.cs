@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ namespace MBD.CreditCards.Infrastructure.Context
         public CreditCardContext(DbContextOptions<CreditCardContext> options, IAspNetUser aspNetUser) : base(options)
         {
             _aspNetUser = aspNetUser;
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
         public DbSet<CreditCard> CreditCards { get; set; }

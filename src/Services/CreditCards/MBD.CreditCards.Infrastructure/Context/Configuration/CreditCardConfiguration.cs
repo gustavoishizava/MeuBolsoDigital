@@ -45,7 +45,7 @@ namespace MBD.CreditCards.Infrastructure.Context.Configuration
                 .HasMaxLength(10)
                 .HasConversion(new EnumToStringConverter<Status>());
 
-            builder.HasOne<BankAccount>()
+            builder.HasOne(x => x.BankAccount)
                 .WithMany()
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);

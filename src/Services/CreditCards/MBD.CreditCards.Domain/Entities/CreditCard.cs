@@ -35,6 +35,8 @@ namespace MBD.CreditCards.Domain.Entities
             Activate();
         }
 
+        protected CreditCard() { }
+
         #region Credit card
 
         public void SetBankAccount(BankAccount bankAccount)

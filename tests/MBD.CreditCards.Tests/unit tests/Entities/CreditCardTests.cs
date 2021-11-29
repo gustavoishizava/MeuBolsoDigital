@@ -26,19 +26,19 @@ namespace MBD.CreditCards.Tests.unit_tests.Entities
         public void InvalidParameters_NewCreditCard_ReturnDomainException(string name, int closingDay, int dayOfPayment, decimal limit)
         {
             // Arrange
-            var userId = Guid.NewGuid();
+            var tenantId = Guid.NewGuid();
             var bankAccountId = Guid.NewGuid();
 
             // Act && Assert
             Assert.Throws<DomainException>(() =>
-                new CreditCard(userId, _validBankAccount, name, closingDay, dayOfPayment, limit, Brand.VISA));
+                new CreditCard(tenantId, _validBankAccount, name, closingDay, dayOfPayment, limit, Brand.VISA));
 
             if (string.IsNullOrEmpty(name))
             {
                 var invalidName = new String('a', 101);
 
                 Assert.Throws<DomainException>(() =>
-                    new CreditCard(userId, _validBankAccount, invalidName, closingDay, dayOfPayment, limit, Brand.VISA));
+                    new CreditCard(tenantId, _validBankAccount, invalidName, closingDay, dayOfPayment, limit, Brand.VISA));
             }
         }
 
@@ -49,14 +49,14 @@ namespace MBD.CreditCards.Tests.unit_tests.Entities
         public void ValidParameters_NewCreditCard_ReturnSuccess(string name, int closingDay, int dayOfPayment, decimal limit)
         {
             // Arrange
-            var userId = Guid.NewGuid();
+            var tenantId = Guid.NewGuid();
             var brand = Brand.VISA;
 
             // Act
-            var creditCard = new CreditCard(userId, _validBankAccount, name, closingDay, dayOfPayment, limit, brand);
+            var creditCard = new CreditCard(tenantId, _validBankAccount, name, closingDay, dayOfPayment, limit, brand);
 
             //Then
-            Assert.Equal(userId, creditCard.UserId);
+            Assert.Equal(tenantId, creditCard.TenantId);
             Assert.Equal(_validBankAccount.Id, creditCard.BankAccount.Id);
             Assert.Equal(name, creditCard.Name);
             Assert.Equal(closingDay, creditCard.ClosingDay);

@@ -14,7 +14,7 @@ namespace MBD.CreditCards.Infrastructure.Context.Configuration
         {
             base.Configure(builder);
 
-            builder.Property(x => x.UserId)
+            builder.Property(x => x.TenantId)
                 .IsRequired();
 
             builder.Property(x => x.Name)

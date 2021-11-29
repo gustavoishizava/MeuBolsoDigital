@@ -51,6 +51,7 @@ namespace MBD.CreditCards.API.Configuration
         private static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<ICreditCardRepository, CreditCardRepository>();
+            services.AddScoped<IBankAccountRepository, BankAccountRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;

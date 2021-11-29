@@ -13,6 +13,9 @@ namespace MBD.CreditCards.Infrastructure.Context.Configuration
             builder.Property(x => x.Id)
                 .ValueGeneratedNever();
 
+            builder.Property(x => x.TenantId)
+                .IsRequired();
+
             builder.Property(x => x.Description)
                 .IsRequired()
                 .HasColumnType("varchar(150)")

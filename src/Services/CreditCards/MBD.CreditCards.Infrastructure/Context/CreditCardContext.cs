@@ -30,6 +30,7 @@ namespace MBD.CreditCards.Infrastructure.Context
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             modelBuilder.Entity<CreditCard>().HasQueryFilter(x => x.TenantId == _aspNetUser.UserId);
+            modelBuilder.Entity<BankAccount>().HasQueryFilter(x => x.TenantId == _aspNetUser.UserId);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

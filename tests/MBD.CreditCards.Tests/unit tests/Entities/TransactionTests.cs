@@ -9,10 +9,13 @@ namespace MBD.CreditCards.Tests.unit_tests.Entities
     public class TransactionTests
     {
         private readonly CreditCardBill _validBill;
+        private readonly BankAccount _validBankAccount;
 
         public TransactionTests()
         {
-            var creditCard = new CreditCard(Guid.NewGuid(), Guid.NewGuid(), "Cartão", 1, 5, 100, Brand.VISA);
+            _validBankAccount = new BankAccount();
+            _validBankAccount.GetType().GetProperty(nameof(BankAccount.Id)).SetValue(_validBankAccount, Guid.NewGuid());
+            var creditCard = new CreditCard(Guid.NewGuid(), _validBankAccount, "Cartão", 1, 5, 100, Brand.VISA);
             var month = DateTime.Now.Month;
             var year = DateTime.Now.Year;
             creditCard.AddBill(month, year);

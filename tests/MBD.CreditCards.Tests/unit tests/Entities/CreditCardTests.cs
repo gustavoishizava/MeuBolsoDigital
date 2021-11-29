@@ -9,6 +9,13 @@ namespace MBD.CreditCards.Tests.unit_tests.Entities
 {
     public class CreditCardTests
     {
+        private readonly BankAccount _validBankAccount;
+        public CreditCardTests()
+        {
+            _validBankAccount = new BankAccount();
+            _validBankAccount.GetType().GetProperty(nameof(BankAccount.Id)).SetValue(_validBankAccount, Guid.NewGuid());
+        }
+
         [Theory(DisplayName = "Criar um novo cartão de crédito com dados inválidos.")]
         [InlineData("", 1, 1, 100)]
         [InlineData("Cartão", 0, 1, 100)]
@@ -24,14 +31,14 @@ namespace MBD.CreditCards.Tests.unit_tests.Entities
 
             // Act && Assert
             Assert.Throws<DomainException>(() =>
-                new CreditCard(userId, bankAccountId, name, closingDay, dayOfPayment, limit, Brand.VISA));
+                new CreditCard(userId, _validBankAccount, name, closingDay, dayOfPayment, limit, Brand.VISA));
 
             if (string.IsNullOrEmpty(name))
             {
                 var invalidName = new String('a', 101);
 
                 Assert.Throws<DomainException>(() =>
-                    new CreditCard(userId, bankAccountId, invalidName, closingDay, dayOfPayment, limit, Brand.VISA));
+                    new CreditCard(userId, _validBankAccount, invalidName, closingDay, dayOfPayment, limit, Brand.VISA));
             }
         }
 
@@ -43,15 +50,14 @@ namespace MBD.CreditCards.Tests.unit_tests.Entities
         {
             // Arrange
             var userId = Guid.NewGuid();
-            var bankAccountId = Guid.NewGuid();
             var brand = Brand.VISA;
 
             // Act
-            var creditCard = new CreditCard(userId, bankAccountId, name, closingDay, dayOfPayment, limit, brand);
+            var creditCard = new CreditCard(userId, _validBankAccount, name, closingDay, dayOfPayment, limit, brand);
 
             //Then
             Assert.Equal(userId, creditCard.UserId);
-            Assert.Equal(bankAccountId, creditCard.BankAccountId);
+            Assert.Equal(_validBankAccount.Id, creditCard.BankAccount.Id);
             Assert.Equal(name, creditCard.Name);
             Assert.Equal(closingDay, creditCard.ClosingDay);
             Assert.Equal(dayOfPayment, creditCard.DayOfPayment);
@@ -67,11 +73,11 @@ namespace MBD.CreditCards.Tests.unit_tests.Entities
         public void ValidCreditCard_SetStatus_ReturnSuccess(bool activate)
         {
             // Arrange
-            var creditCard = new CreditCard(Guid.NewGuid(), Guid.NewGuid(), "Credit card", 5, 10, 1000, Brand.VISA);
+            var creditCard = new CreditCard(Guid.NewGuid(), _validBankAccount, "Credit card", 5, 10, 1000, Brand.VISA);
             var expectedStatus = activate ? Status.Active : Status.Inactive;
 
             // Act
-            if(activate)
+            if (activate)
                 creditCard.Activate();
             else
                 creditCard.Deactivate();

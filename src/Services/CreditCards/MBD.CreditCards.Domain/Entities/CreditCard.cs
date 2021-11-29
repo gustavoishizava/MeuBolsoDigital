@@ -41,7 +41,7 @@ namespace MBD.CreditCards.Domain.Entities
 
         public void SetBankAccount(BankAccount bankAccount)
         {
-            BankAccount = bankAccount;
+            BankAccount = bankAccount ?? throw new ArgumentNullException();
         }
 
         public void SetName(string name)

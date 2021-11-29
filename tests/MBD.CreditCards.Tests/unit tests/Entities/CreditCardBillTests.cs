@@ -9,9 +9,12 @@ namespace MBD.CreditCards.Tests.unit_tests.Entities
     public class CreditCardBillTests
     {
         private readonly CreditCard _validCreditCard;
+        private readonly BankAccount _validBankAccount;
         public CreditCardBillTests()
         {
-            _validCreditCard = new CreditCard(Guid.NewGuid(), Guid.NewGuid(), "NuBank", 5, 10, 1000, Brand.VISA);
+            _validBankAccount = new BankAccount();
+            _validBankAccount.GetType().GetProperty(nameof(BankAccount.Id)).SetValue(_validBankAccount, Guid.NewGuid());
+            _validCreditCard = new CreditCard(Guid.NewGuid(), _validBankAccount, "NuBank", 5, 10, 1000, Brand.VISA);
         }
 
         [Theory(DisplayName = "Gerar nova fatura com referência válida.")]
@@ -23,7 +26,7 @@ namespace MBD.CreditCards.Tests.unit_tests.Entities
         public void ValidReference_NewCreditCardBill_ReturnSuccess(int closingDay, int dayOfPayment, int month, int year)
         {
             // Arrange
-            var creditCard = new CreditCard(Guid.NewGuid(), Guid.NewGuid(), "NuBank", closingDay, dayOfPayment, 1000, Brand.VISA);
+            var creditCard = new CreditCard(Guid.NewGuid(), _validBankAccount, "NuBank", closingDay, dayOfPayment, 1000, Brand.VISA);
 
             var daysInMonth = DateTime.DaysInMonth(year, month);
             DateTime closesIn = DateTime.Now;

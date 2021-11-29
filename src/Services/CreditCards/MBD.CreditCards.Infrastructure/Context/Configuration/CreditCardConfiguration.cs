@@ -17,9 +17,6 @@ namespace MBD.CreditCards.Infrastructure.Context.Configuration
             builder.Property(x => x.UserId)
                 .IsRequired();
 
-            builder.Property(x => x.BankAccountId)
-                .IsRequired();
-
             builder.Property(x => x.Name)
                 .IsRequired()
                 .HasColumnType("VARCHAR(100)")
@@ -50,7 +47,8 @@ namespace MBD.CreditCards.Infrastructure.Context.Configuration
 
             builder.HasOne<BankAccount>()
                 .WithMany()
-                .HasForeignKey(x => x.BankAccountId);
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Navigation(x => x.Bills)
                 .HasField("_bills");

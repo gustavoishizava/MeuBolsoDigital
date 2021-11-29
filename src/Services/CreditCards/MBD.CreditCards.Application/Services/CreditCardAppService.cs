@@ -20,15 +20,15 @@ namespace MBD.CreditCards.Application.Services
         private readonly IAspNetUser _aspNetUser;
         private readonly IMapper _mapper;
         private readonly ICreditCardRepository _repository;
-        private readonly IBankAccountService _bankAccountService;
+        private readonly IBankAccountRepository _bankAccountRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreditCardAppService(IAspNetUser aspNetUser, IMapper mapper, ICreditCardRepository repository, IBankAccountService bankAccountService, IUnitOfWork unitOfWork)
+        public CreditCardAppService(IAspNetUser aspNetUser, IMapper mapper, ICreditCardRepository repository, IBankAccountRepository bankAccountRepository, IUnitOfWork unitOfWork)
         {
             _aspNetUser = aspNetUser;
             _mapper = mapper;
             _repository = repository;
-            _bankAccountService = bankAccountService;
+            _bankAccountRepository = bankAccountRepository;
             _unitOfWork = unitOfWork;
         }
 
@@ -38,12 +38,12 @@ namespace MBD.CreditCards.Application.Services
             if (!validation.IsValid)
                 return Result<CreditCardResponse>.Fail(validation.ToString());
 
-            var bankAccount = await _bankAccountService.GetByIdAsync(request.BankAccountId);
+            var bankAccount = await _bankAccountRepository.GetByIdAsync(request.BankAccountId);
             if (bankAccount == null)
                 return Result<CreditCardResponse>.Fail("Conta bancária inválida.");
 
             var creditCard = new CreditCard(_aspNetUser.UserId,
-                                            request.BankAccountId,
+                                            bankAccount,
                                             request.Name,
                                             request.ClosingDay,
                                             request.DayOfPayment,
@@ -92,12 +92,12 @@ namespace MBD.CreditCards.Application.Services
             if (creditCard == null)
                 return Result.Fail("Cartão de crédito inválido.");
 
-            var bankAccount = await _bankAccountService.GetByIdAsync(request.BankAccountId);
+            var bankAccount = await _bankAccountRepository.GetByIdAsync(request.BankAccountId);
             if (bankAccount == null)
                 return Result<CreditCardResponse>.Fail("Conta bancária inválida.");
 
             creditCard.SetName(request.Name);
-            creditCard.SetBankAccountId(request.BankAccountId);
+            creditCard.SetBankAccount(bankAccount);
             creditCard.SetBrand(request.Brand);
             creditCard.SetClosingDay(request.ClosingDay);
             creditCard.SetDayOfPayment(request.DayOfPayment);

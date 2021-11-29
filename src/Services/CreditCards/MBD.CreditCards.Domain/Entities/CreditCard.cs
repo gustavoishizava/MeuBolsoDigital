@@ -13,7 +13,7 @@ namespace MBD.CreditCards.Domain.Entities
         private readonly List<CreditCardBill> _bills = new List<CreditCardBill>();
 
         public Guid UserId { get; private set; }
-        public Guid BankAccountId { get; private set; }
+        public BankAccount BankAccount { get; private set; }
         public string Name { get; private set; }
         public int ClosingDay { get; private set; }
         public int DayOfPayment { get; private set; }
@@ -23,10 +23,10 @@ namespace MBD.CreditCards.Domain.Entities
 
         public IReadOnlyList<CreditCardBill> Bills => _bills.AsReadOnly();
 
-        public CreditCard(Guid userId, Guid bankAccountId, string name, int closingDay, int dayOfPayment, decimal limit, Brand brand)
+        public CreditCard(Guid userId, BankAccount bankAccount, string name, int closingDay, int dayOfPayment, decimal limit, Brand brand)
         {
             UserId = userId;
-            SetBankAccountId(bankAccountId);
+            SetBankAccount(bankAccount);
             SetName(name);
             SetClosingDay(closingDay);
             SetDayOfPayment(dayOfPayment);
@@ -37,9 +37,9 @@ namespace MBD.CreditCards.Domain.Entities
 
         #region Credit card
 
-        public void SetBankAccountId(Guid bankAccountId)
+        public void SetBankAccount(BankAccount bankAccount)
         {
-            BankAccountId = bankAccountId;
+            BankAccount = bankAccount;
         }
 
         public void SetName(string name)

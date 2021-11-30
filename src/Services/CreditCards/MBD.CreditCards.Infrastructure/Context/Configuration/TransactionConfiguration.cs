@@ -26,7 +26,7 @@ namespace MBD.CreditCards.Infrastructure.Context.Configuration
                 .IsRequired();
 
             builder.HasOne<CreditCardBill>()
-                .WithMany()
+                .WithMany(x => x.Transactions)
                 .HasForeignKey(x => x.CreditCardBillId)
                 .OnDelete(DeleteBehavior.Restrict);
         }

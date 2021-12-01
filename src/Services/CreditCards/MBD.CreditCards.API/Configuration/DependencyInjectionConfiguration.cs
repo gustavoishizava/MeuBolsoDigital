@@ -75,6 +75,7 @@ namespace MBD.CreditCards.API.Configuration
         private static IServiceCollection AddConsumers(this IServiceCollection services)
         {
             services.AddHostedService<TransactionsConsumerService>();
+            services.AddHostedService<BankAccountsConsumerService>();
 
             return services;
         }
@@ -96,6 +97,7 @@ namespace MBD.CreditCards.API.Configuration
         private static IServiceCollection AddIntegrationEvents(this IServiceCollection services)
         {
             services.AddScoped<INotificationHandler<TransactionLinkedToCreditCardBillIntegrationEvent>, TransactionLinkedToCreditCardBillIntegrationEventHandler>();
+            services.AddScoped<INotificationHandler<BankAccountCreatedIntegrationEvent>, BankAccountCreatedIntegrationEventHandler>();
 
             return services;
         }

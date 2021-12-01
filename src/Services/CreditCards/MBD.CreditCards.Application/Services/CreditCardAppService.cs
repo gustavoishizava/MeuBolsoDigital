@@ -11,7 +11,6 @@ using MBD.CreditCards.Application.Requests;
 using MBD.CreditCards.Application.Responses;
 using MBD.CreditCards.Domain.Entities;
 using MBD.CreditCards.Domain.Interfaces.Repositories;
-using MBD.CreditCards.Domain.Interfaces.Services;
 
 namespace MBD.CreditCards.Application.Services
 {

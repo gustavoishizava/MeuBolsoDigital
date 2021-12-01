@@ -16,6 +16,11 @@ namespace MBD.CreditCards.Infrastructure.Repositories
             _context = context;
         }
 
+        public void Add(BankAccount bankAccount)
+        {
+            _context.Add(bankAccount);
+        }
+
         public async Task<BankAccount> GetByIdAsync(Guid id)
         {
             return await _context.BankAccounts.FirstOrDefaultAsync(x => x.Id == id);

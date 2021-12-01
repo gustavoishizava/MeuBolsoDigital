@@ -12,9 +12,9 @@ namespace MBD.CreditCards.Tests.unit_tests.Entities
         private readonly BankAccount _validBankAccount;
         public CreditCardBillTests()
         {
-            _validBankAccount = new BankAccount();
-            _validBankAccount.GetType().GetProperty(nameof(BankAccount.Id)).SetValue(_validBankAccount, Guid.NewGuid());
-            _validCreditCard = new CreditCard(Guid.NewGuid(), _validBankAccount, "NuBank", 5, 10, 1000, Brand.VISA);
+            var tenantId = Guid.NewGuid();
+            _validBankAccount = new BankAccount(Guid.NewGuid(), tenantId, "NuConta");
+            _validCreditCard = new CreditCard(tenantId, _validBankAccount, "NuBank", 5, 10, 1000, Brand.VISA);
         }
 
         [Theory(DisplayName = "Gerar nova fatura com referência válida.")]

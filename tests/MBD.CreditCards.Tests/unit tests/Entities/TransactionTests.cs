@@ -13,9 +13,9 @@ namespace MBD.CreditCards.Tests.unit_tests.Entities
 
         public TransactionTests()
         {
-            _validBankAccount = new BankAccount();
-            _validBankAccount.GetType().GetProperty(nameof(BankAccount.Id)).SetValue(_validBankAccount, Guid.NewGuid());
-            var creditCard = new CreditCard(Guid.NewGuid(), _validBankAccount, "Cartão", 1, 5, 100, Brand.VISA);
+            var tenantId = Guid.NewGuid();
+            _validBankAccount = new BankAccount(Guid.NewGuid(), tenantId, "NuConta");
+            var creditCard = new CreditCard(tenantId, _validBankAccount, "Cartão", 1, 5, 100, Brand.VISA);
             var month = DateTime.Now.Month;
             var year = DateTime.Now.Year;
             creditCard.AddBill(month, year);

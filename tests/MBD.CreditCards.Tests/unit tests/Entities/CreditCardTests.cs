@@ -12,8 +12,7 @@ namespace MBD.CreditCards.Tests.unit_tests.Entities
         private readonly BankAccount _validBankAccount;
         public CreditCardTests()
         {
-            _validBankAccount = new BankAccount();
-            _validBankAccount.GetType().GetProperty(nameof(BankAccount.Id)).SetValue(_validBankAccount, Guid.NewGuid());
+            _validBankAccount = new BankAccount(Guid.NewGuid(), Guid.NewGuid(), "NuConta");
         }
 
         [Theory(DisplayName = "Criar um novo cartão de crédito com dados inválidos.")]

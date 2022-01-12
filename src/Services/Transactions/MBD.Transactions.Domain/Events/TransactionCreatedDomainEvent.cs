@@ -10,7 +10,7 @@ namespace MBD.Transactions.Domain.Events
         public Guid TenantId { get; private init; }
         public Guid BankAccountId { get; private init; }
         public string BankAccountDescription { get; private init; }
-        public Guid CategoryId { get; private init; }
+        public Category Category { get; private init; }
         public string CategoryName { get; private init; }
         public DateTime ReferenceDate { get; private init; }
         public DateTime DueDate { get; private init; }
@@ -25,7 +25,7 @@ namespace MBD.Transactions.Domain.Events
             TenantId = transaction.TenantId;
             BankAccountId = transaction.BankAccountId;
             BankAccountDescription = bankAccountDescription;
-            CategoryId = transaction.CategoryId;
+            Category = transaction.Category;
             CategoryName = categoryName;
             ReferenceDate = transaction.ReferenceDate;
             DueDate = transaction.DueDate;

@@ -19,9 +19,6 @@ namespace MBD.Transactions.Infrastructure.Context.Configuration
             builder.Property(x => x.BankAccountId)
                 .IsRequired();
 
-            builder.Property(x => x.CategoryId)
-                .IsRequired();
-
             builder.Property(x => x.CreditCardBillId)
                 .IsRequired(false);
 
@@ -52,7 +49,7 @@ namespace MBD.Transactions.Infrastructure.Context.Configuration
 
             builder.HasOne(x => x.Category)
                 .WithMany()
-                .HasForeignKey(x => x.CategoryId)
+                .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

@@ -1,4 +1,5 @@
 using System;
+using MBD.Transactions.Domain.Entities;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace MBD.Transactions.Application.Response.Models
@@ -9,10 +10,10 @@ namespace MBD.Transactions.Application.Response.Models
         public string Id { get; set; }
         public string Name { get; set; }
 
-        public CategoryModel(Guid id, string name)
+        public CategoryModel(Category category)
         {
-            Id = id.ToString();
-            Name = name;
+            Id = category.Id.ToString();
+            Name = category.Name;
         }
     }
 }

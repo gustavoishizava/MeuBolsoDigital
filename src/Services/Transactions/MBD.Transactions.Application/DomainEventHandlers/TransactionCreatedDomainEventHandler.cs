@@ -19,14 +19,14 @@ namespace MBD.Transactions.Application.DomainEventHandlers
 
             _transactions = database.GetCollection<TransactionModel>(settings.CollectionName);
         }
-        
+
         public async Task Handle(TransactionCreatedDomainEvent notification, CancellationToken cancellationToken)
         {
             var transactionModel = new TransactionModel(
                 notification.AggregateId,
                 notification.TenantId,
                 new BankAccountModel(notification.BankAccountId, notification.BankAccountDescription),
-                new CategoryModel(notification.CategoryId, notification.CategoryName),
+                new CategoryModel(notification.Category),
                 notification.ReferenceDate,
                 notification.DueDate,
                 notification.PaymentDate,

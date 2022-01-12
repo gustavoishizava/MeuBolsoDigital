@@ -12,7 +12,7 @@ namespace MBD.Transactions.Domain.Entities
     {
         public Guid TenantId { get; private init; }
         public Guid BankAccountId { get; private set; }
-        public Guid CategoryId { get; private set; }
+        public Category Category { get; private set; }
         public Guid? CreditCardBillId { get; private set; }
         public DateTime ReferenceDate { get; private set; }
         public DateTime DueDate { get; private set; }
@@ -22,7 +22,6 @@ namespace MBD.Transactions.Domain.Entities
         public string Description { get; private set; }
 
         public bool ItsPaid => PaymentDate != null && Status == TransactionStatus.Paid;
-        public Category Category { get; private set; }
         private bool _valueChanged { get; set; } = false;
 
         public Transaction(Guid tenantId, BankAccount bankAccount, Category category, DateTime referenceDate, DateTime dueDate, decimal value, string description, DateTime? paymentDate)
@@ -31,7 +30,6 @@ namespace MBD.Transactions.Domain.Entities
 
             TenantId = tenantId;
             BankAccountId = bankAccount.Id;
-            CategoryId = category.Id;
             Category = category;
             CreditCardBillId = null;
             ReferenceDate = referenceDate;
@@ -85,7 +83,7 @@ namespace MBD.Transactions.Domain.Entities
         public void Update(BankAccount bankAccount, Category category, DateTime referenceDate, DateTime dueDate, decimal value, string description, DateTime? paymentDate)
         {
             BankAccountId = bankAccount.Id;
-            CategoryId = category.Id;
+            Category = category;
             ReferenceDate = referenceDate;
             DueDate = dueDate;
             SetValue(value);

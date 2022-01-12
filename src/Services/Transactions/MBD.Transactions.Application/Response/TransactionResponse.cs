@@ -20,7 +20,7 @@ namespace MBD.Transactions.Application.Response
         {
             Id = transaction.Id;
             BankAccountId = transaction.BankAccountId;
-            CategoryId = transaction.CategoryId;
+            CategoryId = transaction.Category.Id;
             ReferenceDate = transaction.ReferenceDate;
             DueDate = transaction.DueDate;
             PaymentDate = transaction.PaymentDate;

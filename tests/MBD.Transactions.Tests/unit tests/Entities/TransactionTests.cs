@@ -53,7 +53,7 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             // Assert
             Assert.Equal(tenantId, transaction.TenantId);
             Assert.Equal(_bankAccount.Id, transaction.BankAccountId);
-            Assert.Equal(_category.Id, transaction.CategoryId);
+            Assert.Equal(_category.Id, transaction.Category.Id);
             Assert.Equal(_category, transaction.Category);
             Assert.Equal(referenceDate, transaction.ReferenceDate);
             Assert.Equal(dueDate, transaction.DueDate);
@@ -103,7 +103,7 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             // Assert
             Assert.Equal(eventCount, transaction.Events.Count());
             Assert.Equal(tenantId, transaction.TenantId);
-            Assert.Equal(category.Id, transaction.CategoryId);
+            Assert.Equal(category.Id, transaction.Category.Id);
             Assert.Equal(bankAccount.Id, transaction.BankAccountId);
             Assert.Equal(referenceDate, transaction.ReferenceDate);
             Assert.Equal(dueDate, transaction.DueDate);

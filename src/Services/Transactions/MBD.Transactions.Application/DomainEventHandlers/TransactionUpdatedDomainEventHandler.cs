@@ -24,7 +24,7 @@ namespace MBD.Transactions.Application.DomainEventHandlers
         {
             var transactionTask = await _transactions.FindAsync(x => x.Id == notification.AggregateId.ToString());
             var transaction = transactionTask.FirstOrDefault();
-            transaction.BankAccount = new BankAccountModel(notification.BankAccountId, notification.BankAccountDescription);
+            transaction.BankAccount = new BankAccountModel(notification.BankAccount);
             transaction.Category = new CategoryModel(notification.Category);
             transaction.ReferenceDate = notification.ReferenceDate;
             transaction.DueDate = notification.DueDate;

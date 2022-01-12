@@ -3,7 +3,6 @@ using System.Linq;
 using MBD.Core.DomainObjects;
 using MBD.Transactions.Domain.Entities;
 using MBD.Transactions.Domain.Enumerations;
-using MBD.Transactions.Domain.ValueObjects;
 using Xunit;
 
 namespace MBD.Transactions.Tests.unit_tests.Entities
@@ -16,7 +15,7 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
 
         public TransactionTests()
         {
-            _bankAccount = new BankAccount { Id = Guid.NewGuid(), Description = "Nubank" };
+            _bankAccount = new BankAccount(Guid.NewGuid(), Guid.NewGuid(), "Nubank");
             _category = new Category(Guid.NewGuid(), "Category", TransactionType.Income);
             _validTransaction = new Transaction(Guid.NewGuid(), _bankAccount, _category, DateTime.Now, DateTime.Now.AddDays(5), 100, string.Empty, null);
         }
@@ -52,7 +51,7 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
 
             // Assert
             Assert.Equal(tenantId, transaction.TenantId);
-            Assert.Equal(_bankAccount.Id, transaction.BankAccountId);
+            Assert.Equal(_bankAccount.Id, transaction.BankAccount.Id);
             Assert.Equal(_category.Id, transaction.Category.Id);
             Assert.Equal(_category, transaction.Category);
             Assert.Equal(referenceDate, transaction.ReferenceDate);
@@ -78,7 +77,7 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             var randomNumber = new Random().Next(1, 100);
 
             var tenantId = Guid.NewGuid();
-            var bankAccount = new BankAccount { Id = Guid.NewGuid(), Description = "Santander" };
+            var bankAccount = new BankAccount(Guid.NewGuid(), tenantId, "Santander");
             var category = new Category(Guid.NewGuid(), "Restaurante", TransactionType.Income);
             var referenceDate = DateTime.Now.AddDays(randomNumber);
             var dueDate = DateTime.Now.AddDays(randomNumber);
@@ -104,7 +103,7 @@ namespace MBD.Transactions.Tests.unit_tests.Entities
             Assert.Equal(eventCount, transaction.Events.Count());
             Assert.Equal(tenantId, transaction.TenantId);
             Assert.Equal(category.Id, transaction.Category.Id);
-            Assert.Equal(bankAccount.Id, transaction.BankAccountId);
+            Assert.Equal(bankAccount.Id, transaction.BankAccount.Id);
             Assert.Equal(referenceDate, transaction.ReferenceDate);
             Assert.Equal(dueDate, transaction.DueDate);
             Assert.Equal(value, transaction.Value);

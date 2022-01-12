@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System;
 using System.Reflection;
 using MBD.Application.Core.Response;
 using MBD.Core.Data;
@@ -17,14 +16,11 @@ using MBD.Transactions.Application.Response;
 using MBD.Transactions.Application.Response.Models;
 using MBD.Transactions.Domain.Events;
 using MBD.Transactions.Domain.Interfaces.Repositories;
-using MBD.Transactions.Domain.Interfaces.Services;
 using MBD.Transactions.Infrastructure;
 using MBD.Transactions.Infrastructure.Repositories;
-using MBD.Transactions.Infrastructure.Services;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Polly;
 using MBD.Transactions.Application.Queries.Categories.Queries;
 using MBD.Transactions.Application.Queries.Categories.Handlers;
 using MBD.Transactions.Application.Commands.Transactions;
@@ -58,6 +54,7 @@ namespace MBD.Transactions.API.Configuration
 
         private static IServiceCollection AddRepositories(this IServiceCollection services)
         {
+            services.AddScoped<IBankAccountRepository, BankAccountRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -68,15 +65,6 @@ namespace MBD.Transactions.API.Configuration
         private static IServiceCollection AddHttpClients(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
-
-            services.AddHttpClient<IBankAccountService, BankAccountService>(config =>
-            {
-                config.BaseAddress = new Uri(configuration["UrlServices:BankAccountService"]);
-            })
-            .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
-            .AddPolicyHandler(PollyRetryConfiguration.WaitToRetry())
-            .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
-
 
             return services;
         }

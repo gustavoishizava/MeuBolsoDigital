@@ -4,14 +4,13 @@ using MBD.Core.Entities;
 using MBD.Transactions.Domain.Entities.Common;
 using MBD.Transactions.Domain.Enumerations;
 using MBD.Transactions.Domain.Events;
-using MBD.Transactions.Domain.ValueObjects;
 
 namespace MBD.Transactions.Domain.Entities
 {
     public class Transaction : BaseEntityWithEvent, IAggregateRoot
     {
         public Guid TenantId { get; private init; }
-        public Guid BankAccountId { get; private set; }
+        public BankAccount BankAccount { get; private set; }
         public Category Category { get; private set; }
         public Guid? CreditCardBillId { get; private set; }
         public DateTime ReferenceDate { get; private set; }
@@ -29,7 +28,7 @@ namespace MBD.Transactions.Domain.Entities
             Assertions.IsGreaterOrEqualsThan(value, 0, "O valor não pode ser menor que 0.");
 
             TenantId = tenantId;
-            BankAccountId = bankAccount.Id;
+            BankAccount = bankAccount;
             Category = category;
             CreditCardBillId = null;
             ReferenceDate = referenceDate;
@@ -42,7 +41,7 @@ namespace MBD.Transactions.Domain.Entities
             if (paymentDate is not null)
                 Pay(paymentDate.Value);
 
-            AddDomainEvent(new TransactionCreatedDomainEvent(this, bankAccount.Description, category.Name));
+            AddDomainEvent(new TransactionCreatedDomainEvent(this));
         }
 
         #region EF
@@ -52,7 +51,7 @@ namespace MBD.Transactions.Domain.Entities
         private void Pay(DateTime paymentDate)
         {
             if (!ItsPaid || PaymentDate != paymentDate || _valueChanged)
-                AddDomainEvent(new RealizedPaymentDomainEvent(Id, paymentDate, Value, BankAccountId, Category.Type));
+                AddDomainEvent(new RealizedPaymentDomainEvent(Id, paymentDate, Value, BankAccount.Id, Category.Type));
 
             PaymentDate = paymentDate;
             Status = TransactionStatus.Paid;
@@ -82,7 +81,7 @@ namespace MBD.Transactions.Domain.Entities
 
         public void Update(BankAccount bankAccount, Category category, DateTime referenceDate, DateTime dueDate, decimal value, string description, DateTime? paymentDate)
         {
-            BankAccountId = bankAccount.Id;
+            BankAccount = bankAccount;
             Category = category;
             ReferenceDate = referenceDate;
             DueDate = dueDate;
@@ -94,7 +93,7 @@ namespace MBD.Transactions.Domain.Entities
             else
                 Pay(paymentDate.Value);
 
-            AddDomainEvent(new TransactionUpdatedDomainEvent(this, bankAccount, category));
+            AddDomainEvent(new TransactionUpdatedDomainEvent(this));
         }
 
         public void LinkCreditCardBill(Guid creditCardBillId)
@@ -105,7 +104,7 @@ namespace MBD.Transactions.Domain.Entities
             Assertions.IsTrue(Category.Type == TransactionType.Expense, "Não é possível vincular uma fatura de cartão de crédito a uma transação de receita.");
 
             CreditCardBillId = creditCardBillId;
-            AddDomainEvent(new LinkedToCreditCardBillDomainEvent(Id, BankAccountId, CreditCardBillId.Value, CreatedAt, Value));
+            AddDomainEvent(new LinkedToCreditCardBillDomainEvent(Id, BankAccount.Id, CreditCardBillId.Value, CreatedAt, Value));
         }
 
         public void UnlinkCreditCardBill()
@@ -113,7 +112,7 @@ namespace MBD.Transactions.Domain.Entities
             if (CreditCardBillId is null)
                 return;
 
-            AddDomainEvent(new UnlinkedToCreditCardBillDomainEvent(Id, BankAccountId, CreditCardBillId.Value));
+            AddDomainEvent(new UnlinkedToCreditCardBillDomainEvent(Id, BankAccount.Id, CreditCardBillId.Value));
             CreditCardBillId = null;
         }
     }

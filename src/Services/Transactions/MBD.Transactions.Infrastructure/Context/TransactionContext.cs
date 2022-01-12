@@ -24,6 +24,7 @@ namespace MBD.Transactions.Infrastructure.Context
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
+        public DbSet<BankAccount> BankAccounts { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
 
@@ -33,6 +34,7 @@ namespace MBD.Transactions.Infrastructure.Context
             modelBuilder.Ignore<DomainEvent>();
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
+            modelBuilder.Entity<BankAccount>().HasQueryFilter(x => x.TenantId == _aspNetUser.UserId);
             modelBuilder.Entity<Category>().HasQueryFilter(x => x.TenantId == _aspNetUser.UserId);
             modelBuilder.Entity<Transaction>().HasQueryFilter(x => x.TenantId == _aspNetUser.UserId);
         }

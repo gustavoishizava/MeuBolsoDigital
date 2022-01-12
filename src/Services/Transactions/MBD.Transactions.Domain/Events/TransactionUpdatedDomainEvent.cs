@@ -2,14 +2,13 @@ using System;
 using MBD.Transactions.Domain.Entities;
 using MBD.Transactions.Domain.Enumerations;
 using MBD.Transactions.Domain.Events.Common;
-using MBD.Transactions.Domain.ValueObjects;
 
 namespace MBD.Transactions.Domain.Events
 {
     public class TransactionUpdatedDomainEvent : DomainEvent
     {
         public Guid BankAccountId { get; private init; }
-        public string BankAccountDescription { get; private init; }
+        public BankAccount BankAccount { get; private init; }
         public Category Category { get; private init; }
         public DateTime ReferenceDate { get; private init; }
         public DateTime DueDate { get; private init; }
@@ -18,12 +17,11 @@ namespace MBD.Transactions.Domain.Events
         public decimal Value { get; private init; }
         public string Description { get; private init; }
 
-        public TransactionUpdatedDomainEvent(Transaction transaction, BankAccount bankAccount, Category category)
+        public TransactionUpdatedDomainEvent(Transaction transaction)
         {
             AggregateId = transaction.Id;
-            BankAccountId = bankAccount.Id;
-            BankAccountDescription = bankAccount.Description;
-            Category = category;
+            BankAccount = transaction.BankAccount;
+            Category = transaction.Category;
             ReferenceDate = transaction.ReferenceDate;
             DueDate = transaction.DueDate;
             PaymentDate = transaction.PaymentDate;

@@ -1,4 +1,3 @@
-using System;
 using MBD.Transactions.Domain.Entities;
 using MongoDB.Bson.Serialization.Attributes;
 

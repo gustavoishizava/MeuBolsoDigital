@@ -16,9 +16,6 @@ namespace MBD.Transactions.Infrastructure.Context.Configuration
             builder.Property(x => x.TenantId)
                 .IsRequired();
 
-            builder.Property(x => x.BankAccountId)
-                .IsRequired();
-
             builder.Property(x => x.CreditCardBillId)
                 .IsRequired(false);
 
@@ -48,6 +45,11 @@ namespace MBD.Transactions.Infrastructure.Context.Configuration
                 .HasMaxLength(100);
 
             builder.HasOne(x => x.Category)
+                .WithMany()
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(x => x.BankAccount)
                 .WithMany()
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);

@@ -19,7 +19,7 @@ namespace MBD.Transactions.Application.Response
         public TransactionResponse(Transaction transaction)
         {
             Id = transaction.Id;
-            BankAccountId = transaction.BankAccountId;
+            BankAccountId = transaction.BankAccount.Id;
             CategoryId = transaction.Category.Id;
             ReferenceDate = transaction.ReferenceDate;
             DueDate = transaction.DueDate;

@@ -1,4 +1,4 @@
-using System;
+using MBD.Transactions.Domain.Entities;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace MBD.Transactions.Application.Response.Models
@@ -9,10 +9,10 @@ namespace MBD.Transactions.Application.Response.Models
         public string Id { get; set; }
         public string Description { get; set; }
 
-        public BankAccountModel(Guid id, string description)
+        public BankAccountModel(BankAccount bankAccount)
         {
-            Id = id.ToString();
-            Description = description;
+            Id = bankAccount.Id.ToString();
+            Description = bankAccount.Description;
         }
     }
 }

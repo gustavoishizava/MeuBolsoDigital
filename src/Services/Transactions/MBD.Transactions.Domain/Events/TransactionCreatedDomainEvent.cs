@@ -8,10 +8,8 @@ namespace MBD.Transactions.Domain.Events
     public class TransactionCreatedDomainEvent : DomainEvent
     {
         public Guid TenantId { get; private init; }
-        public Guid BankAccountId { get; private init; }
-        public string BankAccountDescription { get; private init; }
+        public BankAccount BankAccount { get; private init; }
         public Category Category { get; private init; }
-        public string CategoryName { get; private init; }
         public DateTime ReferenceDate { get; private init; }
         public DateTime DueDate { get; private init; }
         public DateTime? PaymentDate { get; private init; }
@@ -19,14 +17,12 @@ namespace MBD.Transactions.Domain.Events
         public decimal Value { get; private init; }
         public string Description { get; private init; }
 
-        public TransactionCreatedDomainEvent(Transaction transaction, string bankAccountDescription, string categoryName)
+        public TransactionCreatedDomainEvent(Transaction transaction)
         {
             AggregateId = transaction.Id;
             TenantId = transaction.TenantId;
-            BankAccountId = transaction.BankAccountId;
-            BankAccountDescription = bankAccountDescription;
+            BankAccount = transaction.BankAccount;
             Category = transaction.Category;
-            CategoryName = categoryName;
             ReferenceDate = transaction.ReferenceDate;
             DueDate = transaction.DueDate;
             PaymentDate = transaction.PaymentDate;

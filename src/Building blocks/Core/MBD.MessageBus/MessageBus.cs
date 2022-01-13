@@ -17,6 +17,8 @@ namespace MBD.MessageBus
         private IConnection _connection;
         private IModel _channel;
         public bool IsConnected => _connection?.IsOpen ?? false;
+        public IModel Channel => _channel;
+
         private readonly ILogger<MessageBus> _logger;
 
         public MessageBus(IOptions<RabbitMqConfiguration> options, ILogger<MessageBus> logger)
@@ -28,13 +30,6 @@ namespace MBD.MessageBus
         public void Publish<T>(T message) where T : class
         {
             TryConnect();
-
-            _channel.QueueDeclare(
-                queue: message.GetType().Name,
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
 
             var stringfiedMessage = JsonSerializer.Serialize(message, new JsonSerializerOptions()
             {
@@ -56,13 +51,6 @@ namespace MBD.MessageBus
         {
             TryConnect();
 
-            _channel.QueueDeclare(
-                queue: queueName,
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
-
             var stringfiedMessage = JsonSerializer.Serialize(message, new JsonSerializerOptions()
             {
                 PropertyNameCaseInsensitive = true
@@ -79,18 +67,31 @@ namespace MBD.MessageBus
             _logger.LogInformation($"Mensagem publicada: {stringfiedMessage}");
         }
 
+        public void Publish<T>(T message, string queueName, string exchange) where T : class
+        {
+            TryConnect();
+
+            var stringfiedMessage = JsonSerializer.Serialize(message, new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            var messageBytes = Encoding.UTF8.GetBytes(stringfiedMessage);
+
+            _channel.BasicPublish(
+                exchange: exchange,
+                routingKey: queueName,
+                basicProperties: null,
+                body: messageBytes);
+
+            _logger.LogInformation($"Mensagem publicada: {stringfiedMessage}");
+        }
+
         public void Subscribe<T>(string subscriptionId, Action<T> onMessage) where T : class
         {
             TryConnect();
 
             _logger.LogInformation("Inscrito na fila.");
-
-            _channel.QueueDeclare(
-                queue: subscriptionId,
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
 
             var consumer = new EventingBasicConsumer(_channel);
 
@@ -126,13 +127,6 @@ namespace MBD.MessageBus
         public void SubscribeAsync<T>(string subscriptionId, Func<T, Task> onMessage) where T : class
         {
             TryConnect();
-
-            _channel.QueueDeclare(
-                queue: subscriptionId,
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
 
             var consumer = new EventingBasicConsumer(_channel);
 

@@ -47,7 +47,7 @@ namespace MBD.BankAccounts.Application.BackgroundServices
 
             _messageBus.Channel.QueueDeclare(
                 queue: nameof(TransactionPaidIntegrationEvent),
-                durable: true,
+                durable: false,
                 exclusive: false,
                 autoDelete: false,
                 arguments: null
@@ -55,7 +55,7 @@ namespace MBD.BankAccounts.Application.BackgroundServices
 
             _messageBus.Channel.QueueDeclare(
                 queue: nameof(TransactionUndoPaymentIntegrationEvent),
-                durable: true,
+                durable: false,
                 exclusive: false,
                 autoDelete: false,
                 arguments: null

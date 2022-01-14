@@ -54,7 +54,7 @@ namespace MBD.BankAccounts.Application.BackgroundServices
 
             _messageBus.Channel.QueueDeclare(
                 queue: queueTransactions,
-                durable: true,
+                durable: false,
                 exclusive: false,
                 autoDelete: false,
                 arguments: null
@@ -62,7 +62,7 @@ namespace MBD.BankAccounts.Application.BackgroundServices
 
             _messageBus.Channel.QueueDeclare(
                 queue: queueCreditCards,
-                durable: true,
+                durable: false,
                 exclusive: false,
                 autoDelete: false,
                 arguments: null
@@ -71,7 +71,7 @@ namespace MBD.BankAccounts.Application.BackgroundServices
             _messageBus.Channel.ExchangeDeclare(
                 exchange: exchange,
                 type: ExchangeType.Direct,
-                durable: true,
+                durable: false,
                 autoDelete: false,
                 arguments: null
             );

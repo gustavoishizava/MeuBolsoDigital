@@ -18,7 +18,7 @@ namespace MBD.BankAccounts.Infrastructure.Extensions
 
             entities.ToList().ForEach(x => x.Entity.ClearDomainEvents());
 
-            var tasks = domainEvents.Select(async (domainEvent) => await mediator.Publish(domainEvent));
+            var tasks = domainEvents.Select((domainEvent) => mediator.Publish(domainEvent));
 
             await Task.WhenAll(tasks);
         }

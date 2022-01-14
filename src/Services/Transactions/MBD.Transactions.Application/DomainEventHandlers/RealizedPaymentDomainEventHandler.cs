@@ -29,7 +29,7 @@ namespace MBD.Transactions.Application.DomainEventHandlers
         {
             await _integrationEventLogService
                 .SaveEventAsync(new TransactionPaidIntegrationEvent(
-                    notification.Id, notification.Value, notification.Date, notification.BankAccountId, notification.Type));
+                    notification.Id, notification.Value, notification.Date, notification.BankAccountId, notification.Type), "realized_payment");
         }
     }
 }

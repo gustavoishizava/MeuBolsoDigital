@@ -20,7 +20,7 @@ namespace MBD.Transactions.Application.DomainEventHandlers
         {
             await _integrationEventLogService
                 .SaveEventAsync(new TransactionValueChangedIntegrationEvent(
-                    notification.Id, notification.NewValue, notification.OldValue));
+                    notification.Id, notification.NewValue, notification.OldValue), "value_changed");
         }
     }
 }

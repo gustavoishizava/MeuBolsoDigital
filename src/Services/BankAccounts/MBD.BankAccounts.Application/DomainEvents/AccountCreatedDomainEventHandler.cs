@@ -22,7 +22,8 @@ namespace MBD.BankAccounts.Application.DomainEvents
                 notification.Id,
                 notification.TenantId,
                 notification.Description,
-                notification.Type));
+                notification.Type),
+                "created");
         }
     }
 }

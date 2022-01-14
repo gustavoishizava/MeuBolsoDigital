@@ -29,10 +29,10 @@ namespace MBD.IntegrationEventLog.Services
                             .ToListAsync();
         }
 
-        public async Task SaveEventAsync<T>(T @event) where T : class
+        public async Task SaveEventAsync<T>(T @event, string eventTypeName) where T : class
         {
             var content = JsonSerializer.Serialize(@event);
-            var integrationEventLog = new IntegrationEventLogEntry(@event.GetType().Name, content);
+            var integrationEventLog = new IntegrationEventLogEntry(eventTypeName, content);
 
             _context.Add(integrationEventLog);
 

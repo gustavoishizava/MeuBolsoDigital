@@ -48,7 +48,7 @@ namespace MBD.BankAccounts.Application.BackgroundServices
             string queueTransactions = "bank_accounts.transactions";
             string queueCreditCards = "bank_accounts.credit_cards";
 
-            string exchange = "direct_bank_accounts";
+            string exchange = "bank_accounts.direct";
 
             string[] routingKeys = new[] { "created", "updated", "deleted" };
 
@@ -100,7 +100,7 @@ namespace MBD.BankAccounts.Application.BackgroundServices
                     if (message is null)
                         continue;
 
-                    _messageBus.Publish(message, @event.EventTypeName);
+                    _messageBus.Publish(message, @event.EventTypeName, "bank_accounts.direct");
 
                     await integrationEventLogService.RemoveEventAsync(@event);
                 }

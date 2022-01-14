@@ -28,7 +28,7 @@ namespace MBD.Transactions.Application.DomainEventHandlers
         {
             _transactions.DeleteOne(x => x.Id == notification.TransactionId.ToString());
             await _integrationEventLogService
-                .SaveEventAsync(new TransactionUndoPaymentIntegrationEvent(notification.TransactionId));
+                .SaveEventAsync(new TransactionUndoPaymentIntegrationEvent(notification.TransactionId), "deleted");
         }
     }
 }

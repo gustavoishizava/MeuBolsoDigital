@@ -14,7 +14,7 @@ namespace MBD.IntegrationEventLog
             Id = Guid.NewGuid();
             CreatedAt = DateTime.Now;
             EventTypeName = eventTypeName ?? throw new ArgumentNullException(nameof(eventTypeName));
-            Content = content ?? throw new ArgumentNullException(nameof(eventTypeName));
+            Content = content ?? throw new ArgumentNullException(nameof(content));
         }
     }
 }

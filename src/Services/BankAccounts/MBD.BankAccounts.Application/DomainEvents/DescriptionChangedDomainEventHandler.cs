@@ -20,7 +20,8 @@ namespace MBD.BankAccounts.Application.DomainEvents
         {
             await _integrationEventLogService
                 .SaveEventAsync(new BankAccountDescriptionChangedIntegrationEvent(
-                    notification.Id, notification.OldDescription, notification.NewDescription));
+                    notification.Id, notification.OldDescription, notification.NewDescription),
+                    "updated");
         }
     }
 }

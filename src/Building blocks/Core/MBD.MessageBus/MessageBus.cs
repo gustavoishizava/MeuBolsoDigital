@@ -67,7 +67,7 @@ namespace MBD.MessageBus
             _logger.LogInformation($"Mensagem publicada: {stringfiedMessage}");
         }
 
-        public void Publish<T>(T message, string queueName, string exchange) where T : class
+        public void Publish<T>(T message, string routingKey, string exchange) where T : class
         {
             TryConnect();
 
@@ -80,7 +80,7 @@ namespace MBD.MessageBus
 
             _channel.BasicPublish(
                 exchange: exchange,
-                routingKey: queueName,
+                routingKey: routingKey,
                 basicProperties: null,
                 body: messageBytes);
 

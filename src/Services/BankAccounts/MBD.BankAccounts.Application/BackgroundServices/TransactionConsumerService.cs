@@ -28,6 +28,8 @@ namespace MBD.BankAccounts.Application.BackgroundServices
         {
             _logger.LogInformation("========= Serviço em execução. =========");
 
+            SetupChannel();
+
             _messageBus.SubscribeAsync<TransactionPaidIntegrationEvent>(
                 nameof(TransactionPaidIntegrationEvent),
                 async request => await AddTransactionAsync(request));
@@ -37,6 +39,27 @@ namespace MBD.BankAccounts.Application.BackgroundServices
                 async request => await RemoveTransactionAsync(request));
 
             return Task.CompletedTask;
+        }
+
+        private void SetupChannel()
+        {
+            _messageBus.TryConnect();
+
+            _messageBus.Channel.QueueDeclare(
+                queue: nameof(TransactionPaidIntegrationEvent),
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null
+            );
+
+            _messageBus.Channel.QueueDeclare(
+                queue: nameof(TransactionUndoPaymentIntegrationEvent),
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null
+            );
         }
 
         private async Task AddTransactionAsync(TransactionPaidIntegrationEvent message)

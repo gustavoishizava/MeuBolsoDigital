@@ -9,6 +9,7 @@ namespace MBD.MessageBus
         IModel Channel { get; }
         bool IsConnected { get; }
 
+        void TryConnect();
         void Publish<T>(T message) where T : class;
         void Publish<T>(T message, string queueName) where T : class;
         void Publish<T>(T message, string queueName, string exchange) where T : class;

@@ -8,6 +8,7 @@ using MBD.MessageBus;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
 
 namespace MBD.BankAccounts.Application.BackgroundServices
 {
@@ -28,6 +29,8 @@ namespace MBD.BankAccounts.Application.BackgroundServices
         {
             _logger.LogInformation("Serviço de publicação de mensagens iniciado.");
 
+            SetupChannel();
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 await PublishEventsAsync();
@@ -36,6 +39,48 @@ namespace MBD.BankAccounts.Application.BackgroundServices
             }
 
             _logger.LogInformation("Serviço de publicação de mensagens parando...");
+        }
+
+        private void SetupChannel()
+        {
+            _messageBus.TryConnect();
+
+            string queueTransactions = "bank_accounts.transactions";
+            string queueCreditCards = "bank_accounts.credit_cards";
+
+            string exchange = "direct_bank_accounts";
+
+            string[] routingKeys = new[] { "created", "updated", "deleted" };
+
+            _messageBus.Channel.QueueDeclare(
+                queue: queueTransactions,
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null
+            );
+
+            _messageBus.Channel.QueueDeclare(
+                queue: queueCreditCards,
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null
+            );
+
+            _messageBus.Channel.ExchangeDeclare(
+                exchange: exchange,
+                type: ExchangeType.Direct,
+                durable: true,
+                autoDelete: false,
+                arguments: null
+            );
+
+            for (int i = 0; i < routingKeys.Length; i++)
+            {
+                _messageBus.Channel.QueueBind(queueTransactions, exchange, routingKeys[i]);
+                _messageBus.Channel.QueueBind(queueCreditCards, exchange, routingKeys[i]);
+            }
         }
 
         private async Task PublishEventsAsync()

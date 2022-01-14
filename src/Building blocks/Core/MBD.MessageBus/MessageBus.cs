@@ -159,7 +159,7 @@ namespace MBD.MessageBus
                 consumer: consumer);
         }
 
-        private void TryConnect()
+        public void TryConnect()
         {
             if (IsConnected)
                 return;

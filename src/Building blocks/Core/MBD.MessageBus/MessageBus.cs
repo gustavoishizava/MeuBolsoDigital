@@ -148,6 +148,7 @@ namespace MBD.MessageBus
                 }
                 catch (Exception e)
                 {
+                    _channel.BasicNack(eventArgs.DeliveryTag, false, true);
                     _logger.LogInformation(e.Message);
                     throw;
                 }

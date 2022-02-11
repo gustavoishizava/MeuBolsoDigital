@@ -112,6 +112,7 @@ namespace MBD.Transactions.API.Configuration
 
         private static IServiceCollection AddIntegrationEvents(this IServiceCollection services)
         {
+            services.AddScoped<INotificationHandler<BankAccountCreatedIntegrationEvent>, BankAccountCreatedIntegrationEventHandler>();
             services.AddScoped<INotificationHandler<BankAccountDescriptionChangedIntegrationEvent>, BankAccountDescriptionChangedIntegrationEventHandler>();
 
             return services;

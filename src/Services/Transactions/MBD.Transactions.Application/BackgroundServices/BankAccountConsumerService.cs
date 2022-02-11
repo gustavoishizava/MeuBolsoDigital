@@ -39,8 +39,12 @@ namespace MBD.Transactions.Application.BackgroundServices
 
                         switch (routingKey)
                         {
+                            case "created":
+                                await CreateBankAccountAsync(args.Body.GetMessage<BankAccountCreatedIntegrationEvent>());
+                                break;
+
                             case "update":
-                                await SetDescription(args.Body.GetMessage<BankAccountDescriptionChangedIntegrationEvent>());
+                                await SetDescriptionAsync(args.Body.GetMessage<BankAccountDescriptionChangedIntegrationEvent>());
                                 break;
 
                             default:
@@ -60,7 +64,15 @@ namespace MBD.Transactions.Application.BackgroundServices
             return Task.CompletedTask;
         }
 
-        private async Task SetDescription(BankAccountDescriptionChangedIntegrationEvent message)
+        private async Task CreateBankAccountAsync(BankAccountCreatedIntegrationEvent message)
+        {
+            using var scope = _serviceProvider.CreateScope();
+            var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
+            await mediator.Publish(message);
+        }
+
+        private async Task SetDescriptionAsync(BankAccountDescriptionChangedIntegrationEvent message)
         {
             using var scope = _serviceProvider.CreateScope();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();

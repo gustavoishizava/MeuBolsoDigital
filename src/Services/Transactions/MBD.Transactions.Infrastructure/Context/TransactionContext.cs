@@ -34,7 +34,6 @@ namespace MBD.Transactions.Infrastructure.Context
             modelBuilder.Ignore<DomainEvent>();
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-            modelBuilder.Entity<BankAccount>().HasQueryFilter(x => x.TenantId == _aspNetUser.UserId);
             modelBuilder.Entity<Category>().HasQueryFilter(x => x.TenantId == _aspNetUser.UserId);
             modelBuilder.Entity<Transaction>().HasQueryFilter(x => x.TenantId == _aspNetUser.UserId);
         }

@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
+#nullable disable
+
 namespace MBD.Transactions.API.Migrations.IntegrationEventLog
 {
     [DbContext(typeof(IntegrationEventLogContext))]
@@ -15,9 +17,10 @@ namespace MBD.Transactions.API.Migrations.IntegrationEventLog
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.10")
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("MBD.IntegrationEventLog.IntegrationEventLogEntry", b =>
                 {
@@ -31,7 +34,7 @@ namespace MBD.Transactions.API.Migrations.IntegrationEventLog
                         .HasColumnName("content");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<string>("EventTypeName")
@@ -42,7 +45,7 @@ namespace MBD.Transactions.API.Migrations.IntegrationEventLog
                     b.HasKey("Id")
                         .HasName("pk_integration_event_logs");
 
-                    b.ToTable("integration_event_logs");
+                    b.ToTable("integration_event_logs", (string)null);
                 });
 #pragma warning restore 612, 618
         }

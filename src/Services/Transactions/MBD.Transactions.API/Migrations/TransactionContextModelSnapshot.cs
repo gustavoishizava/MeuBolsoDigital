@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
+#nullable disable
+
 namespace MBD.Transactions.API.Migrations
 {
     [DbContext(typeof(TransactionContext))]
@@ -15,9 +17,32 @@ namespace MBD.Transactions.API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.10")
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("MBD.Transactions.Domain.Entities.BankAccount", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)")
+                        .HasColumnName("description");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_bank_accounts");
+
+                    b.ToTable("bank_accounts", (string)null);
+                });
 
             modelBuilder.Entity("MBD.Transactions.Domain.Entities.Category", b =>
                 {
@@ -65,7 +90,7 @@ namespace MBD.Transactions.API.Migrations
                     b.HasIndex("ParentCategoryId")
                         .HasDatabaseName("ix_categories_parent_category_id");
 
-                    b.ToTable("categories");
+                    b.ToTable("categories", (string)null);
                 });
 
             modelBuilder.Entity("MBD.Transactions.Domain.Entities.Transaction", b =>
@@ -129,10 +154,13 @@ namespace MBD.Transactions.API.Migrations
                     b.HasKey("Id")
                         .HasName("pk_transactions");
 
+                    b.HasIndex("BankAccountId")
+                        .HasDatabaseName("ix_transactions_bank_account_id");
+
                     b.HasIndex("CategoryId")
                         .HasDatabaseName("ix_transactions_category_id");
 
-                    b.ToTable("transactions");
+                    b.ToTable("transactions", (string)null);
                 });
 
             modelBuilder.Entity("MBD.Transactions.Domain.Entities.Category", b =>
@@ -145,12 +173,21 @@ namespace MBD.Transactions.API.Migrations
 
             modelBuilder.Entity("MBD.Transactions.Domain.Entities.Transaction", b =>
                 {
+                    b.HasOne("MBD.Transactions.Domain.Entities.BankAccount", "BankAccount")
+                        .WithMany()
+                        .HasForeignKey("BankAccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_transactions_bank_accounts_bank_account_id");
+
                     b.HasOne("MBD.Transactions.Domain.Entities.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
-                        .HasConstraintName("fk_transactions_categories_category_id")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_transactions_categories_category_id");
+
+                    b.Navigation("BankAccount");
 
                     b.Navigation("Category");
                 });

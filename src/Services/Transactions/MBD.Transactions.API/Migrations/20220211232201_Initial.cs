@@ -1,12 +1,27 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
+#nullable disable
+
 namespace MBD.Transactions.API.Migrations
 {
     public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "bank_accounts",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    tenant_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    description = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_bank_accounts", x => x.id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "categories",
                 columns: table => new
@@ -27,8 +42,7 @@ namespace MBD.Transactions.API.Migrations
                         name: "fk_categories_categories_category_id",
                         column: x => x.parent_category_id,
                         principalTable: "categories",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
@@ -39,6 +53,7 @@ namespace MBD.Transactions.API.Migrations
                     tenant_id = table.Column<Guid>(type: "uuid", nullable: false),
                     bank_account_id = table.Column<Guid>(type: "uuid", nullable: false),
                     category_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    credit_card_bill_id = table.Column<Guid>(type: "uuid", nullable: true),
                     reference_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     due_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     payment_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -51,6 +66,12 @@ namespace MBD.Transactions.API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_transactions", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_transactions_bank_accounts_bank_account_id",
+                        column: x => x.bank_account_id,
+                        principalTable: "bank_accounts",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "fk_transactions_categories_category_id",
                         column: x => x.category_id,
@@ -65,6 +86,11 @@ namespace MBD.Transactions.API.Migrations
                 column: "parent_category_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_transactions_bank_account_id",
+                table: "transactions",
+                column: "bank_account_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_transactions_category_id",
                 table: "transactions",
                 column: "category_id");
@@ -74,6 +100,9 @@ namespace MBD.Transactions.API.Migrations
         {
             migrationBuilder.DropTable(
                 name: "transactions");
+
+            migrationBuilder.DropTable(
+                name: "bank_accounts");
 
             migrationBuilder.DropTable(
                 name: "categories");

@@ -44,7 +44,7 @@ namespace MBD.MessageBus
                 basicProperties: null,
                 body: messageBytes);
 
-            _logger.LogInformation($"Mensagem publicada: {stringfiedMessage}");
+            _logger.LogDebug($"Mensagem publicada: {stringfiedMessage}");
         }
 
         public void Publish<T>(T message, string queueName) where T : class
@@ -64,7 +64,7 @@ namespace MBD.MessageBus
                 basicProperties: null,
                 body: messageBytes);
 
-            _logger.LogInformation($"Mensagem publicada: {stringfiedMessage}");
+            _logger.LogDebug($"Mensagem publicada: {stringfiedMessage}");
         }
 
         public void Publish<T>(T message, string routingKey, string exchange) where T : class
@@ -84,7 +84,7 @@ namespace MBD.MessageBus
                 basicProperties: null,
                 body: messageBytes);
 
-            _logger.LogInformation($"Mensagem publicada: {stringfiedMessage}");
+            _logger.LogDebug($"Mensagem publicada: {stringfiedMessage}");
         }
 
         public void Subscribe<T>(string subscriptionId, Action<T> onMessage) where T : class

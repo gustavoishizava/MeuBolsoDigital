@@ -17,6 +17,7 @@ namespace MBD.BankAccounts.Application.BackgroundServices
         private readonly IMessageBus _messageBus;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<PublishIntegrationEventsService> _logger;
+        private const string BankAccountExchange = "bank_accounts.topic";
 
         public PublishIntegrationEventsService(IMessageBus messageBus, IServiceProvider serviceProvider, ILogger<PublishIntegrationEventsService> logger)
         {
@@ -48,8 +49,6 @@ namespace MBD.BankAccounts.Application.BackgroundServices
             string queueTransactions = "bank_accounts.transactions";
             string queueCreditCards = "bank_accounts.credit_cards";
 
-            string exchange = "bank_accounts.direct";
-
             string[] routingKeys = new[] { "created", "updated", "deleted" };
 
             _messageBus.Channel.QueueDeclare(
@@ -69,8 +68,8 @@ namespace MBD.BankAccounts.Application.BackgroundServices
             );
 
             _messageBus.Channel.ExchangeDeclare(
-                exchange: exchange,
-                type: ExchangeType.Direct,
+                exchange: BankAccountExchange,
+                type: ExchangeType.Topic,
                 durable: false,
                 autoDelete: false,
                 arguments: null
@@ -78,8 +77,8 @@ namespace MBD.BankAccounts.Application.BackgroundServices
 
             for (int i = 0; i < routingKeys.Length; i++)
             {
-                _messageBus.Channel.QueueBind(queueTransactions, exchange, routingKeys[i]);
-                _messageBus.Channel.QueueBind(queueCreditCards, exchange, routingKeys[i]);
+                _messageBus.Channel.QueueBind(queueTransactions, BankAccountExchange, routingKeys[i]);
+                _messageBus.Channel.QueueBind(queueCreditCards, BankAccountExchange, routingKeys[i]);
             }
         }
 
@@ -100,7 +99,7 @@ namespace MBD.BankAccounts.Application.BackgroundServices
                     if (message is null)
                         continue;
 
-                    _messageBus.Publish(message, @event.EventTypeName, "bank_accounts.direct");
+                    _messageBus.Publish(message, @event.EventTypeName, BankAccountExchange);
 
                     await integrationEventLogService.RemoveEventAsync(@event);
                 }

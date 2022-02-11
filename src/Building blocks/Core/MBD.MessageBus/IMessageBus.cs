@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 
 namespace MBD.MessageBus
 {
@@ -15,5 +16,6 @@ namespace MBD.MessageBus
         void Publish<T>(T message, string routingKey, string exchange) where T : class;
         void Subscribe<T>(string subscriptionId, Action<T> onMessage) where T : class;
         void SubscribeAsync<T>(string subscriptionId, Func<T, Task> onMessage) where T : class;
+        void SubscribeAsync<T>(string subscriptionId, EventHandler<BasicDeliverEventArgs> onReceived) where T : class;
     }
 }

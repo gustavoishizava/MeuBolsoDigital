@@ -7,6 +7,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RabbitMQ.Client.Events;
 
 namespace MBD.Transactions.Application.BackgroundServices
 {
@@ -15,6 +16,7 @@ namespace MBD.Transactions.Application.BackgroundServices
         private readonly IMessageBus _messageBus;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<BankAccountConsumerService> _logger;
+        private const string QueueName = "bank_accounts.transactions";
 
         public BankAccountConsumerService(IMessageBus messageBus, IServiceProvider serviceProvider, ILogger<BankAccountConsumerService> logger)
         {
@@ -28,8 +30,32 @@ namespace MBD.Transactions.Application.BackgroundServices
             _logger.LogInformation("Serviço em execução.");
 
             _messageBus.SubscribeAsync<BankAccountDescriptionChangedIntegrationEvent>(
-                subscriptionId: nameof(BankAccountDescriptionChangedIntegrationEvent),
-                async request => await SetDescription(request));
+                subscriptionId: QueueName,
+                async (object s, BasicDeliverEventArgs args) =>
+                {
+                    try
+                    {
+                        var routingKey = args.RoutingKey;
+
+                        switch (routingKey)
+                        {
+                            case "update":
+                                await SetDescription(args.Body.GetMessage<BankAccountDescriptionChangedIntegrationEvent>());
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                        _messageBus.Channel.BasicAck(args.DeliveryTag, false);
+                    }
+                    catch
+                    {
+                        _messageBus.Channel.BasicNack(args.DeliveryTag, false, false);
+                        _logger.LogError($"Erro ao processar mensagem:.");
+                        throw;
+                    }
+                });
 
             return Task.CompletedTask;
         }

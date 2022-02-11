@@ -160,6 +160,20 @@ namespace MBD.MessageBus
                 consumer: consumer);
         }
 
+        public void SubscribeAsync<T>(string subscriptionId, EventHandler<BasicDeliverEventArgs> onReceived) where T : class
+        {
+            TryConnect();
+
+            var consumer = new EventingBasicConsumer(_channel);
+
+            consumer.Received += onReceived;
+
+            _channel.BasicConsume(
+                queue: subscriptionId,
+                autoAck: false,
+                consumer: consumer);
+        }
+
         public void TryConnect()
         {
             if (IsConnected)

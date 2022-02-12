@@ -8,5 +8,6 @@ namespace MBD.Transactions.Domain.Interfaces.Repositories
     {
         Task<BankAccount> GetByIdAsync(Guid id);
         void Add(BankAccount bankAccount);
+        void Update(BankAccount bankAccount);
     }
 }

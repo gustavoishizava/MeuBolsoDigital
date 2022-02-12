@@ -43,7 +43,7 @@ namespace MBD.Transactions.Application.BackgroundServices
                                 await CreateBankAccountAsync(args.Body.GetMessage<BankAccountCreatedIntegrationEvent>());
                                 break;
 
-                            case "update":
+                            case "updated":
                                 await SetDescriptionAsync(args.Body.GetMessage<BankAccountDescriptionChangedIntegrationEvent>());
                                 break;
 
@@ -55,7 +55,7 @@ namespace MBD.Transactions.Application.BackgroundServices
                     }
                     catch
                     {
-                        _messageBus.Channel.BasicNack(args.DeliveryTag, false, false);
+                        _messageBus.Channel.BasicNack(args.DeliveryTag, false, true);
                         _logger.LogError($"Erro ao processar mensagem:.");
                         throw;
                     }

@@ -45,6 +45,10 @@ namespace MBD.BankAccounts.Domain.Entities
             AddDomainEvent(new AccountCreatedDomainEvent(this));
         }
 
+        protected Account()
+        {
+        }
+
         #region Account
 
         public void SetDescription(string description)

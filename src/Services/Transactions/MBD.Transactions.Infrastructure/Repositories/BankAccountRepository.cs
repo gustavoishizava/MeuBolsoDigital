@@ -20,6 +20,11 @@ namespace MBD.Transactions.Infrastructure.Repositories
             _context.Add(bankAccount);
         }
 
+        public void Update(BankAccount bankAccount)
+        {
+            _context.Update(bankAccount);
+        }
+
         public async Task<BankAccount> GetByIdAsync(Guid id)
         {
             return await _context.BankAccounts.FindAsync(id);

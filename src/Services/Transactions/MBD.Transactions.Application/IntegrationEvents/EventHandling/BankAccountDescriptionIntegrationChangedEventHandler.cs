@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using MBD.Core.Data;
 using MBD.Transactions.Application.IntegrationEvents.Events;
 using MBD.Transactions.Application.MongoDbSettings;
 using MBD.Transactions.Application.Response.Models;
@@ -13,14 +14,16 @@ namespace MBD.Transactions.Application.IntegrationEvents.EventHandling
     {
         private readonly IMongoCollection<TransactionModel> _transactions;
         private readonly IBankAccountRepository _bankAccountRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public BankAccountDescriptionChangedIntegrationEventHandler(ITransactionDatabaseSettings settings, IBankAccountRepository bankAccountRepository)
+        public BankAccountDescriptionChangedIntegrationEventHandler(ITransactionDatabaseSettings settings, IBankAccountRepository bankAccountRepository, IUnitOfWork unitOfWork)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
 
             _transactions = database.GetCollection<TransactionModel>(settings.CollectionName);
             _bankAccountRepository = bankAccountRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task Handle(BankAccountDescriptionChangedIntegrationEvent notification, CancellationToken cancellationToken)
@@ -33,6 +36,7 @@ namespace MBD.Transactions.Application.IntegrationEvents.EventHandling
             var filter = Builders<TransactionModel>.Filter.Where(x => x.BankAccount.Id == notification.Id.ToString());
             var update = Builders<TransactionModel>.Update.Set(x => x.BankAccount.Description, notification.NewDescription);
 
+            await _unitOfWork.SaveChangesAsync();
             await _transactions.UpdateManyAsync(filter, update);
         }
     }

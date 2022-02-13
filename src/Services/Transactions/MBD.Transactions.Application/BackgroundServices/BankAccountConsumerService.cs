@@ -33,7 +33,7 @@ namespace MBD.Transactions.Application.BackgroundServices
 
             SetupChannel();
 
-            _messageBus.SubscribeAsync<BankAccountDescriptionChangedIntegrationEvent>(
+            _messageBus.SubscribeAsync(
                 subscriptionId: QueueName,
                 async (object s, BasicDeliverEventArgs args) =>
                 {

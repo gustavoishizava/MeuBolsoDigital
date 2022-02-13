@@ -8,6 +8,8 @@ using MBD.MessageBus;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 
 namespace MBD.BankAccounts.Application.BackgroundServices
 {
@@ -16,6 +18,8 @@ namespace MBD.BankAccounts.Application.BackgroundServices
         private readonly IMessageBus _messageBus;
         private readonly ILogger<TransactionConsumerService> _logger;
         private readonly IServiceProvider _serviceProvider;
+        private const string QueueName = "transactions.bank_accounts";
+        private const string ExchangeName = "transactions.topic";
 
         public TransactionConsumerService(IMessageBus messageBus, ILogger<TransactionConsumerService> logger, IServiceProvider serviceProvider)
         {
@@ -30,13 +34,36 @@ namespace MBD.BankAccounts.Application.BackgroundServices
 
             SetupChannel();
 
-            _messageBus.SubscribeAsync<TransactionPaidIntegrationEvent>(
-                nameof(TransactionPaidIntegrationEvent),
-                async request => await AddTransactionAsync(request));
+            _messageBus.SubscribeAsync(
+                subscriptionId: QueueName,
+                onReceived: async (object s, BasicDeliverEventArgs args) =>
+                {
+                    try
+                    {
+                        var routingKey = args.RoutingKey;
 
-            _messageBus.SubscribeAsync<TransactionUndoPaymentIntegrationEvent>(
-                nameof(TransactionUndoPaymentIntegrationEvent),
-                async request => await RemoveTransactionAsync(request));
+                        switch (routingKey)
+                        {
+                            case "realized_payment":
+                                await AddTransactionAsync(args.Body.GetMessage<TransactionPaidIntegrationEvent>());
+                                break;
+                            case "reversed_payment":
+                                await RemoveTransactionAsync(args.Body.GetMessage<TransactionUndoPaymentIntegrationEvent>());
+                                break;
+                            case "value_changed":
+                            case "deleted":
+                                break;
+                        }
+
+                        _messageBus.Channel.BasicAck(args.DeliveryTag, false);
+                    }
+                    catch
+                    {
+                        _messageBus.Channel.BasicNack(args.DeliveryTag, false, false);
+                        _logger.LogError("Erro ao processar mensagem.");
+                        throw;
+                    }
+                });
 
             return Task.CompletedTask;
         }
@@ -45,21 +72,32 @@ namespace MBD.BankAccounts.Application.BackgroundServices
         {
             _messageBus.TryConnect();
 
+            string[] routingKeys = new[] { "realized_payment", "reversed_payment", "value_changed", "deleted" };
+
+            _messageBus.Channel.ExchangeDeclare(
+                exchange: ExchangeName,
+                type: ExchangeType.Topic,
+                durable: false,
+                autoDelete: false,
+                arguments: null
+            );
+
             _messageBus.Channel.QueueDeclare(
-                queue: nameof(TransactionPaidIntegrationEvent),
+                queue: QueueName,
                 durable: false,
                 exclusive: false,
                 autoDelete: false,
                 arguments: null
             );
 
-            _messageBus.Channel.QueueDeclare(
-                queue: nameof(TransactionUndoPaymentIntegrationEvent),
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null
-            );
+            for (var i = 0; i < routingKeys.Length; i++)
+            {
+                _messageBus.Channel.QueueBind(
+                    queue: QueueName,
+                    exchange: ExchangeName,
+                    routingKey: routingKeys[i],
+                    arguments: null);
+            }
         }
 
         private async Task AddTransactionAsync(TransactionPaidIntegrationEvent message)

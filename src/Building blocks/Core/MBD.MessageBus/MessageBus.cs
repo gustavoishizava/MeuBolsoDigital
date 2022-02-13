@@ -160,7 +160,7 @@ namespace MBD.MessageBus
                 consumer: consumer);
         }
 
-        public void SubscribeAsync<T>(string subscriptionId, EventHandler<BasicDeliverEventArgs> onReceived) where T : class
+        public void SubscribeAsync(string subscriptionId, EventHandler<BasicDeliverEventArgs> onReceived)
         {
             TryConnect();
 

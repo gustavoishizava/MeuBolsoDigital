@@ -17,6 +17,7 @@ namespace MBD.Transactions.Application.BackgroundServices
         private readonly IMessageBus _messageBus;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<PublishIntegrationEventsService> _logger;
+        private const string ExchangeName = "transactions.topic";
 
         public PublishIntegrationEventsService(IMessageBus messageBus, IServiceProvider serviceProvider, ILogger<PublishIntegrationEventsService> logger)
         {
@@ -45,16 +46,14 @@ namespace MBD.Transactions.Application.BackgroundServices
         {
             _messageBus.TryConnect();
 
-            string exchange = "transactions.direct";
-
             string queueBankAccounts = "transactions.bank_accounts";
 
-            string[] routingKeys = new[] { "realized_payment", "reversed_payment", "value_changed" };
+            string[] routingKeys = new[] { "realized_payment", "reversed_payment", "value_changed", "deleted" };
 
             _messageBus.Channel.ExchangeDeclare(
-                exchange: exchange,
-                type: ExchangeType.Direct,
-                durable: true,
+                exchange: ExchangeName,
+                type: ExchangeType.Topic,
+                durable: false,
                 autoDelete: false,
                 arguments: null);
 
@@ -69,7 +68,7 @@ namespace MBD.Transactions.Application.BackgroundServices
             {
                 _messageBus.Channel.QueueBind(
                     queue: queueBankAccounts,
-                    exchange: exchange,
+                    exchange: ExchangeName,
                     routingKey: routingKeys[i],
                     arguments: null);
             }
@@ -92,7 +91,7 @@ namespace MBD.Transactions.Application.BackgroundServices
                     if (message is null)
                         continue;
 
-                    _messageBus.Publish(message, @event.EventTypeName, "transactions.direct");
+                    _messageBus.Publish(message, @event.EventTypeName, ExchangeName);
 
                     await integrationEventLogService.RemoveEventAsync(@event);
                 }

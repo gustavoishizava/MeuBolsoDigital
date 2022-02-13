@@ -7,6 +7,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
 namespace MBD.Transactions.Application.BackgroundServices
@@ -17,6 +18,7 @@ namespace MBD.Transactions.Application.BackgroundServices
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<BankAccountConsumerService> _logger;
         private const string QueueName = "bank_accounts.transactions";
+        private const string BankAccountExchange = "bank_accounts.topic";
 
         public BankAccountConsumerService(IMessageBus messageBus, IServiceProvider serviceProvider, ILogger<BankAccountConsumerService> logger)
         {
@@ -28,6 +30,8 @@ namespace MBD.Transactions.Application.BackgroundServices
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Serviço em execução.");
+
+            SetupChannel();
 
             _messageBus.SubscribeAsync<BankAccountDescriptionChangedIntegrationEvent>(
                 subscriptionId: QueueName,
@@ -62,6 +66,34 @@ namespace MBD.Transactions.Application.BackgroundServices
                 });
 
             return Task.CompletedTask;
+        }
+
+        private void SetupChannel()
+        {
+            _messageBus.TryConnect();
+
+            string[] routingKeys = new[] { "created", "updated", "deleted" };
+
+            _messageBus.Channel.QueueDeclare(
+                queue: QueueName,
+                durable: false,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null
+            );
+
+            _messageBus.Channel.ExchangeDeclare(
+                exchange: BankAccountExchange,
+                type: ExchangeType.Topic,
+                durable: false,
+                autoDelete: false,
+                arguments: null
+            );
+
+            for (int i = 0; i < routingKeys.Length; i++)
+            {
+                _messageBus.Channel.QueueBind(QueueName, BankAccountExchange, routingKeys[i]);
+            }
         }
 
         private async Task CreateBankAccountAsync(BankAccountCreatedIntegrationEvent message)

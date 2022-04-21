@@ -61,6 +61,7 @@ namespace MBD.BankAccounts.Unit.Tests.unit_tests.Entities
             var newDescription = "Novo nome";
             var newType = AccountType.Money;
             var newStatus = Status.Inactive;
+            account.ClearDomainEvents();
 
             // Act
             account.SetDescription(newDescription);

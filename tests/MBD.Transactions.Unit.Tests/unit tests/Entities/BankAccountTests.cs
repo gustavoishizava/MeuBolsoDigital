@@ -2,7 +2,7 @@ using System;
 using MBD.Transactions.Domain.Entities;
 using Xunit;
 
-namespace MBD.Transactions.Tests.unit_tests.Entities
+namespace MBD.Transactions.Unit.Tests.unit_tests.Entities
 {
     public class BankAccountTests
     {

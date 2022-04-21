@@ -12,7 +12,7 @@ using MBD.BankAccounts.Tests.integration.Settings;
 using MBD.Core.Enumerations;
 using Xunit;
 
-namespace MBD.BankAccounts.Tests.integration
+namespace MBD.BankAccounts.Integration.Tests.integration
 {
     [Collection(nameof(IntegrationTestsFixtureCollection))]
     public class AccountTests

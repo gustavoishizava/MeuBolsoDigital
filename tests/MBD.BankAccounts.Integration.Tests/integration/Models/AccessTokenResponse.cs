@@ -1,6 +1,6 @@
 using System;
 
-namespace MBD.BankAccounts.Tests.integration.Models
+namespace MBD.BankAccounts.Integration.Tests.integration.Models
 {
     public class AccessTokenResponse
     {

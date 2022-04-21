@@ -9,7 +9,7 @@ using MBD.BankAccounts.API;
 using MBD.BankAccounts.Application.Request;
 using MBD.BankAccounts.Application.Response;
 using MBD.BankAccounts.Domain.Enumerations;
-using MBD.BankAccounts.Tests.integration.Models;
+using MBD.BankAccounts.Integration.Tests.integration.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 

@@ -10,10 +10,10 @@ using MBD.CreditCards.API.Models;
 using MBD.CreditCards.Application.Requests;
 using MBD.CreditCards.Application.Responses;
 using MBD.CreditCards.Domain.Enumerations;
-using MBD.CreditCards.Tests.integration.Settings;
+using MBD.CreditCards.Integration.Tests.integration.Settings;
 using Xunit;
 
-namespace MBD.CreditCards.Tests.integration
+namespace MBD.CreditCards.Integration.Tests.integration
 {
     [Collection(nameof(IntegrationTestsFixtureCollection))]
     public class CreditCardTests
@@ -336,6 +336,6 @@ namespace MBD.CreditCards.Tests.integration
             response.EnsureSuccessStatusCode();
             Assert.NotNull(list);
             Assert.NotEmpty(list);
-        }        
+        }
     }
 }

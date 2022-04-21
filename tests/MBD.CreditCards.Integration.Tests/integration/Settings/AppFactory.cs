@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 
-namespace MBD.CreditCards.Tests.integration.Settings
+namespace MBD.CreditCards.Integration.Tests.integration.Settings
 {
     public class AppFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
     {

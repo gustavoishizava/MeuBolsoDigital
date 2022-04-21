@@ -12,11 +12,11 @@ using MBD.CreditCards.API;
 using MBD.CreditCards.Application.Requests;
 using MBD.CreditCards.Application.Responses;
 using MBD.CreditCards.Domain.Enumerations;
-using MBD.CreditCards.Tests.integration.Settings.Models;
+using MBD.CreditCards.Integration.Tests.integration.Settings.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
-namespace MBD.CreditCards.Tests.integration.Settings
+namespace MBD.CreditCards.Integration.Tests.integration.Settings
 {
     [CollectionDefinition(nameof(IntegrationTestsFixtureCollection))]
     public class IntegrationTestsFixtureCollection : ICollectionFixture<IntegrationTestsFixture<StartupTests>>
@@ -127,7 +127,7 @@ namespace MBD.CreditCards.Tests.integration.Settings
         {
             var getResponse = await _client.GetAsync($"/api/credit-cards/{id}");
             getResponse.EnsureSuccessStatusCode();
-            
+
             return await DeserializeObjectReponseAsync<CreditCardResponse>(getResponse);
         }
 

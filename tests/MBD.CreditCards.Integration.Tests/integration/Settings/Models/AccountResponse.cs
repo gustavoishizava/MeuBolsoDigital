@@ -1,6 +1,6 @@
 using System;
 
-namespace MBD.CreditCards.Tests.integration.Settings.Models
+namespace MBD.CreditCards.Integration.Tests.integration.Settings.Models
 {
     public class AccountResponse
     {

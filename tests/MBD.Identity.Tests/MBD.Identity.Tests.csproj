@@ -17,7 +17,6 @@
     <PackageReference Include="Moq" Version="4.16.1" />
     <PackageReference Include="Moq.AutoMock" Version="3.0.0-ci0170" />
     <PackageReference Include="Bogus" Version="33.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.7" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Building blocks\Core\MBD.Core\MBD.Core.csproj" />

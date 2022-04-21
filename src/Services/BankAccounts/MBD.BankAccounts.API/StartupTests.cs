@@ -1,5 +1,6 @@
 using MBD.BankAccounts.API.Configuration;
 using MBD.BankAccounts.Infrastructure.Context;
+using MBD.IntegrationEventLog;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +27,7 @@ namespace MBD.BankAccounts.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddEFContextConfiguration(Configuration);
+            services.AddEFContextIntegrationEventLogs(Configuration);
             services.AddApiConfiguration(Configuration);
 
             Seed(services);
@@ -40,9 +42,13 @@ namespace MBD.BankAccounts.API
         {
             ServiceProvider serviceProvider = services.BuildServiceProvider();
             var context = serviceProvider.GetRequiredService<BankAccountContext>();
+            var integrationContext = serviceProvider.GetRequiredService<IntegrationEventLogContext>();
 
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
+
+            integrationContext.Database.EnsureDeleted();
+            integrationContext.Database.EnsureCreated();
         }
     }
 }

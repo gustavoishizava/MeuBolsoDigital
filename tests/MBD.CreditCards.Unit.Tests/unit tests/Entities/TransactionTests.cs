@@ -4,7 +4,7 @@ using MBD.CreditCards.Domain.Entities;
 using MBD.CreditCards.Domain.Enumerations;
 using Xunit;
 
-namespace MBD.CreditCards.Tests.unit_tests.Entities
+namespace MBD.CreditCards.Unit.Tests.unit_tests.Entities
 {
     public class TransactionTests
     {

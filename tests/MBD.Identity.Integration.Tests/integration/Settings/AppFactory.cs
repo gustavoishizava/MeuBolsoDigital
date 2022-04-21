@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 
-namespace MBD.Identity.Tests.integration.Settings
+namespace MBD.Identity.Integration.Tests.integration.Settings
 {
     public class AppFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
     {

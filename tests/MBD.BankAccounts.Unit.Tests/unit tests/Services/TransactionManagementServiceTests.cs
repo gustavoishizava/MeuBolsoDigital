@@ -11,7 +11,7 @@ using Moq;
 using Moq.AutoMock;
 using Xunit;
 
-namespace MBD.BankAccounts.Tests.unit_tests.Services
+namespace MBD.BankAccounts.Unit.Tests.unit_tests.Services
 {
     public class TransactionManagementServiceTests
     {

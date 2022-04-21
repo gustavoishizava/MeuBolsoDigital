@@ -3,7 +3,7 @@ using MBD.Identity.Domain.Interfaces.Services;
 using MBD.Identity.Infrastructure.Services;
 using Xunit;
 
-namespace MBD.Identity.Tests.unit_tests.Services
+namespace MBD.Identity.Unit.Tests.unit_tests.Services
 {
     public class HashServiceTests
     {

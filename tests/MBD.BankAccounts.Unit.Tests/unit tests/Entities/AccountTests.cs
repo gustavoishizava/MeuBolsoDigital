@@ -5,7 +5,7 @@ using MBD.Core.DomainObjects;
 using MBD.Core.Enumerations;
 using Xunit;
 
-namespace MBD.BankAccounts.Tests.unit_tests.Entities
+namespace MBD.BankAccounts.Unit.Tests.unit_tests.Entities
 {
     public class AccountTests
     {

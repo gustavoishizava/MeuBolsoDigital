@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using MBD.Identity.API;
 using MBD.Identity.Application.Requests;
 using MBD.Identity.Application.Responses;
-using MBD.Identity.Tests.integration.Settings;
+using MBD.Identity.Integration.Tests.integration.Settings;
 using Xunit;
 
-namespace MBD.Identity.Tests.integration
+namespace MBD.Identity.Integration.Tests.integration
 {
     [Collection(nameof(IntegrationTestsFixtureCollection))]
     public class AuthenticationTests

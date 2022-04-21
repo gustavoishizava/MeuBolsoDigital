@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using Bogus;
 using MBD.Identity.API;
 using MBD.Identity.Application.Requests;
-using MBD.Identity.Tests.integration.Settings;
+using MBD.Identity.Integration.Tests.integration.Settings;
 using Xunit;
 
-namespace MBD.Identity.Tests.integration
+namespace MBD.Identity.Integration.Tests.integration
 {
     [Collection(nameof(IntegrationTestsFixtureCollection))]
     public class UserTests

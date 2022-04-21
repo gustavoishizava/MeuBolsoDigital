@@ -2,7 +2,7 @@ using System;
 using MBD.Identity.Domain.ValueObjects;
 using Xunit;
 
-namespace MBD.Identity.Tests.unit_tests.ValueObjects
+namespace MBD.Identity.Unit.Tests.unit_tests.ValueObjects
 {
     public class EmailTests
     {
@@ -17,7 +17,7 @@ namespace MBD.Identity.Tests.unit_tests.ValueObjects
             // Act && Assert
             Assert.Throws<ArgumentException>(() => new Email(invalidEmail));
             Assert.Throws<ArgumentNullException>(() => new Email(emptyEmail));
-            Assert.Throws<ArgumentNullException>(() => new Email(whiteSpaceEmail));            
+            Assert.Throws<ArgumentNullException>(() => new Email(whiteSpaceEmail));
         }
 
         [Theory(DisplayName = "Criar e-mail válido")]

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Hosting;
 
 namespace MBD.BankAccounts.Tests.integration.Settings
 {
@@ -7,8 +8,14 @@ namespace MBD.BankAccounts.Tests.integration.Settings
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            builder.UseStartup<TStartup>();
             builder.UseEnvironment("Testing");
         }
+
+        protected override IHostBuilder CreateHostBuilder() =>
+            Host.CreateDefaultBuilder()
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<TStartup>();
+                });
     }
 }

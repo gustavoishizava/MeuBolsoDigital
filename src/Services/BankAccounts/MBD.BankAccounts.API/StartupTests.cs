@@ -1,8 +1,15 @@
+using System.Reflection;
+using System.Text.Json.Serialization;
 using MBD.BankAccounts.API.Configuration;
 using MBD.BankAccounts.Infrastructure.Context;
+using MBD.Core.Identity;
 using MBD.IntegrationEventLog;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,9 +33,48 @@ namespace MBD.BankAccounts.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddEFContextConfiguration(Configuration);
-            services.AddEFContextIntegrationEventLogs(Configuration);
-            services.AddApiConfiguration(Configuration);
+            services.AddDbContext<BankAccountContext>(options =>
+            {
+                options.UseInMemoryDatabase("BankAccountInMemory");
+                options.ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+            });
+
+            services.AddDbContext<IntegrationEventLogContext>(options =>
+            {
+                options.UseInMemoryDatabase("IntegrationEventLogInMemory");
+                options.ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+            });
+
+            services.AddHealthCheckConfiguration();
+            services.AddJwtConfiguration(Configuration);
+
+            services.Configure<RouteOptions>(routeOptions =>
+            {
+                routeOptions.LowercaseUrls = true;
+                routeOptions.LowercaseQueryStrings = true;
+            });
+
+            services.AddControllers()
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    options.SuppressMapClientErrors = true;
+                    options.SuppressModelStateInvalidFilter = true;
+                }).AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
+
+            services.AddDomaindServices()
+                    .AddAppServices()
+                    .AddRepositories()
+                    .AddConfigurations(Configuration)
+                    .AddDomainEvents()
+                    .AddIntegrationEventLogsService();
+
+            services.AddHttpContextAccessor();
+            services.AddScoped<IAspNetUser, AspNetUser>();
+            services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddAutoMapper(Assembly.Load("MBD.BankAccounts.Application"));
 
             Seed(services);
         }

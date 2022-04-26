@@ -41,21 +41,21 @@ namespace MBD.BankAccounts.API.Configuration
             return services;
         }
 
-        private static IServiceCollection AddDomaindServices(this IServiceCollection services)
+        public static IServiceCollection AddDomaindServices(this IServiceCollection services)
         {
             services.AddScoped<ITransactionManagementService, TransactionManagementService>();
 
             return services;
         }
 
-        private static IServiceCollection AddAppServices(this IServiceCollection services)
+        public static IServiceCollection AddAppServices(this IServiceCollection services)
         {
             services.AddScoped<IAccountAppService, AccountAppService>();
 
             return services;
         }
 
-        private static IServiceCollection AddRepositories(this IServiceCollection services)
+        public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -63,28 +63,28 @@ namespace MBD.BankAccounts.API.Configuration
             return services;
         }
 
-        private static IServiceCollection AddConsumers(this IServiceCollection services)
+        public static IServiceCollection AddConsumers(this IServiceCollection services)
         {
             services.AddHostedService<TransactionConsumerService>();
 
             return services;
         }
 
-        private static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<RabbitMqConfiguration>(configuration.GetSection(nameof(RabbitMqConfiguration)));
 
             return services;
         }
 
-        private static IServiceCollection AddMessageBus(this IServiceCollection services)
+        public static IServiceCollection AddMessageBus(this IServiceCollection services)
         {
             services.AddSingleton<IMessageBus, MBD.MessageBus.MessageBus>();
 
             return services;
         }
 
-        private static IServiceCollection AddDomainEvents(this IServiceCollection services)
+        public static IServiceCollection AddDomainEvents(this IServiceCollection services)
         {
             services.AddScoped<INotificationHandler<DescriptionChangedDomainEvent>, DescriptionChangedDomainEventHandler>();
             services.AddScoped<INotificationHandler<AccountCreatedDomainEvent>, AccountCreatedDomainEventHandler>();
@@ -92,14 +92,14 @@ namespace MBD.BankAccounts.API.Configuration
             return services;
         }
 
-        private static IServiceCollection AddIntegrationEventLogsService(this IServiceCollection services)
+        public static IServiceCollection AddIntegrationEventLogsService(this IServiceCollection services)
         {
             services.AddScoped<IIntegrationEventLogService, IntegrationEventLogService>();
 
             return services;
         }
 
-        private static IServiceCollection AddOutBoxTransaction(this IServiceCollection services)
+        public static IServiceCollection AddOutBoxTransaction(this IServiceCollection services)
         {
             services.AddHostedService<PublishIntegrationEventsService>();
 

@@ -16,6 +16,7 @@
     <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.3"/>
     <PackageReference Include="MicroElements.Swashbuckle.FluentValidation" Version="5.4.0"/>
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.0"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.0"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MBD.CreditCards.Infrastructure\MBD.CreditCards.Infrastructure.csproj"/>

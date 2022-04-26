@@ -35,14 +35,14 @@ namespace MBD.CreditCards.API.Configuration
             return services;
         }
 
-        private static IServiceCollection AddAppServices(this IServiceCollection services)
+        public static IServiceCollection AddAppServices(this IServiceCollection services)
         {
             services.AddScoped<ICreditCardAppService, CreditCardAppService>();
 
             return services;
         }
 
-        private static IServiceCollection AddRepositories(this IServiceCollection services)
+        public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<ICreditCardRepository, CreditCardRepository>();
             services.AddScoped<IBankAccountRepository, BankAccountRepository>();
@@ -51,7 +51,7 @@ namespace MBD.CreditCards.API.Configuration
             return services;
         }
 
-        private static IServiceCollection AddConsumers(this IServiceCollection services)
+        public static IServiceCollection AddConsumers(this IServiceCollection services)
         {
             services.AddHostedService<TransactionsConsumerService>();
             services.AddHostedService<BankAccountsConsumerService>();
@@ -59,21 +59,21 @@ namespace MBD.CreditCards.API.Configuration
             return services;
         }
 
-        private static IServiceCollection AddMessageBus(this IServiceCollection services)
+        public static IServiceCollection AddMessageBus(this IServiceCollection services)
         {
             services.AddSingleton<IMessageBus, MessageBus.MessageBus>();
 
             return services;
         }
 
-        private static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<RabbitMqConfiguration>(configuration.GetSection(nameof(RabbitMqConfiguration)));
 
             return services;
         }
 
-        private static IServiceCollection AddIntegrationEvents(this IServiceCollection services)
+        public static IServiceCollection AddIntegrationEvents(this IServiceCollection services)
         {
             services.AddScoped<INotificationHandler<TransactionLinkedToCreditCardBillIntegrationEvent>, TransactionLinkedToCreditCardBillIntegrationEventHandler>();
             services.AddScoped<INotificationHandler<BankAccountCreatedIntegrationEvent>, BankAccountCreatedIntegrationEventHandler>();

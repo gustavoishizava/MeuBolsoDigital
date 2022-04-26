@@ -13,10 +13,10 @@ namespace MBD.CreditCards.API.Configuration
         public static IServiceCollection AddApiConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<RouteOptions>(routeOptions =>
-           {
-               routeOptions.LowercaseUrls = true;
-               routeOptions.LowercaseQueryStrings = true;
-           });
+            {
+                routeOptions.LowercaseUrls = true;
+                routeOptions.LowercaseQueryStrings = true;
+            });
 
             services.AddControllers()
                 .ConfigureApiBehaviorOptions(options =>

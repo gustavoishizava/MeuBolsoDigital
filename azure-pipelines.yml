@@ -35,6 +35,20 @@ steps:
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
 
+- task: SonarQubePrepare@5
+  inputs:
+    SonarQube: 'YourSonarqubeServerEndpoint'
+    scannerMode: 'MSBuild'
+    projectKey: 'YourProjectKey'
+
+- task: SonarQubeAnalyze@5
+  displayName: 'SonarQube Analyze'
+
+- task: SonarQubePublish@5
+  displayName: 'SonarQube Publish'
+  inputs:
+    pollingTimeoutSec: '300'
+
 - task: DotNetCoreCLI@2
   displayName: 'Run unit tests'
   inputs:

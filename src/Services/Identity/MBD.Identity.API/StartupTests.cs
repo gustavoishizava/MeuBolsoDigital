@@ -4,6 +4,8 @@ using MBD.Identity.Domain.Interfaces.Services;
 using MBD.Identity.Infrastructure.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,8 +28,15 @@ namespace MBD.Identity.API
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
-        {        
-            services.AddEFContextConfiguration(Configuration);
+        {
+            services.AddDbContext<IdentityContext>(options =>
+            {
+                options.UseInMemoryDatabase("IdentityDbInMemory");
+                options.ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+            });
+
+            services.AddHealthCheckConfiguration();
+            services.AddJwtConfiguration(Configuration);
             services.AddApiConfiguration();
 
             Seed(services);

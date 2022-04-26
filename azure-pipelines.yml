@@ -39,7 +39,7 @@ steps:
   inputs:
     SonarQube: 'YourSonarqubeServerEndpoint'
     scannerMode: 'MSBuild'
-    projectKey: 'YourProjectKey'
+    projectKey: 'gustavoishizava_MeuBolsoDigital'
 
 - task: SonarQubeAnalyze@5
   displayName: 'SonarQube Analyze'

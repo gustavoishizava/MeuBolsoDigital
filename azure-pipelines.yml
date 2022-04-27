@@ -53,7 +53,7 @@ steps:
   inputs:
     command: test
     projects: '**/*Unit.Tests/*.csproj'
-    arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
+    arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover --collect:"XPlat Code Coverage"'
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage report'

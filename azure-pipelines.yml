@@ -37,7 +37,8 @@ steps:
     projectName: 'Meu Bolso Digital'
     extraProperties: |
       sonar.exclusions=**/*.bin,**/obj/**,**/*.dll
-      sonar.cs.vscoveragexml.reportsPaths==$(Agent.TempDirectory)/**/coverage.cobertura.xml
+      ssonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/coverage.opencover.xml
+      sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build $(buildConfiguration)'
@@ -51,13 +52,13 @@ steps:
   inputs:
     command: test
     projects: '**/*Unit.Tests/*.csproj'
-    arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage"'
+    arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
 
-#- task: PublishCodeCoverageResults@1
-#  displayName: 'Publish code coverage report'
-#  inputs:
-#    codeCoverageTool: 'Cobertura'
-#    summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage report'
+  inputs:
+    codeCoverageTool: 'Cobertura'
+    summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.opencover.xml'
 
 - task: SonarCloudAnalyze@1
 

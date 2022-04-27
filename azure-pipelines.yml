@@ -37,7 +37,7 @@ steps:
     projectName: 'Meu Bolso Digital'
     extraProperties: |
       sonar.exclusions=**/*.bin,**/obj/**,**/*.dll
-      sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/**/coverage.cobertura.xml
+      sonar.cs.vscoveragexml.reportsPaths=coverage.cobertura.xml
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build $(buildConfiguration)'

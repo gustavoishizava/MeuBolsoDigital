@@ -35,16 +35,18 @@ steps:
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
 
-- task: SonarQubePrepare@5
+- task: SonarCloudPrepare@1
   inputs:
-    SonarQube: 'YourSonarqubeServerEndpoint'
+    SonarCloud: 'Sonar Cloud'
+    organization: 'gustavoishizava'
     scannerMode: 'MSBuild'
     projectKey: 'gustavoishizava_MeuBolsoDigital'
+    projectName: 'Meu Bolso Digital'
 
-- task: SonarQubeAnalyze@5
+- task: SonarCloudAnalyze@1
   displayName: 'SonarQube Analyze'
 
-- task: SonarQubePublish@5
+- task: SonarCloudPublish@1
   displayName: 'SonarQube Publish'
   inputs:
     pollingTimeoutSec: '300'

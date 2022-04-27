@@ -1,9 +1,11 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using MBD.Core.DomainObjects;
 
 namespace MBD.Core
 {
+    [ExcludeFromCodeCoverage]
     public static class Assertions
     {
         public static void IsNotEmpty(Guid value, string message)

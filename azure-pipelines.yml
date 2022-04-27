@@ -44,10 +44,8 @@ steps:
     projectName: 'Meu Bolso Digital'
 
 - task: SonarCloudAnalyze@1
-  displayName: 'SonarQube Analyze'
 
 - task: SonarCloudPublish@1
-  displayName: 'SonarQube Publish'
   inputs:
     pollingTimeoutSec: '300'
 

@@ -16,6 +16,14 @@ variables:
 
 steps:
 
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'Sonar Cloud'
+    organization: 'gustavoishizava'
+    scannerMode: 'MSBuild'
+    projectKey: 'gustavoishizava_MeuBolsoDigital'
+    projectName: 'Meu Bolso Digital'
+    
 - task: UseDotNet@2
   displayName: 'Install .NET Core SDK'
   inputs:
@@ -35,26 +43,18 @@ steps:
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
 
-- task: SonarCloudPrepare@1
-  inputs:
-    SonarCloud: 'Sonar Cloud'
-    organization: 'gustavoishizava'
-    scannerMode: 'MSBuild'
-    projectKey: 'gustavoishizava_MeuBolsoDigital'
-    projectName: 'Meu Bolso Digital'
-
-- task: SonarCloudAnalyze@1
-
-- task: SonarCloudPublish@1
-  inputs:
-    pollingTimeoutSec: '300'
-
 - task: DotNetCoreCLI@2
   displayName: 'Run unit tests'
   inputs:
     command: test
     projects: '**/*Unit.Tests/*.csproj'
     arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage"'
+
+- task: SonarCloudAnalyze@1
+
+- task: SonarCloudPublish@1
+  inputs:
+    pollingTimeoutSec: '300'
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage report'

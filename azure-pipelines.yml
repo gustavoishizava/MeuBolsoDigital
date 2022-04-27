@@ -15,14 +15,6 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-
-- task: SonarCloudPrepare@1
-  inputs:
-    SonarCloud: 'Sonar Cloud'
-    organization: 'gustavoishizava'
-    scannerMode: 'MSBuild'
-    projectKey: 'gustavoishizava_MeuBolsoDigital'
-    projectName: 'Meu Bolso Digital'
     
 - task: UseDotNet@2
   displayName: 'Install .NET Core SDK'
@@ -35,6 +27,17 @@ steps:
   inputs:
     command: 'restore'
     feedsToUse: 'select'
+
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'Sonar Cloud'
+    organization: 'gustavoishizava'
+    scannerMode: 'MSBuild'
+    projectKey: 'gustavoishizava_MeuBolsoDigital'
+    projectName: 'Meu Bolso Digital'
+    extraProperties: |
+      sonar.exclusions=**/*.bin,**/obj/**,**/*.dll
+      sonar.cs.vscoveragexml.reportsPaths=$(Agent.TempDirectory)/**/coverage.cobertura.xml
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build $(buildConfiguration)'

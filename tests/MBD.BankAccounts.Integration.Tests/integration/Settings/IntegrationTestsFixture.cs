@@ -24,7 +24,9 @@ namespace MBD.BankAccounts.Tests.integration.Settings
     public class IntegrationTestsFixture<TStartup> : IDisposable where TStartup : class
     {
         public HttpClient _client;
-        public readonly AppFactory<TStartup> _appFactory;
+        private readonly AppFactory<TStartup> _appFactory;
+        private HttpClient _identityClient;
+        private readonly AppFactory<MBD.Identity.API.StartupTests> _identityAppFactory;
         private readonly string baseUrl;
 
         public readonly string _accountsApi = "/api/accounts";
@@ -37,6 +39,12 @@ namespace MBD.BankAccounts.Tests.integration.Settings
             _client = _appFactory.CreateClient(new WebApplicationFactoryClientOptions
             {
                 BaseAddress = new Uri(baseUrl)
+            });
+
+            _identityAppFactory = new AppFactory<Identity.API.StartupTests>();
+            _identityClient = _identityAppFactory.CreateClient(new WebApplicationFactoryClientOptions
+            {
+                BaseAddress = new Uri("https://localhost:5101")
             });
         }
 
@@ -55,10 +63,9 @@ namespace MBD.BankAccounts.Tests.integration.Settings
         public async Task AuthenticateAsync()
         {
             var email = "test@test.com";
-            var password = "T3st123@";
+            var password = "Test3@123";
 
-            var httpClient = new HttpClient();
-            var response = await httpClient.PostAsJsonAsync("https://localhost:5101/api/authentication/auth", new { Email = email, Password = password });
+            var response = await _identityClient.PostAsJsonAsync("/api/authentication/auth", new { Email = email, Password = password });
             response.EnsureSuccessStatusCode();
 
             var accessToken = await DeserializeObjectReponseAsync<AccessTokenResponse>(response);

@@ -21,5 +21,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Services\BankAccounts\MBD.BankAccounts.API\MBD.BankAccounts.API.csproj" />
     <ProjectReference Include="..\..\src\Services\BankAccounts\MBD.BankAccounts.Application\MBD.BankAccounts.Application.csproj" />
+    <ProjectReference Include="..\..\src\Services\Identity\MBD.Identity.API\MBD.Identity.API.csproj" />
   </ItemGroup>
 </Project>

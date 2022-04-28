@@ -5,7 +5,6 @@
 
 # AppSettings files
 **/appsettings.[Dd]evelopment.json
-**/appsettings.[Tt]esting.json
 
 # User-specific files
 *.rsuser

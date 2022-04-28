@@ -51,7 +51,14 @@ steps:
   displayName: 'Run unit tests'
   inputs:
     command: test
-    projects: '**/*Unit.Tests/*.csproj;**/*Integration.Tests/*.csproj'
+    projects: '**/*Unit.Tests/*.csproj'
+    arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run integration tests'
+  inputs:
+    command: test
+    projects: '**/*Integration.Tests/*.csproj'
     arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover'
 
 - task: PublishCodeCoverageResults@1

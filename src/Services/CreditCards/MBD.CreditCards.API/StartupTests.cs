@@ -32,8 +32,6 @@ namespace MBD.CreditCards.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddEFContextConfiguration(Configuration);
-
             services.AddDbContext<CreditCardContext>(options =>
             {
                 options.UseInMemoryDatabase("CreditCardInMemory");

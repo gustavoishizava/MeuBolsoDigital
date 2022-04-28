@@ -27,8 +27,11 @@ namespace MBD.CreditCards.Integration.Tests.integration.Settings
     public class IntegrationTestsFixture<TStartup> : IDisposable where TStartup : class
     {
         public HttpClient _client;
+        private readonly AppFactory<TStartup> _appFactory;
         private HttpClient _bankAccountClient;
-        public readonly AppFactory<TStartup> _appFactory;
+        private readonly AppFactory<MBD.BankAccounts.API.StartupTests> _bankAccountAppFactory;
+        private HttpClient _identityClient;
+        private readonly AppFactory<MBD.Identity.API.StartupTests> _identityAppFactory;
         private readonly string baseUrl;
         private readonly string bankAccountUrl = "https://localhost:5102";
         private readonly string identityUrl = "https://localhost:5101";
@@ -45,10 +48,17 @@ namespace MBD.CreditCards.Integration.Tests.integration.Settings
                 BaseAddress = new Uri(baseUrl)
             });
 
-            _bankAccountClient = new HttpClient
+            _bankAccountAppFactory = new AppFactory<MBD.BankAccounts.API.StartupTests>();
+            _bankAccountClient = _bankAccountAppFactory.CreateClient(new WebApplicationFactoryClientOptions
             {
                 BaseAddress = new Uri(bankAccountUrl)
-            };
+            });
+
+            _identityAppFactory = new AppFactory<MBD.Identity.API.StartupTests>();
+            _identityClient = _identityAppFactory.CreateClient(new WebApplicationFactoryClientOptions
+            {
+                BaseAddress = new Uri(identityUrl)
+            });
         }
 
         public async Task<T> DeserializeObjectReponseAsync<T>(HttpResponseMessage responseMessage)
@@ -66,12 +76,10 @@ namespace MBD.CreditCards.Integration.Tests.integration.Settings
         public async Task AuthenticateAsync()
         {
             var email = "test@test.com";
-            var password = "T3st123@";
+            var password = "Test3@123";
 
-            var httpClient = new HttpClient();
-            var response = await httpClient.PostAsJsonAsync($"{identityUrl}/api/authentication/auth", new { Email = email, Password = password });
+            var response = await _identityClient.PostAsJsonAsync("/api/authentication/auth", new { Email = email, Password = password });
             response.EnsureSuccessStatusCode();
-            httpClient.Dispose();
 
             var accessToken = await DeserializeObjectReponseAsync<AccessTokenResponse>(response);
 

@@ -10,13 +10,13 @@ namespace MBD.CreditCards.Domain.Entities
         public DateTime CreatedAt { get; private set; }
         public decimal Value { get; private set; }
 
-        internal Transaction(Guid id, Guid creditCardBillId, decimal value)
+        internal Transaction(Guid id, Guid creditCardBillId, decimal value, DateTime createdAt)
         {
             Assertions.IsGreaterOrEqualsThan(value, 0, "O valor não pode ser menor que R$0,00.");
-            
+
             Id = id;
             CreditCardBillId = creditCardBillId;
-            CreatedAt = DateTime.Now;
+            CreatedAt = createdAt;
             Value = value;
         }
     }

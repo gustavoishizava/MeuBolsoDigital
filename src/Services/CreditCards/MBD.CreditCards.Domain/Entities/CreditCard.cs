@@ -92,15 +92,19 @@ namespace MBD.CreditCards.Domain.Entities
 
         #region Credit card bills
 
-        public void AddBill(int month, int year)
+        private CreditCardBill AddBill(int month, int year)
         {
             Assertions.IsTrue(ReferenceIsAvailable(month, year), $"Não é possível criar uma fatura com as referências mês ({month}) e ano ({year}), pois já existe uma fatura cadastrada para esta referência.");
-            _bills.Add(new CreditCardBill(Id, DayOfPayment, ClosingDay, month, year));
+
+            var bill = new CreditCardBill(Id, DayOfPayment, ClosingDay, month, year);
+            _bills.Add(bill);
+
+            return bill;
         }
 
-        public bool ReferenceIsAvailable(int month, int year)
+        private bool ReferenceIsAvailable(int month, int year)
         {
-            return !_bills.Any(x => x.Reference.Month == month && x.Reference.Year == year);
+            return GetBillByReference(month, year) is null;
         }
 
         public CreditCardBill GetBillByReference(int month, int year)
@@ -108,6 +112,32 @@ namespace MBD.CreditCards.Domain.Entities
             return _bills.FirstOrDefault(x => x.Reference.Month == month && x.Reference.Year == year);
         }
 
-        #endregion        
+        #endregion
+
+        #region Transactions
+
+        public void AddTransaction(Guid transactionId, DateTime createdAt, decimal value)
+        {
+            int month = createdAt.Month;
+            int year = createdAt.Year;
+
+            var bill = GetBillByReference(month, year);
+            if (bill is null)
+                bill = AddBill(month, year);
+
+            if (!bill.ExistingTransaction(transactionId))
+                bill.AddTransaction(transactionId, value, createdAt);
+        }
+
+        public Transaction GetTransaction(Guid transactionId, int month, int year)
+        {
+            var bill = GetBillByReference(month, year);
+            if (bill is null)
+                return null;
+
+            return bill.GetTransaction(transactionId);
+        }
+
+        #endregion
     }
 }

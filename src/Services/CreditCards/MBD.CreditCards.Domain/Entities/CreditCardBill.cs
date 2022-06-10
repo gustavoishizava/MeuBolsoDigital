@@ -55,19 +55,19 @@ namespace MBD.CreditCards.Domain.Entities
 
         #region Transactions
 
-        public void AddTransaction(Guid transactionId, decimal value)
+        internal void AddTransaction(Guid transactionId, decimal value, DateTime createdAt)
         {
             Assertions.IsFalse(ExistingTransaction(transactionId), $"Transação já existente. Id='{transactionId}'.");
 
-            _transactions.Add(new Transaction(transactionId, Id, value));
+            _transactions.Add(new Transaction(transactionId, Id, value, createdAt));
         }
 
-        public Transaction GetTransaction(Guid transactionId)
+        internal Transaction GetTransaction(Guid transactionId)
         {
             return _transactions.Find(x => x.Id == transactionId);
         }
 
-        public bool ExistingTransaction(Guid transactionId)
+        internal bool ExistingTransaction(Guid transactionId)
         {
             return _transactions.Any(x => x.Id == transactionId);
         }
